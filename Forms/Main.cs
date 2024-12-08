@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text.Json;
 using Avatar_Explorer.Classes;
 
 namespace Avatar_Explorer.Forms
@@ -13,20 +14,8 @@ namespace Avatar_Explorer.Forms
 
         public Main()
         {
+            LoadItemsData();
             InitializeComponent();
-
-            //test
-            Items = Items.Append(new Item
-            {
-                Title = "真冬 Mafuyu / オリジナル3Dモデル",
-                AuthorName = "ぷらすわん",
-                AuthorImageFilePath = "./Datas/AuthorImage/ぷらすわん.jpg",
-                BoothId = 0,
-                ItemPath = "D:\\VRChat Avatars\\アバター本体\\まふゆ\\Mafuyu_v1.0.4",
-                ThumbnailUrl = "",
-                ImagePath = "./Datas/Thumbnail/5007531.png",
-                Type = ItemType.Avatar
-            }).ToArray();
             GenerateAvatarList();
             GenerateAuthorList();
         }
@@ -246,6 +235,24 @@ namespace Avatar_Explorer.Forms
                 GenerateCategoryList();
                 PathTextBox.Text = GeneratePath();
             }
+        }
+
+        private void SaveItemsData()
+        {
+            using var sw = new StreamWriter("./Datas/ItemsData.json");
+            sw.Write(JsonSerializer.Serialize(Items));
+        }
+
+        private void LoadItemsData()
+        {
+            if (!File.Exists("./Datas/ItemsData.json")) return;
+            using var sr = new StreamReader("./Datas/ItemsData.json");
+            Items = JsonSerializer.Deserialize<Item[]>(sr.ReadToEnd());
+        }
+
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveItemsData();
         }
     }
 }

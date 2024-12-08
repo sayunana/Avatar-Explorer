@@ -145,6 +145,7 @@
             Controls.Add(UndoButton);
             Name = "Main";
             Text = "Avatar Explorer";
+            FormClosing += Main_FormClosing;
             AvatarSearchFilterList.ResumeLayout(false);
             ExplorerList.ResumeLayout(false);
             AvatarItemExplorer.ResumeLayout(false);
