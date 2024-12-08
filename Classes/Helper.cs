@@ -89,7 +89,7 @@
 
         public static Button CreateButton(string imagePath, string labelTitle, string? deskription, bool @short = false)
         {
-            var buttonWidth = @short ? 232 : 673;
+            var buttonWidth = @short ? 319 : 882;
             Button button = new Button();
             button.Size = new Size(buttonWidth, 64);
 

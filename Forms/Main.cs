@@ -50,7 +50,18 @@ namespace Avatar_Explorer.Forms
             AvatarAuthorPage.Controls.Clear();
             var index = 0;
 
-            var authors = Items.Select(item => new Author { AuthorName = item.AuthorName, AuthorImagePath = item.AuthorImageFilePath }).Distinct().ToArray();
+            var authors = Array.Empty<Author>();
+            foreach (Item item in Items)
+            {
+                if (authors.Any(author => author.AuthorName == item.AuthorName)) continue;
+                authors = authors.Append(new Author
+                {
+                    AuthorName = item.AuthorName,
+                    AuthorImagePath = item.AuthorImageFilePath
+                }).ToArray();
+            }
+
+
 
             foreach (var author in authors)
             {
@@ -84,7 +95,7 @@ namespace Avatar_Explorer.Forms
                 {
                     if (_authorMode)
                         return item.Type == itemType && item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName;
-                    return item.Type == itemType;
+                    return item.Type == itemType && item.Title == CurrentPath.CurrentSelectedAvatar;
                 }) + "ŒÂ‚Ì€–Ú");
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (sender, e) =>
@@ -105,6 +116,7 @@ namespace Avatar_Explorer.Forms
             var index = 0;
             foreach (Item item in Items.Where(item => item.Type == itemType && (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) || item.SupportedAvatar.Length == 0)))
             {
+                if (itemType == ItemType.Avatar && item.Title != CurrentPath.CurrentSelectedAvatar) continue;
                 Button button = Helper.CreateButton(item.ImagePath, item.Title, "ìŽÒ: " + item.AuthorName);
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (sender, e) =>

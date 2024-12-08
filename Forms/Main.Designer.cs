@@ -67,7 +67,7 @@
             AvatarSearchFilterList.Location = new Point(16, 45);
             AvatarSearchFilterList.Name = "AvatarSearchFilterList";
             AvatarSearchFilterList.SelectedIndex = 0;
-            AvatarSearchFilterList.Size = new Size(243, 443);
+            AvatarSearchFilterList.Size = new Size(333, 586);
             AvatarSearchFilterList.TabIndex = 3;
             // 
             // AvatarPage
@@ -76,7 +76,7 @@
             AvatarPage.Location = new Point(4, 24);
             AvatarPage.Name = "AvatarPage";
             AvatarPage.Padding = new Padding(3);
-            AvatarPage.Size = new Size(235, 415);
+            AvatarPage.Size = new Size(325, 558);
             AvatarPage.TabIndex = 0;
             AvatarPage.Text = "アバター";
             AvatarPage.UseVisualStyleBackColor = true;
@@ -86,16 +86,16 @@
             AvatarAuthorPage.Location = new Point(4, 24);
             AvatarAuthorPage.Name = "AvatarAuthorPage";
             AvatarAuthorPage.Padding = new Padding(3);
-            AvatarAuthorPage.Size = new Size(235, 415);
+            AvatarAuthorPage.Size = new Size(294, 558);
             AvatarAuthorPage.TabIndex = 1;
             AvatarAuthorPage.Text = "作者";
             AvatarAuthorPage.UseVisualStyleBackColor = true;
             // 
             // AddItemButton
             // 
-            AddItemButton.Location = new Point(793, 490);
+            AddItemButton.Location = new Point(1093, 641);
             AddItemButton.Name = "AddItemButton";
-            AddItemButton.Size = new Size(161, 32);
+            AddItemButton.Size = new Size(161, 46);
             AddItemButton.TabIndex = 5;
             AddItemButton.Text = "アイテムの追加";
             AddItemButton.UseVisualStyleBackColor = true;
@@ -104,10 +104,10 @@
             // ExplorerList
             // 
             ExplorerList.Controls.Add(AvatarItemExplorer);
-            ExplorerList.Location = new Point(269, 45);
+            ExplorerList.Location = new Point(355, 45);
             ExplorerList.Name = "ExplorerList";
             ExplorerList.SelectedIndex = 0;
-            ExplorerList.Size = new Size(699, 439);
+            ExplorerList.Size = new Size(899, 590);
             ExplorerList.TabIndex = 6;
             // 
             // AvatarItemExplorer
@@ -117,7 +117,7 @@
             AvatarItemExplorer.Location = new Point(4, 24);
             AvatarItemExplorer.Name = "AvatarItemExplorer";
             AvatarItemExplorer.Padding = new Padding(3);
-            AvatarItemExplorer.Size = new Size(691, 411);
+            AvatarItemExplorer.Size = new Size(891, 562);
             AvatarItemExplorer.TabIndex = 0;
             AvatarItemExplorer.Text = "アイテム";
             AvatarItemExplorer.UseVisualStyleBackColor = true;
@@ -126,7 +126,7 @@
             // 
             StartLabel.AutoSize = true;
             StartLabel.Font = new Font("Yu Gothic UI", 15F);
-            StartLabel.Location = new Point(116, 159);
+            StartLabel.Location = new Point(255, 242);
             StartLabel.Name = "StartLabel";
             StartLabel.Size = new Size(481, 56);
             StartLabel.TabIndex = 7;
@@ -137,12 +137,15 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(980, 534);
+            ClientSize = new Size(1266, 699);
             Controls.Add(ExplorerList);
             Controls.Add(AddItemButton);
             Controls.Add(AvatarSearchFilterList);
             Controls.Add(PathTextBox);
             Controls.Add(UndoButton);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "Main";
             Text = "Avatar Explorer";
             FormClosing += Main_FormClosing;

@@ -28,19 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            AvatarList = new ListBox();
             label1 = new Label();
             ConfirmButton = new Button();
+            tabControl1 = new TabControl();
+            AvatarList = new TabPage();
+            tabControl1.SuspendLayout();
             SuspendLayout();
-            // 
-            // AvatarList
-            // 
-            AvatarList.FormattingEnabled = true;
-            AvatarList.ItemHeight = 15;
-            AvatarList.Location = new Point(12, 70);
-            AvatarList.Name = "AvatarList";
-            AvatarList.Size = new Size(776, 349);
-            AvatarList.TabIndex = 0;
             // 
             // label1
             // 
@@ -62,25 +55,49 @@
             ConfirmButton.UseVisualStyleBackColor = true;
             ConfirmButton.Click += ConfirmButton_Click;
             // 
+            // tabControl1
+            // 
+            tabControl1.Controls.Add(AvatarList);
+            tabControl1.Location = new Point(12, 54);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new Size(776, 365);
+            tabControl1.TabIndex = 3;
+            // 
+            // AvatarList
+            // 
+            AvatarList.AutoScroll = true;
+            AvatarList.Location = new Point(4, 24);
+            AvatarList.Name = "AvatarList";
+            AvatarList.Padding = new Padding(3);
+            AvatarList.Size = new Size(768, 337);
+            AvatarList.TabIndex = 0;
+            AvatarList.Text = "アバターリスト";
+            AvatarList.UseVisualStyleBackColor = true;
+            // 
             // SelectSupportedAvatar
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 474);
+            Controls.Add(tabControl1);
             Controls.Add(ConfirmButton);
             Controls.Add(label1);
-            Controls.Add(AvatarList);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "SelectSupportedAvatar";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "SelectSupportedAvatar";
+            tabControl1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
-
-        private ListBox AvatarList;
         private Label label1;
         private Button ConfirmButton;
+        private TabControl tabControl1;
+        private TabPage AvatarList;
     }
 }
