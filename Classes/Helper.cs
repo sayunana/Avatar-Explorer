@@ -87,8 +87,6 @@
             return itemFolderInfo;
         }
 
-
-        //onClickを作成
         public static Button CreateButton(string imagePath, string labelTitle, string? deskription, bool @short = false)
         {
             var buttonWidth = @short ? 232 : 673;
