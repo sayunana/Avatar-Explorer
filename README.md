@@ -1,1 +1,4 @@
-# VRChat Explorer
+# VRChat Avatar Explorer
+
+改変時にファイルなどを見やすく整理してくれる便利なソフトです。
+自分用に作成しましたが、もし使いたい方がいればどうぞ
