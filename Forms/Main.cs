@@ -239,7 +239,6 @@ namespace Avatar_Explorer.Forms
         // Undo Button
         private void UndoButton_Click(object sender, EventArgs e)
         {
-            // 順番にチェックしてって、戻るボタンを実装
             if (CurrentPath.CurrentSelectedItemCategory != "")
             {
                 CurrentPath.CurrentSelectedItemCategory = "";

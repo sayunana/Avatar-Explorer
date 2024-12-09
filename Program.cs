@@ -1,6 +1,7 @@
 using Avatar_Explorer.Forms;
+using VRChat_Explorer;
 
-namespace VRChat_Explorer
+namespace Avatar_Explorer
 {
     internal static class Program
     {
