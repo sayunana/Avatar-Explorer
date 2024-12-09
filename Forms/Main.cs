@@ -89,14 +89,9 @@ namespace Avatar_Explorer.Forms
             foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
             {
                 if (itemType is ItemType.Unknown) continue;
-                Button button = Helper.CreateButton("./Datas/FolderIcon.png", Helper.GetCategoryName(itemType), Items.Count(item =>
-                {
-                    if (_authorMode)
-                        return item.Type == itemType && item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName;
-                    if (item.Type == ItemType.Avatar)
-                        return item.Type == itemType && item.Title == CurrentPath.CurrentSelectedAvatar;
-                    return item.Type == itemType && (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) || item.SupportedAvatar.Length == 0);
-                }) + "個の項目");
+                var itemCount = _authorMode ? Items.Count(item => item.Type == itemType && item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName) : Items.Count(item => item.Type == itemType && (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) || item.SupportedAvatar.Length == 0));
+                if (itemCount == 0) continue;
+                Button button = Helper.CreateButton("./Datas/FolderIcon.png", Helper.GetCategoryName(itemType), itemCount + "個の項目");
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (sender, e) =>
                 {
@@ -111,47 +106,94 @@ namespace Avatar_Explorer.Forms
 
         private void GenerateItems(ItemType itemType)
         {
+            Debug.WriteLine("TEST");
             AvatarItemExplorer.Controls.Clear();
 
             var index = 0;
-            foreach (Item item in Items.Where(item => item.Type == itemType && (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) || item.SupportedAvatar.Length == 0)))
-            {
-                if (itemType == ItemType.Avatar && item.Title != CurrentPath.CurrentSelectedAvatar) continue;
-                Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName);
-                button.Location = new Point(0, (70 * index) + 2);
-                button.Click += (sender, e) =>
-                {
-                    CurrentPath.CurrentSelectedCategory = itemType;
-                    CurrentPath.CurrentSelectedItem = item;
-                    GenerateItemCategoryList();
-                    PathTextBox.Text = GeneratePath();
-                };
 
-                ContextMenuStrip contextMenuStrip = new();
-                ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー");
-                toolStripMenuItem.Click += (sender, e) =>
+            if (_authorMode)
+            {
+                foreach (Item item in Items.Where(item => item.Type == itemType && item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName))
                 {
-                    Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
-                };
-                ToolStripMenuItem toolStripMenuItem2 = new("削除");
-                toolStripMenuItem2.Click += (sender, e) =>
+                    Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName);
+                    button.Location = new Point(0, (70 * index) + 2);
+                    button.Click += (sender, e) =>
+                    {
+                        CurrentPath.CurrentSelectedCategory = itemType;
+                        CurrentPath.CurrentSelectedItem = item;
+                        GenerateItemCategoryList();
+                        PathTextBox.Text = GeneratePath();
+                    };
+
+                    ContextMenuStrip contextMenuStrip = new();
+                    ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー");
+                    toolStripMenuItem.Click += (sender, e) =>
+                    {
+                        Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
+                    };
+                    ToolStripMenuItem toolStripMenuItem2 = new("削除");
+                    toolStripMenuItem2.Click += (sender, e) =>
+                    {
+                        Items = Items.Where(i => i.Title != item.Title).ToArray();
+                        GenerateItems(itemType);
+                    };
+                    ToolStripMenuItem toolStripMenuItem3 = new("編集");
+                    toolStripMenuItem3.Click += (sender, e) =>
+                    {
+                        AddItem addItem = new(this, itemType, true, item);
+                        addItem.ShowDialog();
+                        GenerateAvatarList();
+                    };
+                    contextMenuStrip.Items.Add(toolStripMenuItem);
+                    contextMenuStrip.Items.Add(toolStripMenuItem2);
+                    contextMenuStrip.Items.Add(toolStripMenuItem3);
+                    button.ContextMenuStrip = contextMenuStrip;
+                    AvatarItemExplorer.Controls.Add(button);
+                    index++;
+                }
+            }
+            else
+            {
+                foreach (Item item in Items.Where(item => item.Type == itemType && (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) || item.SupportedAvatar.Length == 0)))
                 {
-                    Items = Items.Where(i => i.Title != item.Title).ToArray();
-                    GenerateItems(itemType);
-                };
-                ToolStripMenuItem toolStripMenuItem3 = new("編集");
-                toolStripMenuItem3.Click += (sender, e) =>
-                {
-                    AddItem addItem = new(this, itemType, true, item);
-                    addItem.ShowDialog();
-                    GenerateAvatarList();
-                };
-                contextMenuStrip.Items.Add(toolStripMenuItem);
-                contextMenuStrip.Items.Add(toolStripMenuItem2);
-                contextMenuStrip.Items.Add(toolStripMenuItem3);
-                button.ContextMenuStrip = contextMenuStrip;
-                AvatarItemExplorer.Controls.Add(button);
-                index++;
+                    if (itemType == ItemType.Avatar && item.Title != CurrentPath.CurrentSelectedAvatar) continue;
+                    Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName);
+                    button.Location = new Point(0, (70 * index) + 2);
+                    button.Click += (sender, e) =>
+                    {
+                        CurrentPath.CurrentSelectedCategory = itemType;
+                        CurrentPath.CurrentSelectedItem = item;
+                        GenerateItemCategoryList();
+                        PathTextBox.Text = GeneratePath();
+                    };
+
+                    ContextMenuStrip contextMenuStrip = new();
+                    ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー");
+                    toolStripMenuItem.Click += (sender, e) =>
+                    {
+                        Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
+                    };
+                    ToolStripMenuItem toolStripMenuItem2 = new("削除");
+                    toolStripMenuItem2.Click += (sender, e) =>
+                    {
+                        Items = Items.Where(i => i.Title != item.Title).ToArray();
+                        GenerateItems(itemType);
+                    };
+                    ToolStripMenuItem toolStripMenuItem3 = new("編集");
+                    toolStripMenuItem3.Click += (sender, e) =>
+                    {
+                        AddItem addItem = new(this, itemType, true, item);
+                        addItem.ShowDialog();
+                        GenerateAvatarList();
+                    };
+                    contextMenuStrip.Items.Add(toolStripMenuItem);
+                    contextMenuStrip.Items.Add(toolStripMenuItem2);
+                    contextMenuStrip.Items.Add(toolStripMenuItem3);
+                    button.ContextMenuStrip = contextMenuStrip;
+                    AvatarItemExplorer.Controls.Add(button);
+                    index++;
+                }
+
             }
         }
 

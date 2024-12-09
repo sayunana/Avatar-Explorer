@@ -76,6 +76,7 @@
                     case ".txt":
                     case ".md":
                     case ".pdf":
+                    case ".html":
                         itemFolderInfo.DocumentFiles = itemFolderInfo.DocumentFiles.Append(item).ToArray();
                         break;
                     case ".unitypackage":
