@@ -273,7 +273,9 @@ namespace Avatar_Explorer.Forms
         {
             if (!File.Exists("./Datas/ItemsData.json")) return;
             using var sr = new StreamReader("./Datas/ItemsData.json");
-            Items = JsonSerializer.Deserialize<Item[]>(sr.ReadToEnd());
+            var data = JsonSerializer.Deserialize<Item[]>(sr.ReadToEnd());
+            if (data == null) return;
+            Items = data;
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
