@@ -1,5 +1,4 @@
 using Avatar_Explorer.Forms;
-using VRChat_Explorer;
 
 namespace Avatar_Explorer
 {

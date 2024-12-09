@@ -7,6 +7,6 @@
         public ItemType CurrentSelectedCategory;
         public Item? CurrentSelectedItem;
         public string CurrentSelectedItemCategory = "";
-        public ItemFolderInfo CurrentSelectedItemFolderInfo;
+        public ItemFolderInfo CurrentSelectedItemFolderInfo = new();
     }
 }
