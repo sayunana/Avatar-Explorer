@@ -32,7 +32,7 @@ namespace Avatar_Explorer.Forms
         private static Button CreateAvatarButton(Item item)
         {
             Button button = new Button();
-            button.Size = new Size(773, 64);
+            button.Size = new Size(1009, 64);
 
             PictureBox pictureBox = new PictureBox();
             pictureBox.Size = new Size(56, 56);

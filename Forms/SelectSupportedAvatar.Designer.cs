@@ -47,7 +47,7 @@
             // 
             // ConfirmButton
             // 
-            ConfirmButton.Location = new Point(657, 425);
+            ConfirmButton.Location = new Point(900, 562);
             ConfirmButton.Name = "ConfirmButton";
             ConfirmButton.Size = new Size(131, 41);
             ConfirmButton.TabIndex = 2;
@@ -61,7 +61,7 @@
             tabControl1.Location = new Point(12, 54);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(776, 365);
+            tabControl1.Size = new Size(1019, 502);
             tabControl1.TabIndex = 3;
             // 
             // AvatarList
@@ -70,7 +70,7 @@
             AvatarList.Location = new Point(4, 24);
             AvatarList.Name = "AvatarList";
             AvatarList.Padding = new Padding(3);
-            AvatarList.Size = new Size(768, 337);
+            AvatarList.Size = new Size(1011, 474);
             AvatarList.TabIndex = 0;
             AvatarList.Text = "アバターリスト";
             AvatarList.UseVisualStyleBackColor = true;
@@ -79,7 +79,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 474);
+            ClientSize = new Size(1043, 615);
             Controls.Add(tabControl1);
             Controls.Add(ConfirmButton);
             Controls.Add(label1);

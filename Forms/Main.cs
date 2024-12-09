@@ -96,7 +96,7 @@ namespace Avatar_Explorer.Forms
                 button.Click += (sender, e) =>
                 {
                     CurrentPath.CurrentSelectedCategory = itemType;
-                    GenerateItems(CurrentPath.CurrentSelectedCategory);
+                    GenerateItems();
                     PathTextBox.Text = GeneratePath();
                 };
                 AvatarItemExplorer.Controls.Add(button);
@@ -104,13 +104,13 @@ namespace Avatar_Explorer.Forms
             }
         }
 
-        private void GenerateItems(ItemType itemType)
+        private void GenerateItems()
         {
             AvatarItemExplorer.Controls.Clear();
 
             var filteredItems = _authorMode
-                ? Items.Where(item => item.Type == itemType && item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName)
-                : Items.Where(item => item.Type == itemType && (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) || item.SupportedAvatar.Length == 0));
+                ? Items.Where(item => item.Type == CurrentPath.CurrentSelectedCategory && item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName)
+                : Items.Where(item => item.Type == CurrentPath.CurrentSelectedCategory && (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) || item.SupportedAvatar.Length == 0));
 
             var index = 0;
             foreach (Item item in filteredItems)
@@ -119,7 +119,7 @@ namespace Avatar_Explorer.Forms
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (sender, e) =>
                 {
-                    CurrentPath.CurrentSelectedCategory = itemType;
+                    CurrentPath.CurrentSelectedCategory = CurrentPath.CurrentSelectedCategory;
                     CurrentPath.CurrentSelectedItem = item;
                     GenerateItemCategoryList();
                     PathTextBox.Text = GeneratePath();
@@ -135,12 +135,12 @@ namespace Avatar_Explorer.Forms
                 toolStripMenuItem2.Click += (sender, e) =>
                 {
                     Items = Items.Where(i => i.Title != item.Title).ToArray();
-                    GenerateItems(itemType);
+                    GenerateItems();
                 };
                 ToolStripMenuItem toolStripMenuItem3 = new("編集");
                 toolStripMenuItem3.Click += (sender, e) =>
                 {
-                    AddItem addItem = new(this, itemType, true, item);
+                    AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item);
                     addItem.ShowDialog();
                     GenerateAvatarList();
                 };
@@ -239,6 +239,7 @@ namespace Avatar_Explorer.Forms
         // Undo Button
         private void UndoButton_Click(object sender, EventArgs e)
         {
+            // 順番にチェックしてって、戻るボタンを実装
             if (CurrentPath.CurrentSelectedItemCategory != "")
             {
                 CurrentPath.CurrentSelectedItemCategory = "";
@@ -250,7 +251,7 @@ namespace Avatar_Explorer.Forms
             if (CurrentPath.CurrentSelectedItem != null)
             {
                 CurrentPath.CurrentSelectedItem = null;
-                GenerateItems(CurrentPath.CurrentSelectedCategory);
+                GenerateItems();
                 PathTextBox.Text = GeneratePath();
                 return;
             }

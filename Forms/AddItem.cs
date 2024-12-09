@@ -11,18 +11,20 @@ namespace Avatar_Explorer.Forms
 
         public AddItem(Main mainForm, ItemType type, bool edit, Item? item)
         {
-            this._edit = edit;
+            _edit = edit;
             _mainForm = mainForm;
             InitializeComponent();
             TypeComboBox.SelectedIndex = (int)type is 6 or 7 or 8 ? 0 : (int)type;
 
             if (!edit) return;
-            Name = "アイテムの編集";
+            Text = "アイテムの編集";
             label3.Text = "アイテムの編集";
             BoothURLTextBox.Text = $"https://booth.pm/ja/items/{item!.BoothId}";
+            FolderTextBox.Enabled = false;
             FolderTextBox.Text = item!.ItemPath;
             SupportedAvatar = item!.SupportedAvatar;
             SelectAvatar.Text = $"選択中: {SupportedAvatar.Length}個";
+            AddButton.Text = "編集";
         }
 
         private void FolderTextBox_DragDrop(object sender, DragEventArgs e)
