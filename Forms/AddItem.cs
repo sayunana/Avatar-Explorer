@@ -7,12 +7,22 @@ namespace Avatar_Explorer.Forms
     {
         private readonly Main _mainForm;
         public string[] SupportedAvatar = Array.Empty<string>();
+        private readonly bool edit;
 
-        public AddItem(Main mainForm, ItemType type)
+        public AddItem(Main mainForm, ItemType type, bool edit, Item? item)
         {
+            this.edit = edit;
             _mainForm = mainForm;
             InitializeComponent();
             TypeComboBox.SelectedIndex = (int)type is 6 or 7 or 8 ? 0 : (int)type;
+
+            if (!edit) return;
+            Name = "アイテムの編集";
+            label3.Text = "アイテムの編集";
+            BoothURLTextBox.Text = $"https://booth.pm/ja/items/{item!.BoothId}";
+            FolderTextBox.Text = item!.ItemPath;
+            SupportedAvatar = item!.SupportedAvatar;
+            SelectAvatar.Text = $"選択中: {SupportedAvatar.Length}個";
         }
 
         private void FolderTextBox_DragDrop(object sender, DragEventArgs e)
@@ -36,24 +46,72 @@ namespace Avatar_Explorer.Forms
                 return;
             }
 
-            var item = await Helper.GetBoothItemInfoAsync(boothId);
-            item.ItemPath = FolderTextBox.Text;
-            item.BoothId = int.Parse(boothId);
-            item.Type = (ItemType)TypeComboBox.SelectedIndex;
-            item.SupportedAvatar = SupportedAvatar;
+            if (_mainForm.Items.Any(i => i.ItemPath == FolderTextBox.Text) && !edit)
+            {
+                MessageBox.Show("同じパスのアイテムが既に存在します");
+                return;
+            }
+
+            Item item = new();
+
+            if (edit)
+            {
+                item = new Item
+                {
+                    Title = item.Title,
+                    AuthorName = item.AuthorName,
+                    ThumbnailUrl = item.ThumbnailUrl,
+                    AuthorImageUrl = item.AuthorImageUrl,
+                    ItemPath = FolderTextBox.Text,
+                    BoothId = int.Parse(boothId),
+                    Type = (ItemType)TypeComboBox.SelectedIndex,
+                    SupportedAvatar = SupportedAvatar
+                };
+            }
+            else
+            {
+                item = await Helper.GetBoothItemInfoAsync(boothId);
+                var index = 1;
+                while (_mainForm.Items.Any(i => i.Title == item.Title))
+                {
+                    item.Title = $"{item.Title} - {index}";
+                    index++;
+                }
+
+                item.ItemPath = FolderTextBox.Text;
+                item.BoothId = int.Parse(boothId);
+                item.Type = (ItemType)TypeComboBox.SelectedIndex;
+                item.SupportedAvatar = SupportedAvatar;
+            }
 
             var thumbnailPath = Path.Combine("./Datas", "Thumbnail", $"{item.BoothId}.png");
-            using var wc = new WebClient();
-            wc.DownloadFile(item.ThumbnailUrl, thumbnailPath);
+            if (!File.Exists(thumbnailPath))
+            {
+                using var wc = new WebClient();
+                wc.DownloadFile(item.ThumbnailUrl, thumbnailPath);
+            }
             item.ImagePath = thumbnailPath;
 
             var authorImagePath = Path.Combine("./Datas", "AuthorImage", $"{item.AuthorName}.png");
-            wc.DownloadFile(item.AuthorImageUrl, authorImagePath);
+            if (!File.Exists(authorImagePath))
+            {
+                using var wc = new WebClient();
+                wc.DownloadFile(item.AuthorImageUrl, authorImagePath);
+            }
             item.AuthorImageFilePath = authorImagePath;
 
-            MessageBox.Show("Boothのアイテムを追加しました!\nアイテム名: " + item.Title + "\n作者: " + item.AuthorName, "追加完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-            _mainForm.Items = _mainForm.Items.Append(item).ToArray();
+            if (edit)
+            {
+                MessageBox.Show("Boothのアイテムを編集しました!\nアイテム名: " + item.Title + "\n作者: " + item.AuthorName, "編集完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _mainForm.Items = _mainForm.Items.Where(i => i.ItemPath != item.ItemPath).ToArray();
+                _mainForm.Items = _mainForm.Items.Append(item).ToArray();
+                Close();
+            }
+            else
+            {
+                MessageBox.Show("Boothのアイテムを追加しました!\nアイテム名: " + item.Title + "\n作者: " + item.AuthorName, "追加完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _mainForm.Items = _mainForm.Items.Append(item).ToArray();
+            }
             Close();
         }
 

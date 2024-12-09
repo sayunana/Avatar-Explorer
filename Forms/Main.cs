@@ -61,8 +61,6 @@ namespace Avatar_Explorer.Forms
                 }).ToArray();
             }
 
-
-
             foreach (var author in authors)
             {
                 Button button = Helper.CreateButton(author.AuthorImagePath, author.AuthorName, Items.Count(item => item.AuthorName == author.AuthorName) + "個の項目", true);
@@ -95,7 +93,9 @@ namespace Avatar_Explorer.Forms
                 {
                     if (_authorMode)
                         return item.Type == itemType && item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName;
-                    return item.Type == itemType && item.Title == CurrentPath.CurrentSelectedAvatar;
+                    if (item.Type == ItemType.Avatar)
+                        return item.Type == itemType && item.Title == CurrentPath.CurrentSelectedAvatar;
+                    return item.Type == itemType && (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) || item.SupportedAvatar.Length == 0);
                 }) + "個の項目");
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (sender, e) =>
@@ -127,14 +127,28 @@ namespace Avatar_Explorer.Forms
                     PathTextBox.Text = GeneratePath();
                 };
 
-                //Context Menu
                 ContextMenuStrip contextMenuStrip = new();
                 ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー");
                 toolStripMenuItem.Click += (sender, e) =>
                 {
                     Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
                 };
+                ToolStripMenuItem toolStripMenuItem2 = new("削除");
+                toolStripMenuItem2.Click += (sender, e) =>
+                {
+                    Items = Items.Where(i => i.Title != item.Title).ToArray();
+                    GenerateItems(itemType);
+                };
+                ToolStripMenuItem toolStripMenuItem3 = new("編集");
+                toolStripMenuItem3.Click += (sender, e) =>
+                {
+                    AddItem addItem = new(this, itemType, true, item);
+                    addItem.ShowDialog();
+                    GenerateAvatarList();
+                };
                 contextMenuStrip.Items.Add(toolStripMenuItem);
+                contextMenuStrip.Items.Add(toolStripMenuItem2);
+                contextMenuStrip.Items.Add(toolStripMenuItem3);
                 button.ContextMenuStrip = contextMenuStrip;
                 AvatarItemExplorer.Controls.Add(button);
                 index++;
@@ -191,7 +205,7 @@ namespace Avatar_Explorer.Forms
         // Add Item Form
         private void AddItemButton_Click(object sender, EventArgs e)
         {
-            AddItem addItem = new AddItem(this, CurrentPath.CurrentSelectedCategory);
+            AddItem addItem = new AddItem(this, CurrentPath.CurrentSelectedCategory, false, null);
             addItem.ShowDialog();
             GenerateAvatarList();
         }
