@@ -7,11 +7,11 @@ namespace Avatar_Explorer.Forms
     {
         private readonly Main _mainForm;
         public string[] SupportedAvatar = Array.Empty<string>();
-        private readonly bool edit;
+        private readonly bool _edit;
 
         public AddItem(Main mainForm, ItemType type, bool edit, Item? item)
         {
-            this.edit = edit;
+            this._edit = edit;
             _mainForm = mainForm;
             InitializeComponent();
             TypeComboBox.SelectedIndex = (int)type is 6 or 7 or 8 ? 0 : (int)type;
@@ -46,7 +46,7 @@ namespace Avatar_Explorer.Forms
                 return;
             }
 
-            if (_mainForm.Items.Any(i => i.ItemPath == FolderTextBox.Text) && !edit)
+            if (_mainForm.Items.Any(i => i.ItemPath == FolderTextBox.Text) && !_edit)
             {
                 MessageBox.Show("同じパスのアイテムが既に存在します");
                 return;
@@ -54,7 +54,7 @@ namespace Avatar_Explorer.Forms
 
             Item item = new();
 
-            if (edit)
+            if (_edit)
             {
                 item = new Item
                 {
@@ -100,7 +100,7 @@ namespace Avatar_Explorer.Forms
             }
             item.AuthorImageFilePath = authorImagePath;
 
-            if (edit)
+            if (_edit)
             {
                 MessageBox.Show("Boothのアイテムを編集しました!\nアイテム名: " + item.Title + "\n作者: " + item.AuthorName, "編集完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _mainForm.Items = _mainForm.Items.Where(i => i.ItemPath != item.ItemPath).ToArray();
