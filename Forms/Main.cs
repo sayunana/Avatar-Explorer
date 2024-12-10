@@ -21,7 +21,7 @@ namespace Avatar_Explorer.Forms
         }
 
         // Generate List (LEFT)
-        public void GenerateAvatarList()
+        private void GenerateAvatarList()
         {
             AvatarPage.Controls.Clear();
             var index = 0;
@@ -29,7 +29,7 @@ namespace Avatar_Explorer.Forms
             {
                 Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName, true);
                 button.Location = new Point(0, (70 * index) + 7);
-                button.Click += (sender, e) =>
+                button.Click += (_, _) =>
                 {
                     CurrentPath.CurrentSelectedAvatar = item.Title;
                     CurrentPath.CurrentSelectedAuthor = null;
@@ -45,7 +45,7 @@ namespace Avatar_Explorer.Forms
             }
         }
 
-        public void GenerateAuthorList()
+        private void GenerateAuthorList()
         {
             AvatarAuthorPage.Controls.Clear();
             var index = 0;
@@ -65,7 +65,7 @@ namespace Avatar_Explorer.Forms
             {
                 Button button = Helper.CreateButton(author.AuthorImagePath, author.AuthorName, Items.Count(item => item.AuthorName == author.AuthorName) + "個の項目", true);
                 button.Location = new Point(0, (70 * index) + 2);
-                button.Click += (sender, e) =>
+                button.Click += (_, _) =>
                 {
                     CurrentPath.CurrentSelectedAuthor = author;
                     CurrentPath.CurrentSelectedAvatar = "";
@@ -93,7 +93,7 @@ namespace Avatar_Explorer.Forms
                 if (itemCount == 0) continue;
                 Button button = Helper.CreateButton("./Datas/FolderIcon.png", Helper.GetCategoryName(itemType), itemCount + "個の項目");
                 button.Location = new Point(0, (70 * index) + 2);
-                button.Click += (sender, e) =>
+                button.Click += (_, _) =>
                 {
                     CurrentPath.CurrentSelectedCategory = itemType;
                     GenerateItems();
@@ -117,7 +117,7 @@ namespace Avatar_Explorer.Forms
             {
                 Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName);
                 button.Location = new Point(0, (70 * index) + 2);
-                button.Click += (sender, e) =>
+                button.Click += (_, _) =>
                 {
                     CurrentPath.CurrentSelectedCategory = CurrentPath.CurrentSelectedCategory;
                     CurrentPath.CurrentSelectedItem = item;
@@ -127,18 +127,18 @@ namespace Avatar_Explorer.Forms
 
                 ContextMenuStrip contextMenuStrip = new();
                 ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー");
-                toolStripMenuItem.Click += (sender, e) =>
+                toolStripMenuItem.Click += (_, _) =>
                 {
                     Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
                 };
                 ToolStripMenuItem toolStripMenuItem2 = new("削除");
-                toolStripMenuItem2.Click += (sender, e) =>
+                toolStripMenuItem2.Click += (_, _) =>
                 {
                     Items = Items.Where(i => i.Title != item.Title).ToArray();
                     GenerateItems();
                 };
                 ToolStripMenuItem toolStripMenuItem3 = new("編集");
-                toolStripMenuItem3.Click += (sender, e) =>
+                toolStripMenuItem3.Click += (_, _) =>
                 {
                     AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item);
                     addItem.ShowDialog();
@@ -161,6 +161,7 @@ namespace Avatar_Explorer.Forms
                 "ドキュメント",
                 "Unityパッケージ"
             };
+            if (CurrentPath.CurrentSelectedItem == null) return;
             ItemFolderInfo itemFolderInfo = Helper.GetItemFolderInfo(CurrentPath.CurrentSelectedItem.ItemPath);
             CurrentPath.CurrentSelectedItemFolderInfo = itemFolderInfo;
 
@@ -172,7 +173,7 @@ namespace Avatar_Explorer.Forms
                 if (itemCount == 0) continue;
                 Button button = Helper.CreateButton("./Datas/FolderIcon.png", itemType, itemCount + "個の項目");
                 button.Location = new Point(0, (70 * index) + 2);
-                button.Click += (sender, e) =>
+                button.Click += (_, _) =>
                 {
                     CurrentPath.CurrentSelectedItemCategory = itemType;
                     GenerateItemFiles();
@@ -193,7 +194,7 @@ namespace Avatar_Explorer.Forms
                 var imagePath = file.FileExtension is ".png" or ".jpg" ? file.FilePath : "./Datas/FileIcon.png";
                 Button button = Helper.CreateButton(imagePath, file.FileName, file.FileExtension.Replace(".", "") + "ファイル");
                 button.Location = new Point(0, (70 * index) + 2);
-                button.Click += (sender, e) =>
+                button.Click += (_, _) =>
                 {
                     Process.Start(new ProcessStartInfo("explorer.exe", " /select, " + file.FilePath));
                 };

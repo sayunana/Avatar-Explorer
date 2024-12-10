@@ -55,11 +55,11 @@ namespace Avatar_Explorer.Forms
 
             button.Controls.Add(authorName);
 
-            pictureBox.Click += (_, _1) => button.PerformClick();
-            title.Click += (_, _1) => button.PerformClick();
-            authorName.Click += (_, _1) => button.PerformClick();
+            pictureBox.Click += (_, _) => button.PerformClick();
+            title.Click += (_, _) => button.PerformClick();
+            authorName.Click += (_, _) => button.PerformClick();
 
-            button.Click += (sender, e) =>
+            button.Click += (_, _) =>
             {
                 button.BackColor = button.BackColor == Color.LightGreen ? Color.FromKnownColor(KnownColor.Control) : Color.LightGreen;
             };

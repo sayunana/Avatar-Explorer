@@ -1,6 +1,6 @@
 ﻿namespace Avatar_Explorer.Forms
 {
-    partial class AddItem
+    sealed partial class AddItem
     {
         /// <summary>
         /// Required designer variable.

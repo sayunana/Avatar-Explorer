@@ -3,7 +3,7 @@ using Avatar_Explorer.Classes;
 
 namespace Avatar_Explorer.Forms
 {
-    public partial class AddItem : Form
+    public sealed partial class AddItem : Form
     {
         private readonly Main _mainForm;
         public string[] SupportedAvatar = Array.Empty<string>();
@@ -21,16 +21,18 @@ namespace Avatar_Explorer.Forms
             label3.Text = "アイテムの編集";
             BoothURLTextBox.Text = $"https://booth.pm/ja/items/{item!.BoothId}";
             FolderTextBox.Enabled = false;
-            FolderTextBox.Text = item!.ItemPath;
-            SupportedAvatar = item!.SupportedAvatar;
+            FolderTextBox.Text = item.ItemPath;
+            SupportedAvatar = item.SupportedAvatar;
             SelectAvatar.Text = $"選択中: {SupportedAvatar.Length}個";
             AddButton.Text = "編集";
         }
 
         private void FolderTextBox_DragDrop(object sender, DragEventArgs e)
         {
+            if (e.Data == null) return;
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
-            string[] dragFilePathArr = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            string[]? dragFilePathArr = (string[]?)e.Data.GetData(DataFormats.FileDrop, false);
+            if (dragFilePathArr == null) return;
             FolderTextBox.Text = dragFilePathArr[0];
         }
 
@@ -39,6 +41,7 @@ namespace Avatar_Explorer.Forms
             e.Effect = DragDropEffects.All;
         }
 
+        [Obsolete("Obsolete")]
         private async void AddButton_Click(object sender, EventArgs e)
         {
             var boothId = BoothURLTextBox.Text.Split('/').Last();
