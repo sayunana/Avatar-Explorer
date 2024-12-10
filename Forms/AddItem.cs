@@ -92,14 +92,17 @@ namespace Avatar_Explorer.Forms
             var thumbnailPath = Path.Combine("./Datas", "Thumbnail", $"{item.BoothId}.png");
             if (!File.Exists(thumbnailPath))
             {
+                if (item.ThumbnailUrl == "Not Found") return;
                 using var wc = new WebClient();
                 wc.DownloadFile(item.ThumbnailUrl, thumbnailPath);
             }
+
             item.ImagePath = thumbnailPath;
 
             var authorImagePath = Path.Combine("./Datas", "AuthorImage", $"{item.AuthorName}.png");
             if (!File.Exists(authorImagePath))
             {
+                if (item.AuthorImageUrl == "Not Found") return;
                 using var wc = new WebClient();
                 wc.DownloadFile(item.AuthorImageUrl, authorImagePath);
             }

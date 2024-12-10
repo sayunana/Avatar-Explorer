@@ -12,17 +12,18 @@
             htmlDoc.LoadHtml(response);
 
             var title = htmlDoc.DocumentNode.SelectSingleNode("//h2[@class='font-bold leading-[32px] m-0 text-[24px]']")?.InnerText?.Trim();
+            title ??= "タイトルが見つかりませんでした";
 
             var authorNode =
                 htmlDoc.DocumentNode.SelectSingleNode(
                     "//a[@data-product-list='from market_show via market_item_detail to shop_index']");
-            var author = authorNode?.InnerText?.Trim();
+            var author = authorNode?.InnerText?.Trim() ?? "作者が見つかりませんでした";
 
             var imageUrl = htmlDoc.DocumentNode
                 .SelectSingleNode("//meta[@name='twitter:image']")
-                ?.GetAttributeValue("content", null);
+                ?.GetAttributeValue("content", null) ?? "Not Found";
 
-            var authorIcon = htmlDoc.DocumentNode.SelectSingleNode($"//img[@alt='{author}']")?.GetAttributeValue("src", null);
+            var authorIcon = htmlDoc.DocumentNode.SelectSingleNode($"//img[@alt='{author}']")?.GetAttributeValue("src", null) ?? "Not Found";
 
             return new Item
             {
@@ -96,7 +97,7 @@
             PictureBox pictureBox = new PictureBox();
             pictureBox.Size = new Size(56, 56);
             pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox.Image = Image.FromFile(imagePath);
+            pictureBox.Image = Image.FromFile(File.Exists(imagePath) ? imagePath : "./Datas/FileIcon.png");
             pictureBox.Location = new Point(3, 3);
             button.Controls.Add(pictureBox);
 
@@ -113,9 +114,9 @@
             authorName.Size = new Size(200, 20);
             button.Controls.Add(authorName);
 
-            pictureBox.Click += (_, _1) => button.PerformClick();
-            title.Click += (_, _1) => button.PerformClick();
-            authorName.Click += (_, _1) => button.PerformClick();
+            pictureBox.Click += (_, _) => button.PerformClick();
+            title.Click += (_, _) => button.PerformClick();
+            authorName.Click += (_, _) => button.PerformClick();
 
             return button;
         }
