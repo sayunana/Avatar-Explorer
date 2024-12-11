@@ -8,13 +8,14 @@ namespace Avatar_Explorer.Forms
         private readonly Main _mainForm;
         public string[] SupportedAvatar = Array.Empty<string>();
         private readonly bool _edit;
+        public Item Item = new();
 
         public AddItem(Main mainForm, ItemType type, bool edit, Item? item)
         {
             _edit = edit;
             _mainForm = mainForm;
             InitializeComponent();
-            TypeComboBox.SelectedIndex = (int)type is 6 or 7 or 8 ? 0 : (int)type;
+            TypeComboBox.SelectedIndex = (int)type >= 6 ? 0 : (int)type;
 
             if (!edit) return;
             Text = "アイテムの編集";
@@ -57,68 +58,71 @@ namespace Avatar_Explorer.Forms
                 return;
             }
 
-            Item item = new();
-
             if (_edit)
             {
-                item = new Item
+                Item = new Item
                 {
-                    Title = item.Title,
-                    AuthorName = item.AuthorName,
-                    ThumbnailUrl = item.ThumbnailUrl,
-                    AuthorImageUrl = item.AuthorImageUrl,
+                    Title = Item.Title,
+                    AuthorName = Item.AuthorName,
+                    ThumbnailUrl = Item.ThumbnailUrl,
+                    AuthorImageUrl = Item.AuthorImageUrl,
                     ItemPath = FolderTextBox.Text,
                     BoothId = int.Parse(boothId),
                     Type = (ItemType)TypeComboBox.SelectedIndex,
                     SupportedAvatar = SupportedAvatar
                 };
+
+                EditItemMeta editItemMeta = new(this, Item);
+                editItemMeta.ShowDialog();
             }
             else
             {
-                item = await Helper.GetBoothItemInfoAsync(boothId);
+                Item = await Helper.GetBoothItemInfoAsync(boothId);
                 var index = 1;
-                while (_mainForm.Items.Any(i => i.Title == item.Title))
+                while (_mainForm.Items.Any(i => i.Title == Item.Title))
                 {
-                    item.Title = $"{item.Title} - {index}";
+                    Item.Title = $"{Item.Title} - {index}";
                     index++;
                 }
 
-                item.ItemPath = FolderTextBox.Text;
-                item.BoothId = int.Parse(boothId);
-                item.Type = (ItemType)TypeComboBox.SelectedIndex;
-                item.SupportedAvatar = SupportedAvatar;
+                Item.ItemPath = FolderTextBox.Text;
+                Item.BoothId = int.Parse(boothId);
+                Item.Type = (ItemType)TypeComboBox.SelectedIndex;
+                Item.SupportedAvatar = SupportedAvatar;
+
+                EditItemMeta editItemMeta = new(this, Item);
+                editItemMeta.ShowDialog();
             }
 
-            var thumbnailPath = Path.Combine("./Datas", "Thumbnail", $"{item.BoothId}.png");
+            var thumbnailPath = Path.Combine("./Datas", "Thumbnail", $"{Item.BoothId}.png");
             if (!File.Exists(thumbnailPath))
             {
-                if (item.ThumbnailUrl == "Not Found") return;
+                if (Item.ThumbnailUrl == "Not Found") return;
                 using var wc = new WebClient();
-                wc.DownloadFile(item.ThumbnailUrl, thumbnailPath);
+                wc.DownloadFile(Item.ThumbnailUrl, thumbnailPath);
             }
+            Item.ImagePath = thumbnailPath;
 
-            item.ImagePath = thumbnailPath;
-
-            var authorImagePath = Path.Combine("./Datas", "AuthorImage", $"{item.AuthorName}.png");
+            var authorImagePath = Path.Combine("./Datas", "AuthorImage", $"{Item.AuthorId}.png");
             if (!File.Exists(authorImagePath))
             {
-                if (item.AuthorImageUrl == "Not Found") return;
+                if (Item.AuthorImageUrl == "Not Found") return;
                 using var wc = new WebClient();
-                wc.DownloadFile(item.AuthorImageUrl, authorImagePath);
+                wc.DownloadFile(Item.AuthorImageUrl, authorImagePath);
             }
-            item.AuthorImageFilePath = authorImagePath;
+            Item.AuthorImageFilePath = authorImagePath;
 
             if (_edit)
             {
-                MessageBox.Show("Boothのアイテムを編集しました!\nアイテム名: " + item.Title + "\n作者: " + item.AuthorName, "編集完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                _mainForm.Items = _mainForm.Items.Where(i => i.ItemPath != item.ItemPath).ToArray();
-                _mainForm.Items = _mainForm.Items.Append(item).ToArray();
+                MessageBox.Show("Boothのアイテムを編集しました!\nアイテム名: " + Item.Title + "\n作者: " + Item.AuthorName, "編集完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _mainForm.Items = _mainForm.Items.Where(i => i.ItemPath != Item.ItemPath).ToArray();
+                _mainForm.Items = _mainForm.Items.Append(Item).ToArray();
                 Close();
             }
             else
             {
-                MessageBox.Show("Boothのアイテムを追加しました!\nアイテム名: " + item.Title + "\n作者: " + item.AuthorName, "追加完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                _mainForm.Items = _mainForm.Items.Append(item).ToArray();
+                MessageBox.Show("Boothのアイテムを追加しました!\nアイテム名: " + Item.Title + "\n作者: " + Item.AuthorName, "追加完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _mainForm.Items = _mainForm.Items.Append(Item).ToArray();
             }
             Close();
         }

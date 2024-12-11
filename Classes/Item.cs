@@ -4,6 +4,7 @@
     {
         public string Title { get; set; } = "";
         public string AuthorName { get; set; } = "";
+        public string AuthorId { get; set; } = "";
         public int BoothId { get; set; } = 0;
         public string ItemPath { get; set; } = "";
         public string ThumbnailUrl { get; set; } = "";

@@ -8,6 +8,7 @@
         Gimick,
         Accessary,
         HairStyle,
+        Animation,
         Tool,
         Shader,
         Unknown

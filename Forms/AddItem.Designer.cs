@@ -54,7 +54,7 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Yu Gothic UI", 12F);
-            label2.Location = new Point(26, 109);
+            label2.Location = new Point(22, 109);
             label2.Name = "label2";
             label2.Size = new Size(84, 21);
             label2.TabIndex = 1;
@@ -113,7 +113,7 @@
             // 
             TypeComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             TypeComboBox.FormattingEnabled = true;
-            TypeComboBox.Items.AddRange(new object[] { "アバター", "衣装", "テクスチャ", "ギミック", "アクセサリー", "髪型", "ツール", "シェーダー" });
+            TypeComboBox.Items.AddRange(new object[] { "アバター", "衣装", "テクスチャ", "ギミック", "アクセサリー", "髪型", "アニメーション", "ツール", "シェーダー" });
             TypeComboBox.Location = new Point(124, 148);
             TypeComboBox.Name = "TypeComboBox";
             TypeComboBox.Size = new Size(186, 23);

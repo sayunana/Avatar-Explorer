@@ -1,4 +1,6 @@
-﻿namespace Avatar_Explorer.Classes
+﻿using System.Text.RegularExpressions;
+
+namespace Avatar_Explorer.Classes
 {
     internal class Helper
     {
@@ -12,12 +14,13 @@
             htmlDoc.LoadHtml(response);
 
             var title = htmlDoc.DocumentNode.SelectSingleNode("//h2[@class='font-bold leading-[32px] m-0 text-[24px]']")?.InnerText?.Trim();
-            title ??= "タイトルが見つかりませんでした";
+            title ??= "タイトル不明";
 
             var authorNode =
                 htmlDoc.DocumentNode.SelectSingleNode(
                     "//a[@data-product-list='from market_show via market_item_detail to shop_index']");
-            var author = authorNode?.InnerText?.Trim() ?? "作者が見つかりませんでした";
+            var author = authorNode?.InnerText?.Trim() ?? "作者不明";
+            var authorUrl = authorNode?.GetAttributeValue("href", null) ?? "Not Found";
 
             var imageUrl = htmlDoc.DocumentNode
                 .SelectSingleNode("//meta[@name='twitter:image']")
@@ -30,8 +33,15 @@
                 Title = title.Replace("amp;", "&"),
                 AuthorName = author,
                 ThumbnailUrl = imageUrl,
-                AuthorImageUrl = authorIcon
+                AuthorImageUrl = authorIcon,
+                AuthorId = GetAuthorId(authorUrl)
             };
+        }
+
+        private static string GetAuthorId(string url)
+        {
+            var match = Regex.Match(url, @"https://(.*).booth.pm/");
+            return match.Success ? match.Groups[1].Value : "Not Found";
         }
 
         public static string GetCategoryName(ItemType itemType)
@@ -44,6 +54,7 @@
                 ItemType.Gimick => "ギミック",
                 ItemType.Accessary => "アクセサリー",
                 ItemType.HairStyle => "髪型",
+                ItemType.Animation => "アニメーション",
                 ItemType.Tool => "ツール",
                 ItemType.Shader => "シェーダー",
                 _ => "不明"

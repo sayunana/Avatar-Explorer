@@ -198,6 +198,8 @@ namespace Avatar_Explorer.Forms
                 {
                     Process.Start(new ProcessStartInfo("explorer.exe", " /select, " + file.FilePath));
                 };
+                ToolTip toolTip = new();
+                toolTip.SetToolTip(button, "開くファイルのパス: " + file.FilePath);
                 AvatarItemExplorer.Controls.Add(button);
                 index++;
             }
