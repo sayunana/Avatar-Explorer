@@ -43,56 +43,11 @@ namespace Avatar_Explorer.Forms
         }
 
         [Obsolete("Obsolete")]
-        private async void AddButton_Click(object sender, EventArgs e)
+        private void AddButton_Click(object sender, EventArgs e)
         {
-            var boothId = BoothURLTextBox.Text.Split('/').Last();
-            if (!int.TryParse(boothId, out _))
-            {
-                MessageBox.Show("Booth URLが正しくありません");
-                return;
-            }
-
-            if (_mainForm.Items.Any(i => i.ItemPath == FolderTextBox.Text) && !_edit)
-            {
-                MessageBox.Show("同じパスのアイテムが既に存在します");
-                return;
-            }
-
-            if (_edit)
-            {
-                Item = new Item
-                {
-                    Title = Item.Title,
-                    AuthorName = Item.AuthorName,
-                    ThumbnailUrl = Item.ThumbnailUrl,
-                    AuthorImageUrl = Item.AuthorImageUrl,
-                    ItemPath = FolderTextBox.Text,
-                    BoothId = int.Parse(boothId),
-                    Type = (ItemType)TypeComboBox.SelectedIndex,
-                    SupportedAvatar = SupportedAvatar
-                };
-
-                EditItemMeta editItemMeta = new(this, Item);
-                editItemMeta.ShowDialog();
-            }
-            else
-            {
-                Item = await Helper.GetBoothItemInfoAsync(boothId);
-                var index = 1;
-                while (_mainForm.Items.Any(i => i.Title == Item.Title))
-                {
-                    Item.Title = $"{Item.Title} - {index}";
-                    index++;
-                }
-
-                Item.ItemPath = FolderTextBox.Text;
-                Item.BoothId = int.Parse(boothId);
-                Item.Type = (ItemType)TypeComboBox.SelectedIndex;
-                Item.SupportedAvatar = SupportedAvatar;
-
-                EditItemMeta editItemMeta = new(this, Item);
-                editItemMeta.ShowDialog();
-            }
+            Item.Title = TitleTextBox.Text;
+            Item.AuthorName = AuthorTextBox.Text;
+            Item.Type = (ItemType)TypeComboBox.SelectedIndex;
 
             var thumbnailPath = Path.Combine("./Datas", "Thumbnail", $"{Item.BoothId}.png");
             if (!File.Exists(thumbnailPath))
@@ -123,8 +78,62 @@ namespace Avatar_Explorer.Forms
             {
                 MessageBox.Show("Boothのアイテムを追加しました!\nアイテム名: " + Item.Title + "\n作者: " + Item.AuthorName, "追加完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _mainForm.Items = _mainForm.Items.Append(Item).ToArray();
+                Close();
             }
-            Close();
+        }
+
+        private async void GetButton_Click(object sender, EventArgs e)
+        {
+            var boothId = BoothURLTextBox.Text.Split('/').Last();
+            if (!int.TryParse(boothId, out _))
+            {
+                MessageBox.Show("Booth URLが正しくありません");
+                return;
+            }
+
+            if (_mainForm.Items.Any(i => i.ItemPath == FolderTextBox.Text) && !_edit)
+            {
+                MessageBox.Show("同じパスのアイテムが既に存在します");
+                return;
+            }
+
+            try
+            {
+                GetButton.Enabled = false;
+                GetButton.Text = "取得中...";
+                Item = await Helper.GetBoothItemInfoAsync(boothId);
+                GetButton.Text = "情報を取得";
+                GetButton.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Boothのアイテム情報を取得できませんでした\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TitleTextBox.Enabled = true;
+                AuthorTextBox.Enabled = true;
+                GetButton.Enabled = true;
+                Item = new Item();
+            }
+
+            Item.BoothId = int.Parse(boothId);
+
+            if (_edit)
+            {
+                AddButton.Enabled = true;
+                TitleTextBox.Text = Item.Title;
+                AuthorTextBox.Text = Item.AuthorName;
+                TypeComboBox.SelectedIndex = (int)Helper.GetItemType(Item.Title);
+                TitleTextBox.Enabled = true;
+                AuthorTextBox.Enabled = true;
+            }
+            else
+            {
+                AddButton.Enabled = true;
+                TitleTextBox.Text = Item.Title;
+                AuthorTextBox.Text = Item.AuthorName;
+                TypeComboBox.SelectedIndex = (int)Helper.GetItemType(Item.Title);
+                TitleTextBox.Enabled = true;
+                AuthorTextBox.Enabled = true;
+            }
         }
 
         private void SelectAvatar_Click(object sender, EventArgs e)
@@ -137,6 +146,25 @@ namespace Avatar_Explorer.Forms
         private void TypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             SelectAvatar.Enabled = TypeComboBox.SelectedIndex != (int)ItemType.Avatar;
+        }
+
+        private void TitleTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (_mainForm.Items.Any(i => i.Title == TitleTextBox.Text) && !_edit)
+            {
+                AddButton.Enabled = false;
+                ErrorLabel.Text = "エラー: 同じタイトルのアイテムが既に存在します";
+            }
+            else if (TitleTextBox.Text == "")
+            {
+                AddButton.Enabled = false;
+                ErrorLabel.Text = "エラー: タイトルが入力されていません";
+            }
+            else
+            {
+                AddButton.Enabled = true;
+                ErrorLabel.Text = "";
+            }
         }
     }
 }

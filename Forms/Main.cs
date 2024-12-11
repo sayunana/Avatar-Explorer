@@ -63,7 +63,8 @@ namespace Avatar_Explorer.Forms
 
             foreach (var author in authors)
             {
-                Button button = Helper.CreateButton(author.AuthorImagePath, author.AuthorName, Items.Count(item => item.AuthorName == author.AuthorName) + "個の項目", true);
+                Button button = Helper.CreateButton(author.AuthorImagePath, author.AuthorName,
+                    Items.Count(item => item.AuthorName == author.AuthorName) + "個の項目", true);
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
@@ -89,9 +90,15 @@ namespace Avatar_Explorer.Forms
             foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
             {
                 if (itemType is ItemType.Unknown) continue;
-                var itemCount = _authorMode ? Items.Count(item => item.Type == itemType && item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName) : Items.Count(item => item.Type == itemType && (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) || item.SupportedAvatar.Length == 0));
+                var itemCount = _authorMode
+                    ? Items.Count(item =>
+                        item.Type == itemType && item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName)
+                    : Items.Count(item =>
+                        item.Type == itemType && (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) ||
+                                                  item.SupportedAvatar.Length == 0));
                 if (itemCount == 0) continue;
-                Button button = Helper.CreateButton("./Datas/FolderIcon.png", Helper.GetCategoryName(itemType), itemCount + "個の項目");
+                Button button = Helper.CreateButton("./Datas/FolderIcon.png", Helper.GetCategoryName(itemType),
+                    itemCount + "個の項目");
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
@@ -109,8 +116,13 @@ namespace Avatar_Explorer.Forms
             AvatarItemExplorer.Controls.Clear();
 
             var filteredItems = _authorMode
-                ? Items.Where(item => item.Type == CurrentPath.CurrentSelectedCategory && item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName)
-                : Items.Where(item => item.Type == CurrentPath.CurrentSelectedCategory && (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) || item.SupportedAvatar.Length == 0));
+                ? Items.Where(item =>
+                    item.Type == CurrentPath.CurrentSelectedCategory &&
+                    item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName)
+                : Items.Where(item =>
+                    item.Type == CurrentPath.CurrentSelectedCategory &&
+                    (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) ||
+                     item.SupportedAvatar.Length == 0));
 
             var index = 0;
             foreach (Item item in filteredItems)
@@ -155,7 +167,8 @@ namespace Avatar_Explorer.Forms
 
         private void GenerateItemCategoryList()
         {
-            var types = new[] {
+            var types = new[]
+            {
                 "改変用データ",
                 "テクスチャ",
                 "ドキュメント",
@@ -189,10 +202,12 @@ namespace Avatar_Explorer.Forms
             AvatarItemExplorer.Controls.Clear();
 
             var index = 0;
-            foreach (var file in CurrentPath.CurrentSelectedItemFolderInfo.GetItems(CurrentPath.CurrentSelectedItemCategory))
+            foreach (var file in CurrentPath.CurrentSelectedItemFolderInfo.GetItems(CurrentPath
+                         .CurrentSelectedItemCategory))
             {
                 var imagePath = file.FileExtension is ".png" or ".jpg" ? file.FilePath : "./Datas/FileIcon.png";
-                Button button = Helper.CreateButton(imagePath, file.FileName, file.FileExtension.Replace(".", "") + "ファイル");
+                Button button = Helper.CreateButton(imagePath, file.FileName,
+                    file.FileExtension.Replace(".", "") + "ファイル");
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
@@ -219,19 +234,36 @@ namespace Avatar_Explorer.Forms
             if (!_authorMode)
             {
                 if (CurrentPath.CurrentSelectedAvatar == "") return "";
-                if (CurrentPath.CurrentSelectedCategory == ItemType.Unknown) return RemoveFormat(CurrentPath.CurrentSelectedAvatar);
-                if (CurrentPath.CurrentSelectedItem == null) return RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" + Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory);
-                if (CurrentPath.CurrentSelectedItemCategory == "") return RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" + Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" + RemoveFormat(CurrentPath.CurrentSelectedItem.Title);
+                if (CurrentPath.CurrentSelectedCategory == ItemType.Unknown)
+                    return RemoveFormat(CurrentPath.CurrentSelectedAvatar);
+                if (CurrentPath.CurrentSelectedItem == null)
+                    return RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
+                           Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory);
+                if (CurrentPath.CurrentSelectedItemCategory == "")
+                    return RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
+                           Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
+                           RemoveFormat(CurrentPath.CurrentSelectedItem.Title);
 
-                return RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" + Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" + RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" + RemoveFormat(CurrentPath.CurrentSelectedItemCategory);
+                return RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
+                       Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
+                       RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" +
+                       RemoveFormat(CurrentPath.CurrentSelectedItemCategory);
             }
 
             if (CurrentPath.CurrentSelectedAuthor == null) return "";
-            if (CurrentPath.CurrentSelectedCategory == ItemType.Unknown) return RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName);
-            if (CurrentPath.CurrentSelectedItem == null) return RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" + Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory);
-            if (CurrentPath.CurrentSelectedItemCategory == "") return RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" + Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" + RemoveFormat(CurrentPath.CurrentSelectedItem.Title);
+            if (CurrentPath.CurrentSelectedCategory == ItemType.Unknown)
+                return RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName);
+            if (CurrentPath.CurrentSelectedItem == null)
+                return RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
+                       Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory);
+            if (CurrentPath.CurrentSelectedItemCategory == "")
+                return RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
+                       Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
+                       RemoveFormat(CurrentPath.CurrentSelectedItem.Title);
 
-            return RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" + Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" + RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" + CurrentPath.CurrentSelectedItemCategory;
+            return RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
+                   Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
+                   RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" + CurrentPath.CurrentSelectedItemCategory;
         }
 
         private static string RemoveFormat(string str)

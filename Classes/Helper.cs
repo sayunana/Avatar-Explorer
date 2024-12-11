@@ -2,7 +2,7 @@
 
 namespace Avatar_Explorer.Classes
 {
-    internal class Helper
+    public class Helper
     {
         private static readonly HttpClient HttpClient = new();
 
@@ -30,7 +30,7 @@ namespace Avatar_Explorer.Classes
 
             return new Item
             {
-                Title = title.Replace("amp;", "&"),
+                Title = title.Replace("&amp;", "＆"),
                 AuthorName = author,
                 ThumbnailUrl = imageUrl,
                 AuthorImageUrl = authorIcon,
@@ -130,6 +130,66 @@ namespace Avatar_Explorer.Classes
             authorName.Click += (_, _) => button.PerformClick();
 
             return button;
+        }
+
+        public static ItemType GetItemType(string title)
+        {
+            var avatarTitle = new[] { "オリジナル3Dモデル", "オリジナル", "Avatar", "Original" };
+            var animationTitle = new[] { "アニメーション", "Animation" };
+            var clothingTitle = new[] { "衣装", "Clothing" };
+            var gimickTitle = new[] { "ギミック", "Gimick" };
+            var accessaryTitle = new[] { "アクセサリ", "Accessary" };
+            var hairStyleTitle = new[] { "髪", "Hair" };
+            var textureTitle = new[] { "テクスチャ", "Eye", "Texture" };
+            var toolTitle = new[] { "ツール", "システム", "Tool", "System" };
+            var shaderTitle = new[] { "シェーダー", "Shader" };
+
+            if (avatarTitle.Any(title.Contains))
+            {
+                return ItemType.Avatar;
+            }
+
+            if (animationTitle.Any(title.Contains))
+            {
+                return ItemType.Animation;
+            }
+
+            if (clothingTitle.Any(title.Contains))
+            {
+                return ItemType.Clothing;
+            }
+
+            if (gimickTitle.Any(title.Contains))
+            {
+                return ItemType.Gimick;
+            }
+
+            if (accessaryTitle.Any(title.Contains))
+            {
+                return ItemType.Accessary;
+            }
+
+            if (hairStyleTitle.Any(title.Contains))
+            {
+                return ItemType.HairStyle;
+            }
+
+            if (textureTitle.Any(title.Contains))
+            {
+                return ItemType.Texture;
+            }
+
+            if (toolTitle.Any(title.Contains))
+            {
+                return ItemType.Tool;
+            }
+
+            if (shaderTitle.Any(title.Contains))
+            {
+                return ItemType.Shader;
+            }
+
+            return ItemType.Avatar;
         }
     }
 }
