@@ -346,26 +346,29 @@ namespace Avatar_Explorer.Forms
         private void GenerateFilteredItem(string[] searchWords)
         {
             ResetAvatarList();
-            var filteredItems = Items.Where(item =>
-                searchWords.All(word => item.Title.ToLower().Contains(word.ToLower()) ||
-                                        item.AuthorName.ToLower().Contains(word.ToLower()) ||
-                                        item.SupportedAvatar.Any(avatar => avatar.ToLower().Contains(word.ToLower())) ||
-                                        item.BoothId.ToString().Contains(word.ToLower()))
-            );
+            var filteredItems = Items
+                .Where(item =>
+                    searchWords.All(word =>
+                        item.Title.ToLower().Contains(word.ToLower()) ||
+                        item.AuthorName.ToLower().Contains(word.ToLower()) ||
+                        item.SupportedAvatar.Any(avatar => avatar.ToLower().Contains(word.ToLower())) ||
+                        item.BoothId.ToString().Contains(word.ToLower())
+                    )
+                )
+                .OrderByDescending(item =>
+                {
+                    var matchCount = 0;
+                    foreach (var word in searchWords)
+                    {
+                        if (item.Title.ToLower().Contains(word.ToLower())) matchCount++;
+                        if (item.AuthorName.ToLower().Contains(word.ToLower())) matchCount++;
+                    }
+                    return matchCount;
+                })
+                .ToList();
 
             SearchResultLabel.Text = "ŒŸõŒ‹‰Ê: " + filteredItems.Count() + "Œ";
 
-            filteredItems = filteredItems.OrderByDescending(item =>
-            {
-                var matchCount = 0;
-                foreach (var word in searchWords)
-                {
-                    if (item.Title.ToLower().Contains(word.ToLower())) matchCount++;
-                    if (item.AuthorName.ToLower().Contains(word.ToLower())) matchCount++;
-                }
-
-                return matchCount;
-            });
 
             var index = 0;
             foreach (Item item in filteredItems)
