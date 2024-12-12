@@ -346,12 +346,11 @@ namespace Avatar_Explorer.Forms
         private void GenerateFilteredItem(string[] searchWords)
         {
             ResetAvatarList();
-
             var filteredItems = Items.Where(item =>
-                searchWords.Any(word => item.Title.ToLower().Contains(word.ToLower()) ||
-                    item.AuthorName.ToLower().Contains(word.ToLower()) ||
-                    item.SupportedAvatar.Any(avatar => avatar.ToLower().Contains(word.ToLower())) ||
-                    item.BoothId.ToString().Contains(word.ToLower()))
+                searchWords.All(word => item.Title.ToLower().Contains(word.ToLower()) ||
+                                        item.AuthorName.ToLower().Contains(word.ToLower()) ||
+                                        item.SupportedAvatar.Any(avatar => avatar.ToLower().Contains(word.ToLower())) ||
+                                        item.BoothId.ToString().Contains(word.ToLower()))
             );
 
             SearchResultLabel.Text = "ŒŸõŒ‹‰Ê: " + filteredItems.Count() + "Œ";
