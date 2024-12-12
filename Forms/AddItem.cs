@@ -16,10 +16,11 @@ namespace Avatar_Explorer.Forms
             _mainForm = mainForm;
             InitializeComponent();
             if (folderPath != null) FolderTextBox.Text = folderPath;
-            TypeComboBox.SelectedIndex = (int)type >= 6 ? 0 : (int)type;
+            TypeComboBox.SelectedIndex = (int)type == 9 ? 0 : (int)type;
             Text = "アイテムの追加";
 
-            if (!edit) return;
+            if (!(edit && item != null)) return;
+            Item = item;
             Text = "アイテムの編集";
             label3.Text = "アイテムの編集";
             BoothURLTextBox.Text = $"https://booth.pm/ja/items/{item!.BoothId}";
@@ -28,6 +29,12 @@ namespace Avatar_Explorer.Forms
             SupportedAvatar = item.SupportedAvatar;
             SelectAvatar.Text = $"選択中: {SupportedAvatar.Length}個";
             AddButton.Text = "編集";
+            AddButton.Enabled = true;
+            TitleTextBox.Text = item.Title;
+            AuthorTextBox.Text = item.AuthorName;
+            TitleTextBox.Enabled = true;
+            AuthorTextBox.Enabled = true;
+            CustomButton.Enabled = false;
         }
 
         private void FolderTextBox_DragDrop(object sender, DragEventArgs e)
@@ -47,6 +54,7 @@ namespace Avatar_Explorer.Forms
             Item.AuthorName = AuthorTextBox.Text;
             Item.Type = (ItemType)TypeComboBox.SelectedIndex;
             Item.ItemPath = FolderTextBox.Text;
+            Item.SupportedAvatar = SupportedAvatar;
 
             if (Item.Title == "" || Item.AuthorName == "" || Item.ItemPath == "")
             {
