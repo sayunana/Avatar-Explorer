@@ -4,7 +4,7 @@
     {
         public string CurrentSelectedAvatar = "";
         public Author? CurrentSelectedAuthor;
-        public ItemType CurrentSelectedCategory;
+        public ItemType CurrentSelectedCategory = ItemType.Unknown;
         public Item? CurrentSelectedItem;
         public string CurrentSelectedItemCategory = "";
         public ItemFolderInfo CurrentSelectedItemFolderInfo = new();

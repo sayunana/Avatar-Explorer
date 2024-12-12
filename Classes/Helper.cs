@@ -191,5 +191,10 @@ namespace Avatar_Explorer.Classes
 
             return ItemType.Avatar;
         }
+
+        public static string RemoveFormat(string str)
+        {
+            return str.Replace(' ', '_').Replace('/', '-');
+        }
     }
 }

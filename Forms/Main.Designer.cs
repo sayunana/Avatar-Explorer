@@ -37,6 +37,8 @@
             ExplorerList = new TabControl();
             AvatarItemExplorer = new TabPage();
             StartLabel = new Label();
+            SearchBox = new TextBox();
+            label1 = new Label();
             AvatarSearchFilterList.SuspendLayout();
             ExplorerList.SuspendLayout();
             AvatarItemExplorer.SuspendLayout();
@@ -54,9 +56,10 @@
             // 
             // PathTextBox
             // 
+            PathTextBox.Font = new Font("Noto Sans JP", 10F);
             PathTextBox.Location = new Point(148, 16);
             PathTextBox.Name = "PathTextBox";
-            PathTextBox.Size = new Size(806, 23);
+            PathTextBox.Size = new Size(733, 25);
             PathTextBox.TabIndex = 2;
             PathTextBox.Text = "ここには現在のパスが表示されます";
             // 
@@ -86,7 +89,7 @@
             AvatarAuthorPage.Location = new Point(4, 24);
             AvatarAuthorPage.Name = "AvatarAuthorPage";
             AvatarAuthorPage.Padding = new Padding(3);
-            AvatarAuthorPage.Size = new Size(294, 558);
+            AvatarAuthorPage.Size = new Size(325, 558);
             AvatarAuthorPage.TabIndex = 1;
             AvatarAuthorPage.Text = "作者";
             AvatarAuthorPage.UseVisualStyleBackColor = true;
@@ -125,7 +128,7 @@
             // StartLabel
             // 
             StartLabel.AutoSize = true;
-            StartLabel.Font = new Font("Yu Gothic UI", 15F);
+            StartLabel.Font = new Font("Noto Sans JP", 15F);
             StartLabel.Location = new Point(255, 242);
             StartLabel.Name = "StartLabel";
             StartLabel.Size = new Size(481, 56);
@@ -133,11 +136,32 @@
             StartLabel.Text = "左のメニューからアイテムを選択してください\r\nそれか、右下の\"アイテムの追加\"でアイテムを追加してください";
             StartLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // SearchBox
+            // 
+            SearchBox.Font = new Font("Noto Sans JP", 10F);
+            SearchBox.Location = new Point(980, 16);
+            SearchBox.Name = "SearchBox";
+            SearchBox.Size = new Size(270, 25);
+            SearchBox.TabIndex = 7;
+            SearchBox.TextChanged += SearchBox_TextChanged;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Noto Sans JP", 12F);
+            label1.Location = new Point(932, 20);
+            label1.Name = "label1";
+            label1.Size = new Size(42, 21);
+            label1.TabIndex = 8;
+            label1.Text = "検索";
+            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1266, 699);
+            Controls.Add(label1);
+            Controls.Add(SearchBox);
             Controls.Add(ExplorerList);
             Controls.Add(AddItemButton);
             Controls.Add(AvatarSearchFilterList);
@@ -168,5 +192,7 @@
         private TabControl ExplorerList;
         private TabPage AvatarItemExplorer;
         private Label StartLabel;
+        private TextBox SearchBox;
+        private Label label1;
     }
 }

@@ -16,6 +16,7 @@ namespace Avatar_Explorer.Forms
             _mainForm = mainForm;
             InitializeComponent();
             TypeComboBox.SelectedIndex = (int)type >= 6 ? 0 : (int)type;
+            Text = "アイテムの追加";
 
             if (!edit) return;
             Text = "アイテムの編集";
@@ -37,10 +38,7 @@ namespace Avatar_Explorer.Forms
             FolderTextBox.Text = dragFilePathArr[0];
         }
 
-        private void FolderTextBox_DragEnter(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.All;
-        }
+        private void FolderTextBox_DragEnter(object sender, DragEventArgs e) => e.Effect = DragDropEffects.All;
 
         [Obsolete("Obsolete")]
         private void AddButton_Click(object sender, EventArgs e)
@@ -48,6 +46,19 @@ namespace Avatar_Explorer.Forms
             Item.Title = TitleTextBox.Text;
             Item.AuthorName = AuthorTextBox.Text;
             Item.Type = (ItemType)TypeComboBox.SelectedIndex;
+            Item.ItemPath = FolderTextBox.Text;
+
+            if (Item.Title == "" || Item.AuthorName == "" || Item.ItemPath == "")
+            {
+                MessageBox.Show("タイトル、作者、フォルダパスが入力されていません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (Directory.Exists(Item.ItemPath))
+            {
+                MessageBox.Show("フォルダパスが存在しません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             var thumbnailPath = Path.Combine("./Datas", "Thumbnail", $"{Item.BoothId}.png");
             if (!File.Exists(thumbnailPath))
@@ -72,14 +83,14 @@ namespace Avatar_Explorer.Forms
                 MessageBox.Show("Boothのアイテムを編集しました!\nアイテム名: " + Item.Title + "\n作者: " + Item.AuthorName, "編集完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _mainForm.Items = _mainForm.Items.Where(i => i.ItemPath != Item.ItemPath).ToArray();
                 _mainForm.Items = _mainForm.Items.Append(Item).ToArray();
-                Close();
             }
             else
             {
                 MessageBox.Show("Boothのアイテムを追加しました!\nアイテム名: " + Item.Title + "\n作者: " + Item.AuthorName, "追加完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _mainForm.Items = _mainForm.Items.Append(Item).ToArray();
-                Close();
             }
+
+            Close();
         }
 
         private async void GetButton_Click(object sender, EventArgs e)
@@ -87,7 +98,7 @@ namespace Avatar_Explorer.Forms
             var boothId = BoothURLTextBox.Text.Split('/').Last();
             if (!int.TryParse(boothId, out _))
             {
-                MessageBox.Show("Booth URLが正しくありません");
+                MessageBox.Show("Booth URLが正しくありません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

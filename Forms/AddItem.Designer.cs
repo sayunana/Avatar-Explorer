@@ -50,7 +50,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Yu Gothic UI", 12F);
+            label1.Font = new Font("Noto Sans JP", 12F);
             label1.Location = new Point(41, 64);
             label1.Name = "label1";
             label1.Size = new Size(58, 21);
@@ -60,7 +60,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Yu Gothic UI", 12F);
+            label2.Font = new Font("Noto Sans JP", 12F);
             label2.Location = new Point(22, 109);
             label2.Name = "label2";
             label2.Size = new Size(84, 21);
@@ -70,7 +70,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Yu Gothic UI", 20F);
+            label3.Font = new Font("Noto Sans JP", 20F);
             label3.Location = new Point(12, 9);
             label3.Name = "label3";
             label3.Size = new Size(174, 37);
@@ -80,7 +80,7 @@
             // FolderTextBox
             // 
             FolderTextBox.AllowDrop = true;
-            FolderTextBox.Font = new Font("Yu Gothic UI", 12F);
+            FolderTextBox.Font = new Font("Noto Sans JP", 12F);
             FolderTextBox.Location = new Point(124, 61);
             FolderTextBox.Name = "FolderTextBox";
             FolderTextBox.Size = new Size(407, 29);
@@ -90,7 +90,7 @@
             // 
             // BoothURLTextBox
             // 
-            BoothURLTextBox.Font = new Font("Yu Gothic UI", 12F);
+            BoothURLTextBox.Font = new Font("Noto Sans JP", 12F);
             BoothURLTextBox.Location = new Point(124, 101);
             BoothURLTextBox.Name = "BoothURLTextBox";
             BoothURLTextBox.Size = new Size(407, 29);
@@ -109,7 +109,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Font = new Font("Yu Gothic UI", 12F);
+            label4.Font = new Font("Noto Sans JP", 12F);
             label4.Location = new Point(61, 274);
             label4.Name = "label4";
             label4.Size = new Size(45, 21);
@@ -130,7 +130,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Font = new Font("Yu Gothic UI", 12F);
+            label5.Font = new Font("Noto Sans JP", 12F);
             label5.Location = new Point(17, 319);
             label5.Name = "label5";
             label5.Size = new Size(89, 21);
@@ -150,7 +150,7 @@
             // AuthorTextBox
             // 
             AuthorTextBox.Enabled = false;
-            AuthorTextBox.Font = new Font("Yu Gothic UI", 10F);
+            AuthorTextBox.Font = new Font("Noto Sans JP", 10F);
             AuthorTextBox.Location = new Point(129, 235);
             AuthorTextBox.Name = "AuthorTextBox";
             AuthorTextBox.Size = new Size(407, 25);
@@ -160,7 +160,7 @@
             // TitleTextBox
             // 
             TitleTextBox.Enabled = false;
-            TitleTextBox.Font = new Font("Yu Gothic UI", 10F);
+            TitleTextBox.Font = new Font("Noto Sans JP", 10F);
             TitleTextBox.Location = new Point(129, 199);
             TitleTextBox.Name = "TitleTextBox";
             TitleTextBox.Size = new Size(407, 25);
@@ -171,7 +171,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Font = new Font("Yu Gothic UI", 12F);
+            label6.Font = new Font("Noto Sans JP", 12F);
             label6.Location = new Point(64, 235);
             label6.Name = "label6";
             label6.Size = new Size(42, 21);
@@ -181,7 +181,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Font = new Font("Yu Gothic UI", 12F);
+            label7.Font = new Font("Noto Sans JP", 12F);
             label7.Location = new Point(49, 203);
             label7.Name = "label7";
             label7.Size = new Size(57, 21);
@@ -191,7 +191,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Font = new Font("Yu Gothic UI", 18F);
+            label8.Font = new Font("Noto Sans JP", 18F);
             label8.Location = new Point(22, 154);
             label8.Name = "label8";
             label8.Size = new Size(206, 32);
@@ -201,7 +201,7 @@
             // ErrorLabel
             // 
             ErrorLabel.AutoSize = true;
-            ErrorLabel.Font = new Font("Yu Gothic UI", 13F);
+            ErrorLabel.Font = new Font("Noto Sans JP", 13F);
             ErrorLabel.ForeColor = Color.Red;
             ErrorLabel.Location = new Point(17, 369);
             ErrorLabel.Name = "ErrorLabel";
