@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Avatar_Explorer.Classes;
+﻿using Avatar_Explorer.Classes;
 
 namespace Avatar_Explorer.Forms
 {
@@ -9,6 +8,7 @@ namespace Avatar_Explorer.Forms
         public string[] SupportedAvatar = Array.Empty<string>();
         private readonly bool _edit;
         public Item Item = new();
+        private static readonly HttpClient HttpClient = new();
 
         public AddItem(Main mainForm, ItemType type, bool edit, Item? item, string? folderPath)
         {
@@ -41,8 +41,7 @@ namespace Avatar_Explorer.Forms
 
         private void FolderTextBox_DragEnter(object sender, DragEventArgs e) => e.Effect = DragDropEffects.All;
 
-        [Obsolete("Obsolete")]
-        private void AddButton_Click(object sender, EventArgs e)
+        private async void AddButton_Click(object sender, EventArgs e)
         {
             Item.Title = TitleTextBox.Text;
             Item.AuthorName = AuthorTextBox.Text;
@@ -67,20 +66,38 @@ namespace Avatar_Explorer.Forms
                 if (!File.Exists(thumbnailPath))
                 {
                     if (Item.ThumbnailUrl == "Not Found") return;
-                    using var wc = new WebClient();
-                    wc.DownloadFile(Item.ThumbnailUrl, thumbnailPath);
+
+                    try
+                    {
+                        var thumbnailData = await HttpClient.GetByteArrayAsync(Item.ThumbnailUrl);
+                        await File.WriteAllBytesAsync(thumbnailPath, thumbnailData);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error downloading thumbnail: {ex.Message}");
+                        return;
+                    }
                 }
                 Item.ImagePath = thumbnailPath;
             }
 
-            if (Item.AuthorId != "")
+            if (!string.IsNullOrEmpty(Item.AuthorId))
             {
                 var authorImagePath = Path.Combine("./Datas", "AuthorImage", $"{Item.AuthorId}.png");
                 if (!File.Exists(authorImagePath))
                 {
                     if (Item.AuthorImageUrl == "Not Found") return;
-                    using var wc = new WebClient();
-                    wc.DownloadFile(Item.AuthorImageUrl, authorImagePath);
+
+                    try
+                    {
+                        var authorImageData = await HttpClient.GetByteArrayAsync(Item.AuthorImageUrl);
+                        await File.WriteAllBytesAsync(authorImagePath, authorImageData);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error downloading author image: {ex.Message}");
+                        return;
+                    }
                 }
                 Item.AuthorImageFilePath = authorImagePath;
             }
@@ -158,21 +175,37 @@ namespace Avatar_Explorer.Forms
 
         private void TitleTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (_mainForm.Items.Any(i => i.Title == TitleTextBox.Text) && !_edit)
+            if (!_edit && _mainForm.Items.Any(i => i.Title == TitleTextBox.Text))
             {
-                AddButton.Enabled = false;
-                ErrorLabel.Text = "エラー: 同じタイトルのアイテムが既に存在します";
+                SetErrorState("エラー: 同じタイトルのアイテムが既に存在します");
             }
-            else if (TitleTextBox.Text == "")
+            else if (string.IsNullOrEmpty(TitleTextBox.Text))
             {
-                AddButton.Enabled = false;
-                ErrorLabel.Text = "エラー: タイトルが入力されていません";
+                SetErrorState("エラー: タイトルが入力されていません");
+            }
+            else if (TitleTextBox.Text == "*")
+            {
+                SetErrorState("エラー: タイトルを*にすることはできません");
             }
             else
+            {
+                ClearErrorState();
+            }
+
+            return;
+
+            void SetErrorState(string errorMessage)
+            {
+                AddButton.Enabled = false;
+                ErrorLabel.Text = errorMessage;
+            }
+
+            void ClearErrorState()
             {
                 AddButton.Enabled = true;
                 ErrorLabel.Text = "";
             }
+
         }
 
         private void CustomButton_Click(object sender, EventArgs e)

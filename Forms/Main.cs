@@ -383,7 +383,6 @@ namespace Avatar_Explorer.Forms
 
             SearchResultLabel.Text = "ŒŸõŒ‹‰Ê: " + filteredItems.Count + "Œ";
 
-
             var index = 0;
             foreach (Item item in filteredItems)
             {
