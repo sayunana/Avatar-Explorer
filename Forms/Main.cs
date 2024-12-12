@@ -139,7 +139,6 @@ namespace Avatar_Explorer.Forms
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
-                    CurrentPath.CurrentSelectedCategory = CurrentPath.CurrentSelectedCategory;
                     CurrentPath.CurrentSelectedItem = item;
                     GenerateItemCategoryList();
                     PathTextBox.Text = GeneratePath();
@@ -385,7 +384,6 @@ namespace Avatar_Explorer.Forms
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
-                    CurrentPath.CurrentSelectedCategory = CurrentPath.CurrentSelectedCategory;
                     CurrentPath.CurrentSelectedItem = item;
                     GenerateItemCategoryList();
                     PathTextBox.Text = GeneratePath();
