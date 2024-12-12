@@ -5,11 +5,16 @@ namespace Avatar_Explorer.Forms
 {
     public sealed partial class Main : Form
     {
+        // Current Version
         private const string CurrentVersion = "v1.0.0";
+
+        // Items Data
         public Item[] Items;
 
+        // Current Path
         public CurrentPath CurrentPath = new();
 
+        // Search Mode
         private bool _authorMode;
 
         public Main()
@@ -296,7 +301,6 @@ namespace Avatar_Explorer.Forms
                 PathTextBox.Text = GeneratePath();
             }
         }
-
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
