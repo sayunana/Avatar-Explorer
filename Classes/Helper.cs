@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace Avatar_Explorer.Classes
 {
@@ -192,9 +193,20 @@ namespace Avatar_Explorer.Classes
             return ItemType.Unknown;
         }
 
-        public static string RemoveFormat(string str)
+        public static string RemoveFormat(string str) => str.Replace(' ', '_').Replace('/', '-');
+
+        public static void SaveItemsData(Item[] items)
         {
-            return str.Replace(' ', '_').Replace('/', '-');
+            using var sw = new StreamWriter("./Datas/ItemsData.json");
+            sw.Write(JsonSerializer.Serialize(items, new JsonSerializerOptions { WriteIndented = true }));
+        }
+
+        public static Item[] LoadItemsData()
+        {
+            if (!File.Exists("./Datas/ItemsData.json")) return Array.Empty<Item>();
+            using var sr = new StreamReader("./Datas/ItemsData.json");
+            var data = JsonSerializer.Deserialize<Item[]>(sr.ReadToEnd());
+            return data ?? Array.Empty<Item>();
         }
     }
 }

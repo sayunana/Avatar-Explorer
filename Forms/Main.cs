@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Text.Json;
 using Avatar_Explorer.Classes;
 
 namespace Avatar_Explorer.Forms
@@ -7,7 +6,7 @@ namespace Avatar_Explorer.Forms
     public sealed partial class Main : Form
     {
         private const string CurrentVersion = "v1.0.0";
-        public Item[] Items = Array.Empty<Item>();
+        public Item[] Items;
 
         public CurrentPath CurrentPath = new();
 
@@ -15,7 +14,7 @@ namespace Avatar_Explorer.Forms
 
         public Main()
         {
-            LoadItemsData();
+            Items = Helper.LoadItemsData();
             InitializeComponent();
             GenerateAvatarList();
             GenerateAuthorList();
@@ -298,24 +297,10 @@ namespace Avatar_Explorer.Forms
             }
         }
 
-        private void SaveItemsData()
-        {
-            using var sw = new StreamWriter("./Datas/ItemsData.json");
-            sw.Write(JsonSerializer.Serialize(Items, new JsonSerializerOptions { WriteIndented = true }));
-        }
-
-        private void LoadItemsData()
-        {
-            if (!File.Exists("./Datas/ItemsData.json")) return;
-            using var sr = new StreamReader("./Datas/ItemsData.json");
-            var data = JsonSerializer.Deserialize<Item[]>(sr.ReadToEnd());
-            if (data == null) return;
-            Items = data;
-        }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
-            SaveItemsData();
+            Helper.SaveItemsData(Items);
         }
 
         private void SearchBox_TextChanged(object sender, EventArgs e)
