@@ -39,6 +39,7 @@
             StartLabel = new Label();
             SearchBox = new TextBox();
             label1 = new Label();
+            SearchResultLabel = new Label();
             AvatarSearchFilterList.SuspendLayout();
             ExplorerList.SuspendLayout();
             AvatarItemExplorer.SuspendLayout();
@@ -75,6 +76,7 @@
             // 
             // AvatarPage
             // 
+            AvatarPage.AllowDrop = true;
             AvatarPage.AutoScroll = true;
             AvatarPage.Location = new Point(4, 24);
             AvatarPage.Name = "AvatarPage";
@@ -85,7 +87,6 @@
             AvatarPage.UseVisualStyleBackColor = true;
             AvatarPage.DragDrop += AvatarPage_DragDrop;
             AvatarPage.DragEnter += AvatarPage_DragEnter;
-            AvatarPage.AllowDrop = true;
             // 
             // AvatarAuthorPage
             // 
@@ -118,6 +119,7 @@
             // 
             // AvatarItemExplorer
             // 
+            AvatarItemExplorer.AllowDrop = true;
             AvatarItemExplorer.AutoScroll = true;
             AvatarItemExplorer.Controls.Add(StartLabel);
             AvatarItemExplorer.Location = new Point(4, 24);
@@ -129,7 +131,6 @@
             AvatarItemExplorer.UseVisualStyleBackColor = true;
             AvatarItemExplorer.DragDrop += AvatarItemExplorer_DragDrop;
             AvatarItemExplorer.DragEnter += AvatarItemExplorer_DragEnter;
-            AvatarItemExplorer.AllowDrop = true;
             // 
             // StartLabel
             // 
@@ -161,11 +162,21 @@
             label1.TabIndex = 8;
             label1.Text = "検索";
             // 
+            // SearchResultLabel
+            // 
+            SearchResultLabel.AutoSize = true;
+            SearchResultLabel.Font = new Font("Noto Sans JP", 10F);
+            SearchResultLabel.Location = new Point(971, 45);
+            SearchResultLabel.Name = "SearchResultLabel";
+            SearchResultLabel.Size = new Size(0, 20);
+            SearchResultLabel.TabIndex = 9;
+            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1266, 699);
+            Controls.Add(SearchResultLabel);
             Controls.Add(label1);
             Controls.Add(SearchBox);
             Controls.Add(ExplorerList);
@@ -200,5 +211,6 @@
         private Label StartLabel;
         private TextBox SearchBox;
         private Label label1;
+        private Label SearchResultLabel;
     }
 }

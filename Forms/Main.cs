@@ -24,7 +24,7 @@ namespace Avatar_Explorer.Forms
             GenerateAvatarList();
             GenerateAuthorList();
 
-            Text = $"Avatar Explorer {CurrentVersion} by ‚Õ‚±‚é‚Ó";
+            Text = $"VRChat Avatar Explorer {CurrentVersion} by ‚Õ‚±‚é‚Ó";
         }
 
         // Generate List (LEFT)
@@ -41,7 +41,7 @@ namespace Avatar_Explorer.Forms
                     CurrentPath.CurrentSelectedAvatar = item.Title;
                     CurrentPath.CurrentSelectedAuthor = null;
                     CurrentPath.CurrentSelectedCategory = ItemType.Unknown;
-                    CurrentPath.CurrentSelectedItemCategory = "";
+                    CurrentPath.CurrentSelectedItemCategory = null;
                     CurrentPath.CurrentSelectedItem = null;
                     _authorMode = false;
                     GenerateCategoryList();
@@ -76,9 +76,9 @@ namespace Avatar_Explorer.Forms
                 button.Click += (_, _) =>
                 {
                     CurrentPath.CurrentSelectedAuthor = author;
-                    CurrentPath.CurrentSelectedAvatar = "";
+                    CurrentPath.CurrentSelectedAvatar = null;
                     CurrentPath.CurrentSelectedCategory = ItemType.Unknown;
-                    CurrentPath.CurrentSelectedItemCategory = "";
+                    CurrentPath.CurrentSelectedItemCategory = null;
                     CurrentPath.CurrentSelectedItem = null;
                     _authorMode = true;
                     GenerateCategoryList();
@@ -264,7 +264,7 @@ namespace Avatar_Explorer.Forms
             if (CurrentPath.CurrentSelectedItem == null)
                 return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
                        Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory);
-            if (CurrentPath.CurrentSelectedItemCategory == "")
+            if (CurrentPath.CurrentSelectedItemCategory == null)
                 return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
                        Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
                        Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title);
@@ -310,46 +310,32 @@ namespace Avatar_Explorer.Forms
         {
             if (SearchBox.Text == "")
             {
+                SearchResultLabel.Text = "";
                 if (CurrentPath.CurrentSelectedItemCategory != null)
                 {
-                    Debug.WriteLine("GenerateItemFiles");
                     GenerateItemFiles();
                     return;
                 }
 
                 if (CurrentPath.CurrentSelectedItem != null)
                 {
-                    Debug.WriteLine("GenerateItemCategoryList");
                     GenerateItemCategoryList();
                     return;
                 }
 
                 if (CurrentPath.CurrentSelectedCategory != ItemType.Unknown)
                 {
-                    Debug.WriteLine("GenerateItems");
                     GenerateItems();
                     return;
                 }
 
                 if (CurrentPath.CurrentSelectedAvatar != null || CurrentPath.CurrentSelectedAuthor != null)
                 {
-                    Debug.WriteLine("GenerateCategoryList");
                     GenerateCategoryList();
                     return;
                 }
 
-                for (int i = AvatarItemExplorer.Controls.Count - 1; i >= 0; i--)
-                {
-                    if (AvatarItemExplorer.Controls[i].Name != "StartLabel")
-                    {
-                        AvatarItemExplorer.Controls.RemoveAt(i);
-                    }
-                    else
-                    {
-                        Debug.WriteLine("Visible");
-                        AvatarItemExplorer.Controls[i].Visible = true;
-                    }
-                }
+                ResetAvatarList(true);
                 return;
             }
 
@@ -362,15 +348,20 @@ namespace Avatar_Explorer.Forms
             ResetAvatarList();
 
             var filteredItems = Items.Where(item =>
-                searchWords.Any(word => item.Title.ToLower().Contains(word.ToLower())) ||
-                searchWords.Any(word => item.AuthorName.ToLower().Contains(word.ToLower())));
+                searchWords.Any(word => item.Title.ToLower().Contains(word.ToLower()) ||
+                    item.AuthorName.ToLower().Contains(word.ToLower()) ||
+                    item.SupportedAvatar.Any(avatar => avatar.ToLower().Contains(word.ToLower())) ||
+                    item.BoothId.ToString().Contains(word.ToLower()))
+            );
+
+            SearchResultLabel.Text = "ŒŸõŒ‹‰Ê: " + filteredItems.Count() + "Œ";
 
             filteredItems = filteredItems.OrderByDescending(item =>
             {
                 var matchCount = 0;
                 foreach (var word in searchWords)
                 {
-                    if (item.Title.ToLower().Contains(word.ToLower())) matchCount += 2;
+                    if (item.Title.ToLower().Contains(word.ToLower())) matchCount++;
                     if (item.AuthorName.ToLower().Contains(word.ToLower())) matchCount++;
                 }
 
@@ -417,7 +408,7 @@ namespace Avatar_Explorer.Forms
             }
         }
 
-        private void ResetAvatarList()
+        private void ResetAvatarList(bool startLabelVisible = false)
         {
             for (int i = AvatarItemExplorer.Controls.Count - 1; i >= 0; i--)
             {
@@ -427,7 +418,7 @@ namespace Avatar_Explorer.Forms
                 }
                 else
                 {
-                    AvatarItemExplorer.Controls[i].Visible = false;
+                    AvatarItemExplorer.Controls[i].Visible = startLabelVisible;
                 }
             }
         }
