@@ -189,7 +189,7 @@ namespace Avatar_Explorer.Classes
                 return ItemType.Shader;
             }
 
-            return ItemType.Avatar;
+            return ItemType.Unknown;
         }
 
         public static string RemoveFormat(string str)

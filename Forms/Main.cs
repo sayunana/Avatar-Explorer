@@ -88,17 +88,7 @@ namespace Avatar_Explorer.Forms
         // Generate List (RIGHT)
         private void GenerateCategoryList()
         {
-            for (int i = AvatarItemExplorer.Controls.Count - 1; i >= 0; i--)
-            {
-                if (AvatarItemExplorer.Controls[i].Name != "StartLabel")
-                {
-                    AvatarItemExplorer.Controls.RemoveAt(i);
-                }
-                else
-                {
-                    AvatarItemExplorer.Controls[i].Visible = false;
-                }
-            }
+            ResetAvatarList();
 
             var index = 0;
             foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
@@ -127,17 +117,7 @@ namespace Avatar_Explorer.Forms
 
         private void GenerateItems()
         {
-            for (int i = AvatarItemExplorer.Controls.Count - 1; i >= 0; i--)
-            {
-                if (AvatarItemExplorer.Controls[i].Name != "StartLabel")
-                {
-                    AvatarItemExplorer.Controls.RemoveAt(i);
-                }
-                else
-                {
-                    AvatarItemExplorer.Controls[i].Visible = false;
-                }
-            }
+            ResetAvatarList();
 
             var filteredItems = _authorMode
                 ? Items.Where(item =>
@@ -176,7 +156,7 @@ namespace Avatar_Explorer.Forms
                 ToolStripMenuItem toolStripMenuItem3 = new("•ÒW");
                 toolStripMenuItem3.Click += (_, _) =>
                 {
-                    AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item);
+                    AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item, null);
                     addItem.ShowDialog();
                     GenerateAvatarList();
                 };
@@ -202,17 +182,7 @@ namespace Avatar_Explorer.Forms
             ItemFolderInfo itemFolderInfo = Helper.GetItemFolderInfo(CurrentPath.CurrentSelectedItem.ItemPath);
             CurrentPath.CurrentSelectedItemFolderInfo = itemFolderInfo;
 
-            for (int i = AvatarItemExplorer.Controls.Count - 1; i >= 0; i--)
-            {
-                if (AvatarItemExplorer.Controls[i].Name != "StartLabel")
-                {
-                    AvatarItemExplorer.Controls.RemoveAt(i);
-                }
-                else
-                {
-                    AvatarItemExplorer.Controls[i].Visible = false;
-                }
-            }
+            ResetAvatarList();
 
             var index = 0;
             foreach (var itemType in types)
@@ -234,17 +204,7 @@ namespace Avatar_Explorer.Forms
 
         private void GenerateItemFiles()
         {
-            for (int i = AvatarItemExplorer.Controls.Count - 1; i >= 0; i--)
-            {
-                if (AvatarItemExplorer.Controls[i].Name != "StartLabel")
-                {
-                    AvatarItemExplorer.Controls.RemoveAt(i);
-                }
-                else
-                {
-                    AvatarItemExplorer.Controls[i].Visible = false;
-                }
-            }
+            ResetAvatarList();
 
             var index = 0;
             foreach (var file in CurrentPath.CurrentSelectedItemFolderInfo.GetItems(CurrentPath
@@ -268,7 +228,7 @@ namespace Avatar_Explorer.Forms
         // Add Item Form
         private void AddItemButton_Click(object sender, EventArgs e)
         {
-            AddItem addItem = new AddItem(this, CurrentPath.CurrentSelectedCategory, false, null);
+            AddItem addItem = new AddItem(this, CurrentPath.CurrentSelectedCategory, false, null, null);
             addItem.ShowDialog();
             GenerateAvatarList();
         }
@@ -278,13 +238,13 @@ namespace Avatar_Explorer.Forms
         {
             if (!_authorMode)
             {
-                if (CurrentPath.CurrentSelectedAvatar == "") return "";
+                if (CurrentPath.CurrentSelectedAvatar == null) return "";
                 if (CurrentPath.CurrentSelectedCategory == ItemType.Unknown)
                     return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar);
                 if (CurrentPath.CurrentSelectedItem == null)
                     return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
                            Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory);
-                if (CurrentPath.CurrentSelectedItemCategory == "")
+                if (CurrentPath.CurrentSelectedItemCategory == null)
                     return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
                            Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
                            Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title);
@@ -314,9 +274,9 @@ namespace Avatar_Explorer.Forms
         // Undo Button
         private void UndoButton_Click(object sender, EventArgs e)
         {
-            if (CurrentPath.CurrentSelectedItemCategory != "")
+            if (CurrentPath.CurrentSelectedItemCategory != null)
             {
-                CurrentPath.CurrentSelectedItemCategory = "";
+                CurrentPath.CurrentSelectedItemCategory = null;
                 GenerateItemCategoryList();
                 PathTextBox.Text = GeneratePath();
                 return;
@@ -362,7 +322,7 @@ namespace Avatar_Explorer.Forms
         {
             if (SearchBox.Text == "")
             {
-                if (CurrentPath.CurrentSelectedItemCategory != "")
+                if (CurrentPath.CurrentSelectedItemCategory != null)
                 {
                     Debug.WriteLine("GenerateItemFiles");
                     GenerateItemFiles();
@@ -383,7 +343,7 @@ namespace Avatar_Explorer.Forms
                     return;
                 }
 
-                if (CurrentPath.CurrentSelectedAvatar != "" || CurrentPath.CurrentSelectedAuthor != null)
+                if (CurrentPath.CurrentSelectedAvatar != null || CurrentPath.CurrentSelectedAuthor != null)
                 {
                     Debug.WriteLine("GenerateCategoryList");
                     GenerateCategoryList();
@@ -411,17 +371,7 @@ namespace Avatar_Explorer.Forms
 
         private void GenerateFilteredItem(string[] searchWords)
         {
-            for (int i = AvatarItemExplorer.Controls.Count - 1; i >= 0; i--)
-            {
-                if (AvatarItemExplorer.Controls[i].Name != "StartLabel")
-                {
-                    AvatarItemExplorer.Controls.RemoveAt(i);
-                }
-                else
-                {
-                    AvatarItemExplorer.Controls[i].Visible = false;
-                }
-            }
+            ResetAvatarList();
 
             var filteredItems = Items.Where(item =>
                 searchWords.Any(word => item.Title.ToLower().Contains(word.ToLower())) ||
@@ -467,7 +417,7 @@ namespace Avatar_Explorer.Forms
                 ToolStripMenuItem toolStripMenuItem3 = new("•ÒW");
                 toolStripMenuItem3.Click += (_, _) =>
                 {
-                    AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item);
+                    AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item, null);
                     addItem.ShowDialog();
                     GenerateAvatarList();
                 };
@@ -478,6 +428,49 @@ namespace Avatar_Explorer.Forms
                 AvatarItemExplorer.Controls.Add(button);
                 index++;
             }
+        }
+
+        private void ResetAvatarList()
+        {
+            for (int i = AvatarItemExplorer.Controls.Count - 1; i >= 0; i--)
+            {
+                if (AvatarItemExplorer.Controls[i].Name != "StartLabel")
+                {
+                    AvatarItemExplorer.Controls.RemoveAt(i);
+                }
+                else
+                {
+                    AvatarItemExplorer.Controls[i].Visible = false;
+                }
+            }
+        }
+
+        private void AvatarItemExplorer_DragEnter(object sender, DragEventArgs e) => e.Effect = DragDropEffects.All;
+
+        private void AvatarItemExplorer_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data == null) return;
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            string[]? dragFilePathArr = (string[]?)e.Data.GetData(DataFormats.FileDrop, false);
+            if (dragFilePathArr == null) return;
+            var folderPath = dragFilePathArr[0];
+
+            AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, false, null, folderPath);
+            addItem.ShowDialog();
+        }
+
+        private void AvatarPage_DragEnter(object sender, DragEventArgs e) => e.Effect = DragDropEffects.All;
+
+        private void AvatarPage_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data == null) return;
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            string[]? dragFilePathArr = (string[]?)e.Data.GetData(DataFormats.FileDrop, false);
+            if (dragFilePathArr == null) return;
+            var folderPath = dragFilePathArr[0];
+
+            AddItem addItem = new(this, ItemType.Avatar, false, null, folderPath);
+            addItem.ShowDialog();
         }
     }
 }

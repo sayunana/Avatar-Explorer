@@ -10,11 +10,12 @@ namespace Avatar_Explorer.Forms
         private readonly bool _edit;
         public Item Item = new();
 
-        public AddItem(Main mainForm, ItemType type, bool edit, Item? item)
+        public AddItem(Main mainForm, ItemType type, bool edit, Item? item, string? folderPath)
         {
             _edit = edit;
             _mainForm = mainForm;
             InitializeComponent();
+            if (folderPath != null) FolderTextBox.Text = folderPath;
             TypeComboBox.SelectedIndex = (int)type >= 6 ? 0 : (int)type;
             Text = "アイテムの追加";
 
@@ -60,23 +61,29 @@ namespace Avatar_Explorer.Forms
                 return;
             }
 
-            var thumbnailPath = Path.Combine("./Datas", "Thumbnail", $"{Item.BoothId}.png");
-            if (!File.Exists(thumbnailPath))
+            if (Item.BoothId != 0)
             {
-                if (Item.ThumbnailUrl == "Not Found") return;
-                using var wc = new WebClient();
-                wc.DownloadFile(Item.ThumbnailUrl, thumbnailPath);
+                var thumbnailPath = Path.Combine("./Datas", "Thumbnail", $"{Item.BoothId}.png");
+                if (!File.Exists(thumbnailPath))
+                {
+                    if (Item.ThumbnailUrl == "Not Found") return;
+                    using var wc = new WebClient();
+                    wc.DownloadFile(Item.ThumbnailUrl, thumbnailPath);
+                }
+                Item.ImagePath = thumbnailPath;
             }
-            Item.ImagePath = thumbnailPath;
 
-            var authorImagePath = Path.Combine("./Datas", "AuthorImage", $"{Item.AuthorId}.png");
-            if (!File.Exists(authorImagePath))
+            if (Item.AuthorId != "")
             {
-                if (Item.AuthorImageUrl == "Not Found") return;
-                using var wc = new WebClient();
-                wc.DownloadFile(Item.AuthorImageUrl, authorImagePath);
+                var authorImagePath = Path.Combine("./Datas", "AuthorImage", $"{Item.AuthorId}.png");
+                if (!File.Exists(authorImagePath))
+                {
+                    if (Item.AuthorImageUrl == "Not Found") return;
+                    using var wc = new WebClient();
+                    wc.DownloadFile(Item.AuthorImageUrl, authorImagePath);
+                }
+                Item.AuthorImageFilePath = authorImagePath;
             }
-            Item.AuthorImageFilePath = authorImagePath;
 
             if (_edit)
             {
@@ -127,24 +134,14 @@ namespace Avatar_Explorer.Forms
 
             Item.BoothId = int.Parse(boothId);
 
-            if (_edit)
-            {
-                AddButton.Enabled = true;
-                TitleTextBox.Text = Item.Title;
-                AuthorTextBox.Text = Item.AuthorName;
-                TypeComboBox.SelectedIndex = (int)Helper.GetItemType(Item.Title);
-                TitleTextBox.Enabled = true;
-                AuthorTextBox.Enabled = true;
-            }
-            else
-            {
-                AddButton.Enabled = true;
-                TitleTextBox.Text = Item.Title;
-                AuthorTextBox.Text = Item.AuthorName;
-                TypeComboBox.SelectedIndex = (int)Helper.GetItemType(Item.Title);
-                TitleTextBox.Enabled = true;
-                AuthorTextBox.Enabled = true;
-            }
+            AddButton.Enabled = true;
+            TitleTextBox.Text = Item.Title;
+            AuthorTextBox.Text = Item.AuthorName;
+
+            var suggestedType = Helper.GetItemType(Item.Title);
+            if (suggestedType != ItemType.Unknown) TypeComboBox.SelectedIndex = (int)suggestedType;
+            TitleTextBox.Enabled = true;
+            AuthorTextBox.Enabled = true;
         }
 
         private void SelectAvatar_Click(object sender, EventArgs e)
@@ -176,6 +173,14 @@ namespace Avatar_Explorer.Forms
                 AddButton.Enabled = true;
                 ErrorLabel.Text = "";
             }
+        }
+
+        private void CustomButton_Click(object sender, EventArgs e)
+        {
+            TitleTextBox.Text = "";
+            AuthorTextBox.Text = "";
+            TitleTextBox.Enabled = true;
+            AuthorTextBox.Enabled = true;
         }
     }
 }

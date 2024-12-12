@@ -83,6 +83,9 @@
             AvatarPage.TabIndex = 0;
             AvatarPage.Text = "アバター";
             AvatarPage.UseVisualStyleBackColor = true;
+            AvatarPage.DragDrop += AvatarPage_DragDrop;
+            AvatarPage.DragEnter += AvatarPage_DragEnter;
+            AvatarPage.AllowDrop = true;
             // 
             // AvatarAuthorPage
             // 
@@ -124,6 +127,9 @@
             AvatarItemExplorer.TabIndex = 0;
             AvatarItemExplorer.Text = "アイテム";
             AvatarItemExplorer.UseVisualStyleBackColor = true;
+            AvatarItemExplorer.DragDrop += AvatarItemExplorer_DragDrop;
+            AvatarItemExplorer.DragEnter += AvatarItemExplorer_DragEnter;
+            AvatarItemExplorer.AllowDrop = true;
             // 
             // StartLabel
             // 

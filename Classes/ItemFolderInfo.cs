@@ -19,7 +19,7 @@
             };
         }
 
-        public FileData[] GetItems(string type)
+        public FileData[] GetItems(string? type)
         {
             return type switch
             {
