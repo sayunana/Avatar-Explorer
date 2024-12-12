@@ -59,7 +59,7 @@
             PathTextBox.Font = new Font("Noto Sans JP", 10F);
             PathTextBox.Location = new Point(148, 16);
             PathTextBox.Name = "PathTextBox";
-            PathTextBox.Size = new Size(733, 25);
+            PathTextBox.Size = new Size(733, 27);
             PathTextBox.TabIndex = 2;
             PathTextBox.Text = "ここには現在のパスが表示されます";
             // 
@@ -129,9 +129,9 @@
             // 
             StartLabel.AutoSize = true;
             StartLabel.Font = new Font("Noto Sans JP", 15F);
-            StartLabel.Location = new Point(255, 242);
+            StartLabel.Location = new Point(165, 198);
             StartLabel.Name = "StartLabel";
-            StartLabel.Size = new Size(481, 56);
+            StartLabel.Size = new Size(591, 58);
             StartLabel.TabIndex = 7;
             StartLabel.Text = "左のメニューからアイテムを選択してください\r\nそれか、右下の\"アイテムの追加\"でアイテムを追加してください";
             StartLabel.TextAlign = ContentAlignment.MiddleCenter;
@@ -141,7 +141,7 @@
             SearchBox.Font = new Font("Noto Sans JP", 10F);
             SearchBox.Location = new Point(980, 16);
             SearchBox.Name = "SearchBox";
-            SearchBox.Size = new Size(270, 25);
+            SearchBox.Size = new Size(270, 27);
             SearchBox.TabIndex = 7;
             SearchBox.TextChanged += SearchBox_TextChanged;
             // 
@@ -151,7 +151,7 @@
             label1.Font = new Font("Noto Sans JP", 12F);
             label1.Location = new Point(932, 20);
             label1.Name = "label1";
-            label1.Size = new Size(42, 21);
+            label1.Size = new Size(42, 23);
             label1.TabIndex = 8;
             label1.Text = "検索";
             // 
