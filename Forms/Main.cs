@@ -274,6 +274,13 @@ namespace Avatar_Explorer.Forms
                    Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" + CurrentPath.CurrentSelectedItemCategory;
         }
 
+        private void GeneratePathFromItem(Item item)
+        {
+            CurrentPath.CurrentSelectedAvatar = item.SupportedAvatar.FirstOrDefault() ?? "*";
+            CurrentPath.CurrentSelectedCategory = item.Type;
+            CurrentPath.CurrentSelectedItem = item;
+        }
+
         // Undo Button
         private void UndoButton_Click(object sender, EventArgs e)
         {
@@ -297,6 +304,13 @@ namespace Avatar_Explorer.Forms
             {
                 CurrentPath.CurrentSelectedCategory = ItemType.Unknown;
                 GenerateCategoryList();
+                PathTextBox.Text = GeneratePath();
+            }
+
+            if (CurrentPath.CurrentSelectedAvatar == "*")
+            {
+                CurrentPath.CurrentSelectedAvatar = null;
+                ResetAvatarList(true);
                 PathTextBox.Text = GeneratePath();
             }
         }
@@ -367,7 +381,7 @@ namespace Avatar_Explorer.Forms
                 })
                 .ToList();
 
-            SearchResultLabel.Text = "ŒŸõŒ‹‰Ê: " + filteredItems.Count() + "Œ";
+            SearchResultLabel.Text = "ŒŸõŒ‹‰Ê: " + filteredItems.Count + "Œ";
 
 
             var index = 0;
@@ -377,7 +391,9 @@ namespace Avatar_Explorer.Forms
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
-                    CurrentPath.CurrentSelectedItem = item;
+                    _authorMode = false;
+                    GeneratePathFromItem(item);
+                    SearchBox.Text = "";
                     GenerateItemCategoryList();
                     PathTextBox.Text = GeneratePath();
                 };

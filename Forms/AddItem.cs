@@ -55,7 +55,7 @@ namespace Avatar_Explorer.Forms
                 return;
             }
 
-            if (Directory.Exists(Item.ItemPath))
+            if (!Directory.Exists(Item.ItemPath))
             {
                 MessageBox.Show("フォルダパスが存在しません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
