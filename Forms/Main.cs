@@ -466,6 +466,7 @@ namespace Avatar_Explorer.Forms
 
             AddItem addItem = new(this, ItemType.Avatar, false, null, folderPath);
             addItem.ShowDialog();
+            GenerateAvatarList();
         }
     }
 }
