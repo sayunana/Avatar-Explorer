@@ -383,6 +383,10 @@ namespace Avatar_Explorer.Forms
 
             SearchResultLabel.Text = "検索結果: " + filteredItems.Count + "件";
 
+            Image copyImage = Image.FromFile("./Datas/CopyIcon.png");
+            Image trashImage = Image.FromFile("./Datas/TrashIcon.png");
+            Image editImage = Image.FromFile("./Datas/EditIcon.png");
+
             var index = 0;
             foreach (Item item in filteredItems)
             {
@@ -398,7 +402,8 @@ namespace Avatar_Explorer.Forms
                 };
 
                 ContextMenuStrip contextMenuStrip = new();
-                ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー");
+
+                ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー", copyImage);
                 toolStripMenuItem.Click += (_, _) =>
                 {
                     if (item.BoothId == -1)
@@ -408,19 +413,22 @@ namespace Avatar_Explorer.Forms
                     }
                     Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
                 };
-                ToolStripMenuItem toolStripMenuItem2 = new("削除");
+
+                ToolStripMenuItem toolStripMenuItem2 = new("削除", trashImage);
                 toolStripMenuItem2.Click += (_, _) =>
                 {
                     Items = Items.Where(i => i.Title != item.Title).ToArray();
                     GenerateItems();
                 };
-                ToolStripMenuItem toolStripMenuItem3 = new("編集");
+
+                ToolStripMenuItem toolStripMenuItem3 = new("編集", editImage);
                 toolStripMenuItem3.Click += (_, _) =>
                 {
                     AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item, null);
                     addItem.ShowDialog();
                     GenerateAvatarList();
                 };
+
                 contextMenuStrip.Items.Add(toolStripMenuItem);
                 contextMenuStrip.Items.Add(toolStripMenuItem2);
                 contextMenuStrip.Items.Add(toolStripMenuItem3);
