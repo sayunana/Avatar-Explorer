@@ -5,33 +5,47 @@ namespace Avatar_Explorer.Forms
     public sealed partial class AddItem : Form
     {
         private readonly Main _mainForm;
-        public string[] SupportedAvatar = Array.Empty<string>();
         private readonly bool _edit;
-        public Item Item = new();
         private static readonly HttpClient HttpClient = new();
+
+        public Item Item = new();
+
+        public string[] SupportedAvatar = Array.Empty<string>();
 
         public AddItem(Main mainForm, ItemType type, bool edit, Item? item, string? folderPath)
         {
+            // アイテム編集モードかどうか
             _edit = edit;
+
+            // メインフォームの参照を持っておく
             _mainForm = mainForm;
             InitializeComponent();
+
+            // フォルダパスが渡されたら表示してあげる
             if (folderPath != null) FolderTextBox.Text = folderPath;
+
+            // typeでデフォルトの値を変えてあげる
             TypeComboBox.SelectedIndex = (int)type == 9 ? 0 : (int)type;
             Text = "アイテムの追加";
 
+            // 編集用
             if (!(edit && item != null)) return;
             Item = item;
             Text = "アイテムの編集";
             label3.Text = "アイテムの編集";
-            BoothURLTextBox.Text = $"https://booth.pm/ja/items/{item!.BoothId}";
-            FolderTextBox.Enabled = false;
+            AddButton.Text = "編集";
+
+            // 元のデータを表示
+            BoothURLTextBox.Text = $"https://booth.pm/ja/items/{item.BoothId}";
             FolderTextBox.Text = item.ItemPath;
             SupportedAvatar = item.SupportedAvatar;
-            SelectAvatar.Text = $"選択中: {SupportedAvatar.Length}個";
-            AddButton.Text = "編集";
-            AddButton.Enabled = true;
             TitleTextBox.Text = item.Title;
             AuthorTextBox.Text = item.AuthorName;
+            SelectAvatar.Text = $"選択中: {SupportedAvatar.Length}個";
+
+            // ボタンの有効化、無効化
+            FolderTextBox.Enabled = false;
+            AddButton.Enabled = true;
             TitleTextBox.Enabled = true;
             AuthorTextBox.Enabled = true;
             CustomButton.Enabled = false;
@@ -39,6 +53,7 @@ namespace Avatar_Explorer.Forms
 
         private void FolderTextBox_DragDrop(object sender, DragEventArgs e)
         {
+            // フォルダが投げられたときにフォルダパスを取得して、表示してあげる
             if (e.Data == null) return;
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
             string[]? dragFilePathArr = (string[]?)e.Data.GetData(DataFormats.FileDrop, false);
@@ -112,6 +127,7 @@ namespace Avatar_Explorer.Forms
 
             if (_edit)
             {
+                // 同じパスのものを削除してから追加
                 MessageBox.Show("Boothのアイテムを編集しました!\nアイテム名: " + Item.Title + "\n作者: " + Item.AuthorName, "編集完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _mainForm.Items = _mainForm.Items.Where(i => i.ItemPath != Item.ItemPath).ToArray();
                 _mainForm.Items = _mainForm.Items.Append(Item).ToArray();
