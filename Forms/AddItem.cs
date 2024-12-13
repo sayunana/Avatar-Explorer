@@ -83,7 +83,7 @@ namespace Avatar_Explorer.Forms
                 return;
             }
 
-            if (Item.BoothId != 0)
+            if (Item.BoothId != -1)
             {
                 var thumbnailPath = Path.Combine("./Datas", "Thumbnail", $"{Item.BoothId}.png");
                 if (!File.Exists(thumbnailPath))
