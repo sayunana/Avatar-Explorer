@@ -119,7 +119,6 @@ namespace Avatar_Explorer.Forms
                         return;
                     }
                 }
-
             }
 
             if (_edit)

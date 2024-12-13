@@ -16,6 +16,7 @@ namespace Avatar_Explorer.Classes
 
             var title = htmlDoc.DocumentNode.SelectSingleNode("//h2[@class='font-bold leading-[32px] m-0 text-[24px]']")?.InnerText?.Trim();
             title ??= "";
+            title = title.Replace("&amp;", "＆");
 
             var authorNode =
                 htmlDoc.DocumentNode.SelectSingleNode(
@@ -29,20 +30,22 @@ namespace Avatar_Explorer.Classes
 
             var authorIcon = htmlDoc.DocumentNode.SelectSingleNode($"//img[@alt='{author}']")?.GetAttributeValue("src", null) ?? "";
 
+            var authorId = GetAuthorId(authorUrl);
+
             return new Item
             {
-                Title = title.Replace("&amp;", "＆"),
+                Title = title,
                 AuthorName = author,
                 ThumbnailUrl = imageUrl,
                 AuthorImageUrl = authorIcon,
-                AuthorId = GetAuthorId(authorUrl)
+                AuthorId = authorId
             };
         }
 
         private static string GetAuthorId(string url)
         {
             var match = Regex.Match(url, @"https://(.*).booth.pm/");
-            return match.Success ? match.Groups[1].Value : "Not Found";
+            return match.Success ? match.Groups[1].Value : "";
         }
 
         public static string GetCategoryName(ItemType itemType)
