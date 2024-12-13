@@ -73,13 +73,7 @@ namespace Avatar_Explorer.Forms
 
             if (Item.Title == "" || Item.AuthorName == "" || Item.ItemPath == "")
             {
-                MessageBox.Show("タイトル、作者、フォルダパスが入力されていません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (!Directory.Exists(Item.ItemPath))
-            {
-                MessageBox.Show("フォルダパスが存在しません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("タイトル、作者、フォルダパスのどれかが入力されていません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -88,20 +82,21 @@ namespace Avatar_Explorer.Forms
                 var thumbnailPath = Path.Combine("./Datas", "Thumbnail", $"{Item.BoothId}.png");
                 if (!File.Exists(thumbnailPath))
                 {
-                    if (Item.ThumbnailUrl == "Not Found") return;
+                    if (string.IsNullOrEmpty(Item.ThumbnailUrl)) return;
 
                     try
                     {
                         var thumbnailData = await HttpClient.GetByteArrayAsync(Item.ThumbnailUrl);
                         await File.WriteAllBytesAsync(thumbnailPath, thumbnailData);
+                        Item.ImagePath = thumbnailPath;
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error downloading thumbnail: {ex.Message}");
+                        MessageBox.Show("サムネイルのダウンロードに失敗しました: " + ex.Message,
+                            "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
-                Item.ImagePath = thumbnailPath;
             }
 
             if (!string.IsNullOrEmpty(Item.AuthorId))
@@ -109,32 +104,36 @@ namespace Avatar_Explorer.Forms
                 var authorImagePath = Path.Combine("./Datas", "AuthorImage", $"{Item.AuthorId}.png");
                 if (!File.Exists(authorImagePath))
                 {
-                    if (Item.AuthorImageUrl == "Not Found") return;
+                    if (string.IsNullOrEmpty(Item.AuthorImageUrl)) return;
 
                     try
                     {
                         var authorImageData = await HttpClient.GetByteArrayAsync(Item.AuthorImageUrl);
                         await File.WriteAllBytesAsync(authorImagePath, authorImageData);
+                        Item.AuthorImageFilePath = authorImagePath;
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error downloading author image: {ex.Message}");
+                        MessageBox.Show("作者の画像のダウンロードに失敗しました: " + ex.Message,
+                            "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
-                Item.AuthorImageFilePath = authorImagePath;
+
             }
 
             if (_edit)
             {
                 // 同じパスのものを削除してから追加
-                MessageBox.Show("Boothのアイテムを編集しました!\nアイテム名: " + Item.Title + "\n作者: " + Item.AuthorName, "編集完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Boothのアイテムを編集しました!\nアイテム名: " + Item.Title + "\n作者: " + Item.AuthorName, "編集完了",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _mainForm.Items = _mainForm.Items.Where(i => i.ItemPath != Item.ItemPath).ToArray();
                 _mainForm.Items = _mainForm.Items.Append(Item).ToArray();
             }
             else
             {
-                MessageBox.Show("Boothのアイテムを追加しました!\nアイテム名: " + Item.Title + "\n作者: " + Item.AuthorName, "追加完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Boothのアイテムを追加しました!\nアイテム名: " + Item.Title + "\n作者: " + Item.AuthorName, "追加完了",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _mainForm.Items = _mainForm.Items.Append(Item).ToArray();
             }
 
@@ -166,7 +165,8 @@ namespace Avatar_Explorer.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Boothのアイテム情報を取得できませんでした\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Boothのアイテム情報を取得できませんでした\n" + ex.Message, "エラー", MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
                 TitleTextBox.Enabled = true;
                 AuthorTextBox.Enabled = true;
                 GetButton.Enabled = true;
@@ -215,21 +215,6 @@ namespace Avatar_Explorer.Forms
             {
                 ClearErrorState();
             }
-
-            return;
-
-            void SetErrorState(string errorMessage)
-            {
-                AddButton.Enabled = false;
-                ErrorLabel.Text = errorMessage;
-            }
-
-            void ClearErrorState()
-            {
-                AddButton.Enabled = true;
-                ErrorLabel.Text = "";
-            }
-
         }
 
         private void CustomButton_Click(object sender, EventArgs e)
@@ -238,6 +223,34 @@ namespace Avatar_Explorer.Forms
             AuthorTextBox.Text = "";
             TitleTextBox.Enabled = true;
             AuthorTextBox.Enabled = true;
+        }
+
+        private void FolderTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (!Directory.Exists(FolderTextBox.Text))
+            {
+                SetErrorState("エラー: フォルダパスが存在しません");
+            }
+            else if (_mainForm.Items.Any(i => i.ItemPath == FolderTextBox.Text) && !_edit)
+            {
+                SetErrorState("エラー: 同じパスのアイテムが既に存在します");
+            }
+            else
+            {
+                ClearErrorState();
+            }
+        }
+
+        private void SetErrorState(string errorMessage)
+        {
+            AddButton.Enabled = false;
+            ErrorLabel.Text = errorMessage;
+        }
+
+        private void ClearErrorState()
+        {
+            AddButton.Enabled = true;
+            ErrorLabel.Text = "";
         }
     }
 }

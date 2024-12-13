@@ -401,6 +401,11 @@ namespace Avatar_Explorer.Forms
                 ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー");
                 toolStripMenuItem.Click += (_, _) =>
                 {
+                    if (item.BoothId == -1)
+                    {
+                        MessageBox.Show("BoothIDが存在しません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                     Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
                 };
                 ToolStripMenuItem toolStripMenuItem2 = new("削除");

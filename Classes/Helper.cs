@@ -15,19 +15,19 @@ namespace Avatar_Explorer.Classes
             htmlDoc.LoadHtml(response);
 
             var title = htmlDoc.DocumentNode.SelectSingleNode("//h2[@class='font-bold leading-[32px] m-0 text-[24px]']")?.InnerText?.Trim();
-            title ??= "タイトル不明";
+            title ??= "";
 
             var authorNode =
                 htmlDoc.DocumentNode.SelectSingleNode(
                     "//a[@data-product-list='from market_show via market_item_detail to shop_index']");
-            var author = authorNode?.InnerText?.Trim() ?? "作者不明";
-            var authorUrl = authorNode?.GetAttributeValue("href", null) ?? "Not Found";
+            var author = authorNode?.InnerText?.Trim() ?? "";
+            var authorUrl = authorNode?.GetAttributeValue("href", null) ?? "";
 
             var imageUrl = htmlDoc.DocumentNode
                 .SelectSingleNode("//meta[@name='twitter:image']")
-                ?.GetAttributeValue("content", null) ?? "Not Found";
+                ?.GetAttributeValue("content", null) ?? "";
 
-            var authorIcon = htmlDoc.DocumentNode.SelectSingleNode($"//img[@alt='{author}']")?.GetAttributeValue("src", null) ?? "Not Found";
+            var authorIcon = htmlDoc.DocumentNode.SelectSingleNode($"//img[@alt='{author}']")?.GetAttributeValue("src", null) ?? "";
 
             return new Item
             {

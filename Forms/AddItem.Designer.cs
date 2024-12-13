@@ -86,6 +86,7 @@
             FolderTextBox.Name = "FolderTextBox";
             FolderTextBox.Size = new Size(407, 31);
             FolderTextBox.TabIndex = 3;
+            FolderTextBox.TextChanged += FolderTextBox_TextChanged;
             FolderTextBox.DragDrop += FolderTextBox_DragDrop;
             FolderTextBox.DragEnter += FolderTextBox_DragEnter;
             // 
