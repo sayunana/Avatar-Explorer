@@ -77,24 +77,26 @@ namespace Avatar_Explorer.Forms
                 return;
             }
 
+            AddButton.Enabled = false;
+
             if (Item.BoothId != -1)
             {
                 var thumbnailPath = Path.Combine("./Datas", "Thumbnail", $"{Item.BoothId}.png");
                 if (!File.Exists(thumbnailPath))
                 {
-                    if (string.IsNullOrEmpty(Item.ThumbnailUrl)) return;
-
-                    try
+                    if (!string.IsNullOrEmpty(Item.ThumbnailUrl))
                     {
-                        var thumbnailData = await HttpClient.GetByteArrayAsync(Item.ThumbnailUrl);
-                        await File.WriteAllBytesAsync(thumbnailPath, thumbnailData);
-                        Item.ImagePath = thumbnailPath;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("サムネイルのダウンロードに失敗しました: " + ex.Message,
-                            "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
+                        try
+                        {
+                            var thumbnailData = await HttpClient.GetByteArrayAsync(Item.ThumbnailUrl);
+                            await File.WriteAllBytesAsync(thumbnailPath, thumbnailData);
+                            Item.ImagePath = thumbnailPath;
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("サムネイルのダウンロードに失敗しました: " + ex.Message,
+                                "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
                 else
@@ -108,19 +110,19 @@ namespace Avatar_Explorer.Forms
                 var authorImagePath = Path.Combine("./Datas", "AuthorImage", $"{Item.AuthorId}.png");
                 if (!File.Exists(authorImagePath))
                 {
-                    if (string.IsNullOrEmpty(Item.AuthorImageUrl)) return;
-
-                    try
+                    if (!string.IsNullOrEmpty(Item.AuthorImageUrl))
                     {
-                        var authorImageData = await HttpClient.GetByteArrayAsync(Item.AuthorImageUrl);
-                        await File.WriteAllBytesAsync(authorImagePath, authorImageData);
-                        Item.AuthorImageFilePath = authorImagePath;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("作者の画像のダウンロードに失敗しました: " + ex.Message,
-                            "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
+                        try
+                        {
+                            var authorImageData = await HttpClient.GetByteArrayAsync(Item.AuthorImageUrl);
+                            await File.WriteAllBytesAsync(authorImagePath, authorImageData);
+                            Item.AuthorImageFilePath = authorImagePath;
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("作者の画像のダウンロードに失敗しました: " + ex.Message,
+                                "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
                 else

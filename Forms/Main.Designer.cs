@@ -40,6 +40,7 @@
             SearchBox = new TextBox();
             label1 = new Label();
             SearchResultLabel = new Label();
+            ExportButton = new Button();
             AvatarSearchFilterList.SuspendLayout();
             ExplorerList.SuspendLayout();
             AvatarItemExplorer.SuspendLayout();
@@ -172,11 +173,22 @@
             SearchResultLabel.Size = new Size(0, 20);
             SearchResultLabel.TabIndex = 9;
             // 
+            // ExportButton
+            // 
+            ExportButton.Location = new Point(20, 641);
+            ExportButton.Name = "ExportButton";
+            ExportButton.Size = new Size(161, 46);
+            ExportButton.TabIndex = 10;
+            ExportButton.Text = "CSVに出力";
+            ExportButton.UseVisualStyleBackColor = true;
+            ExportButton.Click += ExportButton_Click;
+            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1266, 699);
+            Controls.Add(ExportButton);
             Controls.Add(SearchResultLabel);
             Controls.Add(label1);
             Controls.Add(SearchBox);
@@ -213,5 +225,6 @@
         private TextBox SearchBox;
         private Label label1;
         private Label SearchResultLabel;
+        private Button ExportButton;
     }
 }

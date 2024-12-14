@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 using Avatar_Explorer.Classes;
 
 namespace Avatar_Explorer.Forms
@@ -489,6 +490,25 @@ namespace Avatar_Explorer.Forms
             AddItem addItem = new(this, ItemType.Avatar, false, null, folderPath);
             addItem.ShowDialog();
             GenerateAvatarList();
+        }
+
+        private void ExportButton_Click(object sender, EventArgs e)
+        {
+            if (!Directory.Exists("./Output"))
+            {
+                Directory.CreateDirectory("./Output");
+            }
+
+            var fileName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".csv";
+
+            using var sw = new StreamWriter("./Output/" + fileName, false, Encoding.UTF8);
+            sw.WriteLine("Title,AuthorName,AuthorImageFilePath,ImagePath,Type,SupportedAvatar,BoothId,ItemPath");
+            foreach (var item in Items)
+            {
+                sw.WriteLine($"{item.Title},{item.AuthorName},{item.AuthorImageFilePath},{item.ImagePath},{item.Type},{string.Join(";", item.SupportedAvatar)},{item.BoothId},{item.ItemPath}");
+            }
+
+            MessageBox.Show("Outputフォルダにエクスポートが完了しました！\nファイル名: " + fileName, "完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
