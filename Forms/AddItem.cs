@@ -97,6 +97,10 @@ namespace Avatar_Explorer.Forms
                         return;
                     }
                 }
+                else
+                {
+                    Item.ImagePath = thumbnailPath;
+                }
             }
 
             if (!string.IsNullOrEmpty(Item.AuthorId))
@@ -118,6 +122,10 @@ namespace Avatar_Explorer.Forms
                             "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
+                }
+                else
+                {
+                    Item.AuthorImageFilePath = authorImagePath;
                 }
             }
 

@@ -90,6 +90,7 @@
             // 
             // AvatarAuthorPage
             // 
+            AvatarAuthorPage.AutoScroll = true;
             AvatarAuthorPage.Location = new Point(4, 24);
             AvatarAuthorPage.Name = "AvatarAuthorPage";
             AvatarAuthorPage.Padding = new Padding(3);

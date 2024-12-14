@@ -433,7 +433,7 @@ namespace Avatar_Explorer.Forms
                 ToolStripMenuItem toolStripMenuItem3 = new("•ÒW", _editImage);
                 toolStripMenuItem3.Click += (_, _) =>
                 {
-                    AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item, null);
+                    AddItem addItem = new(this, item.Type, true, item, null);
                     addItem.ShowDialog();
                     GenerateAvatarList();
                 };
