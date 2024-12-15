@@ -39,7 +39,7 @@ namespace Avatar_Explorer.Forms
             var index = 0;
             foreach (Item item in Items.Where(item => item.Type == ItemType.Avatar))
             {
-                Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName, true);
+                Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName, true, item.Title);
                 button.Location = new Point(0, (70 * index) + 7);
                 button.Click += (_, _) =>
                 {
@@ -76,7 +76,7 @@ namespace Avatar_Explorer.Forms
             foreach (var author in authors)
             {
                 Button button = Helper.CreateButton(author.AuthorImagePath, author.AuthorName,
-                    Items.Count(item => item.AuthorName == author.AuthorName) + "個の項目", true);
+                    Items.Count(item => item.AuthorName == author.AuthorName) + "個の項目", true, author.AuthorName);
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
@@ -140,7 +140,7 @@ namespace Avatar_Explorer.Forms
             var index = 0;
             foreach (Item item in filteredItems)
             {
-                Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName);
+                Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName, false, item.Title);
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
@@ -229,14 +229,16 @@ namespace Avatar_Explorer.Forms
             {
                 var imagePath = file.FileExtension is ".png" or ".jpg" ? file.FilePath : "./Datas/FileIcon.png";
                 Button button = Helper.CreateButton(imagePath, file.FileName,
-                    file.FileExtension.Replace(".", "") + "ファイル");
+                    file.FileExtension.Replace(".", "") + "ファイル", false, "開くファイルのパス: " + file.FilePath);
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
-                    Process.Start(new ProcessStartInfo("explorer.exe", " /select, " + file.FilePath));
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = file.FilePath,
+                        UseShellExecute = true
+                    });
                 };
-                ToolTip toolTip = new();
-                toolTip.SetToolTip(button, "開くファイルのパス: " + file.FilePath);
                 AvatarItemExplorer.Controls.Add(button);
                 index++;
             }
@@ -395,12 +397,12 @@ namespace Avatar_Explorer.Forms
                 })
                 .ToList();
 
-            SearchResultLabel.Text = "検索結果: " + filteredItems.Count + "件";
+            SearchResultLabel.Text = "検索結果: " + filteredItems.Count + "件" + " (全" + Items.Length + "件)";
 
             var index = 0;
             foreach (Item item in filteredItems)
             {
-                Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName);
+                Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName, false, item.Title);
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {

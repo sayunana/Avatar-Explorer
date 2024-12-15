@@ -103,7 +103,7 @@ namespace Avatar_Explorer.Classes
             return itemFolderInfo;
         }
 
-        public static Button CreateButton(string imagePath, string labelTitle, string? deskription, bool @short = false)
+        public static Button CreateButton(string imagePath, string labelTitle, string? deskription, bool @short = false, string tooltip = "")
         {
             var buttonWidth = @short ? 319 : 882;
             Button button = new Button();
@@ -132,6 +132,9 @@ namespace Avatar_Explorer.Classes
             pictureBox.Click += (_, _) => button.PerformClick();
             title.Click += (_, _) => button.PerformClick();
             authorName.Click += (_, _) => button.PerformClick();
+
+            if (!string.IsNullOrEmpty(tooltip))
+                new ToolTip().SetToolTip(button, tooltip);
 
             return button;
         }
