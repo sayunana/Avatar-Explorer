@@ -193,7 +193,8 @@ namespace Avatar_Explorer.Forms
                 "改変用データ",
                 "テクスチャ",
                 "ドキュメント",
-                "Unityパッケージ"
+                "Unityパッケージ",
+                "不明"
             };
             if (CurrentPath.CurrentSelectedItem == null) return;
             ItemFolderInfo itemFolderInfo = Helper.GetItemFolderInfo(CurrentPath.CurrentSelectedItem.ItemPath);
@@ -231,6 +232,16 @@ namespace Avatar_Explorer.Forms
                 Button button = Helper.CreateButton(imagePath, file.FileName,
                     file.FileExtension.Replace(".", "") + "ファイル", false, "開くファイルのパス: " + file.FilePath);
                 button.Location = new Point(0, (70 * index) + 2);
+
+                ContextMenuStrip contextMenuStrip = new();
+                ToolStripMenuItem toolStripMenuItem = new("ファイルのパスを開く", _copyImage);
+                toolStripMenuItem.Click += (_, _) =>
+                {
+                    Process.Start("explorer.exe", "/select," + file.FilePath);
+                };
+                contextMenuStrip.Items.Add(toolStripMenuItem);
+                button.ContextMenuStrip = contextMenuStrip;
+
                 button.Click += (_, _) =>
                 {
                     Process.Start(new ProcessStartInfo
