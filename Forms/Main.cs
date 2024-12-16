@@ -175,6 +175,7 @@ namespace Avatar_Explorer.Forms
                     AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item, null);
                     addItem.ShowDialog();
                     GenerateAvatarList();
+                    GenerateAuthorList();
                 };
 
                 contextMenuStrip.Items.Add(toolStripMenuItem);
@@ -261,6 +262,7 @@ namespace Avatar_Explorer.Forms
             AddItem addItem = new AddItem(this, CurrentPath.CurrentSelectedCategory, false, null, null);
             addItem.ShowDialog();
             GenerateAvatarList();
+            GenerateAuthorList();
         }
 
         // Generate Path
@@ -450,6 +452,7 @@ namespace Avatar_Explorer.Forms
                     AddItem addItem = new(this, item.Type, true, item, null);
                     addItem.ShowDialog();
                     GenerateAvatarList();
+                    GenerateAuthorList();
                 };
 
                 contextMenuStrip.Items.Add(toolStripMenuItem);
@@ -503,6 +506,7 @@ namespace Avatar_Explorer.Forms
             AddItem addItem = new(this, ItemType.Avatar, false, null, folderPath);
             addItem.ShowDialog();
             GenerateAvatarList();
+            GenerateAuthorList();
         }
 
         private void ExportButton_Click(object sender, EventArgs e)
