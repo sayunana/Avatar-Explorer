@@ -33,6 +33,22 @@
                 _ => Array.Empty<FileData>()
             };
         }
+
+        public bool IsEmpty()
+        {
+            return ModifyFiles.Length == 0 && TextureFiles.Length == 0 && DocumentFiles.Length == 0 && UnityPackageFiles.Length == 0 && UnkownFiles.Length == 0;
+        }
+
+        public int GetTotalCount()
+        {
+            return ModifyFiles.Length + TextureFiles.Length + DocumentFiles.Length + UnityPackageFiles.Length + UnkownFiles.Length;
+        }
+
+        public FileData[] GetAllItem()
+        {
+            return ModifyFiles.Concat(TextureFiles).Concat(DocumentFiles).Concat(UnityPackageFiles).Concat(UnkownFiles).ToArray();
+
+        }
     }
 
     public class FileData

@@ -14,28 +14,21 @@ namespace Avatar_Explorer.Forms
 
         public AddItem(Main mainForm, ItemType type, bool edit, Item? item, string? folderPath)
         {
-            // アイテム編集モードかどうか
             _edit = edit;
-
-            // メインフォームの参照を持っておく
             _mainForm = mainForm;
             InitializeComponent();
 
-            // フォルダパスが渡されたら表示してあげる
             if (folderPath != null) FolderTextBox.Text = folderPath;
 
-            // typeでデフォルトの値を変えてあげる
             TypeComboBox.SelectedIndex = (int)type == 9 ? 0 : (int)type;
             Text = "アイテムの追加";
 
-            // 編集用
             if (!(edit && item != null)) return;
             Item = item;
             Text = "アイテムの編集";
             label3.Text = "アイテムの編集";
             AddButton.Text = "編集";
 
-            // 元のデータを表示
             BoothURLTextBox.Text = $"https://booth.pm/ja/items/{item.BoothId}";
             FolderTextBox.Text = item.ItemPath;
             SupportedAvatar = item.SupportedAvatar;
@@ -43,7 +36,6 @@ namespace Avatar_Explorer.Forms
             AuthorTextBox.Text = item.AuthorName;
             SelectAvatar.Text = $"選択中: {SupportedAvatar.Length}個";
 
-            // ボタンの有効化、無効化
             FolderTextBox.Enabled = false;
             AddButton.Enabled = true;
             TitleTextBox.Enabled = true;
@@ -53,7 +45,6 @@ namespace Avatar_Explorer.Forms
 
         private void FolderTextBox_DragDrop(object sender, DragEventArgs e)
         {
-            // フォルダが投げられたときにフォルダパスを取得して、表示してあげる
             if (e.Data == null) return;
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
             string[]? dragFilePathArr = (string[]?)e.Data.GetData(DataFormats.FileDrop, false);

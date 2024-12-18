@@ -22,6 +22,8 @@ namespace Avatar_Explorer.Forms
         private readonly Image _trashImage = Image.FromFile("./Datas/TrashIcon.png");
         private readonly Image _editImage = Image.FromFile("./Datas/EditIcon.png");
 
+        private Window _openingWindow = Window.Nothing;
+
         public Main()
         {
             Items = Helper.LoadItemsData();
@@ -39,7 +41,8 @@ namespace Avatar_Explorer.Forms
             var index = 0;
             foreach (Item item in Items.Where(item => item.Type == ItemType.Avatar))
             {
-                Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName, true, item.Title);
+                Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName, true,
+                    item.Title);
                 button.Location = new Point(0, (70 * index) + 7);
                 button.Click += (_, _) =>
                 {
@@ -97,6 +100,7 @@ namespace Avatar_Explorer.Forms
         // Generate List (RIGHT)
         private void GenerateCategoryList()
         {
+            _openingWindow = Window.ItemCategoryList;
             ResetAvatarList();
 
             var index = 0;
@@ -126,6 +130,7 @@ namespace Avatar_Explorer.Forms
 
         private void GenerateItems()
         {
+            _openingWindow = Window.ItemList;
             ResetAvatarList();
 
             var filteredItems = _authorMode
@@ -140,7 +145,8 @@ namespace Avatar_Explorer.Forms
             var index = 0;
             foreach (Item item in filteredItems)
             {
-                Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName, false, item.Title);
+                Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName, false,
+                    item.Title);
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
@@ -159,6 +165,7 @@ namespace Avatar_Explorer.Forms
                         MessageBox.Show("BoothIDが存在しません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
+
                     Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
                 };
 
@@ -189,6 +196,7 @@ namespace Avatar_Explorer.Forms
 
         private void GenerateItemCategoryList()
         {
+            _openingWindow = Window.ItemFolderCategoryList;
             var types = new[]
             {
                 "改変用データ",
@@ -223,6 +231,7 @@ namespace Avatar_Explorer.Forms
 
         private void GenerateItemFiles()
         {
+            _openingWindow = Window.ItemFolderItemsList;
             ResetAvatarList();
 
             var index = 0;
@@ -236,20 +245,160 @@ namespace Avatar_Explorer.Forms
 
                 ContextMenuStrip contextMenuStrip = new();
                 ToolStripMenuItem toolStripMenuItem = new("ファイルのパスを開く", _copyImage);
-                toolStripMenuItem.Click += (_, _) =>
-                {
-                    Process.Start("explorer.exe", "/select," + file.FilePath);
-                };
+                toolStripMenuItem.Click += (_, _) => { Process.Start("explorer.exe", "/select," + file.FilePath); };
                 contextMenuStrip.Items.Add(toolStripMenuItem);
                 button.ContextMenuStrip = contextMenuStrip;
 
                 button.Click += (_, _) =>
                 {
-                    Process.Start(new ProcessStartInfo
+                    try
                     {
-                        FileName = file.FilePath,
-                        UseShellExecute = true
-                    });
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = file.FilePath,
+                            UseShellExecute = true
+                        });
+                    }
+                    catch
+                    {
+                        Process.Start("explorer.exe", "/select," + file.FilePath);
+                    }
+                };
+                AvatarItemExplorer.Controls.Add(button);
+                index++;
+            }
+        }
+
+        private void GenerateFilteredItem(string[] searchWords)
+        {
+            _openingWindow = Window.SearchItemList;
+            ResetAvatarList();
+            var filteredItems = Items
+                .Where(item =>
+                    searchWords.All(word =>
+                        item.Title.ToLower().Contains(word.ToLower()) ||
+                        item.AuthorName.ToLower().Contains(word.ToLower()) ||
+                        item.SupportedAvatar.Any(avatar => avatar.ToLower().Contains(word.ToLower())) ||
+                        item.BoothId.ToString().Contains(word.ToLower())
+                    )
+                )
+                .OrderByDescending(item =>
+                {
+                    var matchCount = 0;
+                    foreach (var word in searchWords)
+                    {
+                        if (item.Title.ToLower().Contains(word.ToLower())) matchCount++;
+                        if (item.AuthorName.ToLower().Contains(word.ToLower())) matchCount++;
+                    }
+
+                    return matchCount;
+                })
+                .ToList();
+
+            SearchResultLabel.Text = "検索結果: " + filteredItems.Count + "件" + " (全" + Items.Length + "件)";
+
+            var index = 0;
+            foreach (Item item in filteredItems)
+            {
+                Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName, false,
+                    item.Title);
+                button.Location = new Point(0, (70 * index) + 2);
+                button.Click += (_, _) =>
+                {
+                    _authorMode = false;
+                    GeneratePathFromItem(item);
+                    SearchBox.Text = "";
+                    GenerateItemCategoryList();
+                    PathTextBox.Text = GeneratePath();
+                };
+
+                ContextMenuStrip contextMenuStrip = new();
+
+                ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー", _copyImage);
+                toolStripMenuItem.Click += (_, _) =>
+                {
+                    if (item.BoothId == -1)
+                    {
+                        MessageBox.Show("BoothIDが存在しません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
+                };
+
+                ToolStripMenuItem toolStripMenuItem2 = new("削除", _trashImage);
+                toolStripMenuItem2.Click += (_, _) =>
+                {
+                    Items = Items.Where(i => i.Title != item.Title).ToArray();
+                    GenerateItems();
+                };
+
+                ToolStripMenuItem toolStripMenuItem3 = new("編集", _editImage);
+                toolStripMenuItem3.Click += (_, _) =>
+                {
+                    AddItem addItem = new(this, item.Type, true, item, null);
+                    addItem.ShowDialog();
+                    GenerateAvatarList();
+                    GenerateAuthorList();
+                };
+
+                contextMenuStrip.Items.Add(toolStripMenuItem);
+                contextMenuStrip.Items.Add(toolStripMenuItem2);
+                contextMenuStrip.Items.Add(toolStripMenuItem3);
+                button.ContextMenuStrip = contextMenuStrip;
+                AvatarItemExplorer.Controls.Add(button);
+                index++;
+            }
+        }
+
+        private void GenerateFilteredFolderItems(string[] searchWords)
+        {
+            _openingWindow = Window.SearchItemList;
+            ResetAvatarList();
+
+            var filteredItems = CurrentPath.CurrentSelectedItemFolderInfo.GetAllItem()
+                .Where(file =>
+                    searchWords.All(word =>
+                        file.FileName.ToLower().Contains(word.ToLower())
+                    )
+                )
+                .OrderByDescending(file =>
+                {
+                    return searchWords.Count(word => file.FileName.ToLower().Contains(word.ToLower()));
+                })
+                .ToList();
+
+            SearchResultLabel.Text = "フォルダー内検索結果: " + filteredItems.Count + "件" + " (全" +
+                                     CurrentPath.CurrentSelectedItemFolderInfo.GetTotalCount() + "件)";
+
+            var index = 0;
+            foreach (var file in filteredItems)
+            {
+                var imagePath = file.FileExtension is ".png" or ".jpg" ? file.FilePath : "./Datas/FileIcon.png";
+                Button button = Helper.CreateButton(imagePath, file.FileName,
+                    file.FileExtension.Replace(".", "") + "ファイル", false, "開くファイルのパス: " + file.FilePath);
+                button.Location = new Point(0, (70 * index) + 2);
+
+                ContextMenuStrip contextMenuStrip = new();
+                ToolStripMenuItem toolStripMenuItem = new("ファイルのパスを開く", _copyImage);
+                toolStripMenuItem.Click += (_, _) => { Process.Start("explorer.exe", "/select," + file.FilePath); };
+                contextMenuStrip.Items.Add(toolStripMenuItem);
+                button.ContextMenuStrip = contextMenuStrip;
+
+                button.Click += (_, _) =>
+                {
+                    try
+                    {
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = file.FilePath,
+                            UseShellExecute = true
+                        });
+                    }
+                    catch
+                    {
+                        Process.Start("explorer.exe", "/select," + file.FilePath);
+                    }
                 };
                 AvatarItemExplorer.Controls.Add(button);
                 index++;
@@ -300,17 +449,18 @@ namespace Avatar_Explorer.Forms
 
             return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
                    Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
-                   Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" + CurrentPath.CurrentSelectedItemCategory;
+                   Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" +
+                   CurrentPath.CurrentSelectedItemCategory;
         }
 
         private void GeneratePathFromItem(Item item)
         {
+            Debug.WriteLine(item.SupportedAvatar.FirstOrDefault());
             CurrentPath.CurrentSelectedAvatar = item.SupportedAvatar.FirstOrDefault() ?? "*";
             CurrentPath.CurrentSelectedCategory = item.Type;
             CurrentPath.CurrentSelectedItem = item;
         }
 
-        // Undo Button
         private void UndoButton_Click(object sender, EventArgs e)
         {
             if (CurrentPath.CurrentSelectedItemCategory != null)
@@ -383,84 +533,14 @@ namespace Avatar_Explorer.Forms
             }
 
             string[] searchWords = SearchBox.Text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            GenerateFilteredItem(searchWords);
-        }
 
-        private void GenerateFilteredItem(string[] searchWords)
-        {
-            ResetAvatarList();
-            var filteredItems = Items
-                .Where(item =>
-                    searchWords.All(word =>
-                        item.Title.ToLower().Contains(word.ToLower()) ||
-                        item.AuthorName.ToLower().Contains(word.ToLower()) ||
-                        item.SupportedAvatar.Any(avatar => avatar.ToLower().Contains(word.ToLower())) ||
-                        item.BoothId.ToString().Contains(word.ToLower())
-                    )
-                )
-                .OrderByDescending(item =>
-                {
-                    var matchCount = 0;
-                    foreach (var word in searchWords)
-                    {
-                        if (item.Title.ToLower().Contains(word.ToLower())) matchCount++;
-                        if (item.AuthorName.ToLower().Contains(word.ToLower())) matchCount++;
-                    }
-                    return matchCount;
-                })
-                .ToList();
-
-            SearchResultLabel.Text = "検索結果: " + filteredItems.Count + "件" + " (全" + Items.Length + "件)";
-
-            var index = 0;
-            foreach (Item item in filteredItems)
+            if (_openingWindow is Window.ItemFolderCategoryList or Window.ItemFolderItemsList)
             {
-                Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName, false, item.Title);
-                button.Location = new Point(0, (70 * index) + 2);
-                button.Click += (_, _) =>
-                {
-                    _authorMode = false;
-                    GeneratePathFromItem(item);
-                    SearchBox.Text = "";
-                    GenerateItemCategoryList();
-                    PathTextBox.Text = GeneratePath();
-                };
-
-                ContextMenuStrip contextMenuStrip = new();
-
-                ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー", _copyImage);
-                toolStripMenuItem.Click += (_, _) =>
-                {
-                    if (item.BoothId == -1)
-                    {
-                        MessageBox.Show("BoothIDが存在しません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                    Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
-                };
-
-                ToolStripMenuItem toolStripMenuItem2 = new("削除", _trashImage);
-                toolStripMenuItem2.Click += (_, _) =>
-                {
-                    Items = Items.Where(i => i.Title != item.Title).ToArray();
-                    GenerateItems();
-                };
-
-                ToolStripMenuItem toolStripMenuItem3 = new("編集", _editImage);
-                toolStripMenuItem3.Click += (_, _) =>
-                {
-                    AddItem addItem = new(this, item.Type, true, item, null);
-                    addItem.ShowDialog();
-                    GenerateAvatarList();
-                    GenerateAuthorList();
-                };
-
-                contextMenuStrip.Items.Add(toolStripMenuItem);
-                contextMenuStrip.Items.Add(toolStripMenuItem2);
-                contextMenuStrip.Items.Add(toolStripMenuItem3);
-                button.ContextMenuStrip = contextMenuStrip;
-                AvatarItemExplorer.Controls.Add(button);
-                index++;
+                GenerateFilteredFolderItems(searchWords);
+            }
+            else
+            {
+                GenerateFilteredItem(searchWords);
             }
         }
 
@@ -522,10 +602,12 @@ namespace Avatar_Explorer.Forms
             sw.WriteLine("Title,AuthorName,AuthorImageFilePath,ImagePath,Type,SupportedAvatar,BoothId,ItemPath");
             foreach (var item in Items)
             {
-                sw.WriteLine($"{item.Title},{item.AuthorName},{item.AuthorImageFilePath},{item.ImagePath},{item.Type},{string.Join(";", item.SupportedAvatar)},{item.BoothId},{item.ItemPath}");
+                sw.WriteLine(
+                    $"{item.Title},{item.AuthorName},{item.AuthorImageFilePath},{item.ImagePath},{item.Type},{string.Join(";", item.SupportedAvatar)},{item.BoothId},{item.ItemPath}");
             }
 
-            MessageBox.Show("Outputフォルダにエクスポートが完了しました！\nファイル名: " + fileName, "完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Outputフォルダにエクスポートが完了しました！\nファイル名: " + fileName, "完了", MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
         }
     }
 }
