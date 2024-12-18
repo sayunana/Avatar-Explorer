@@ -271,8 +271,9 @@ namespace Avatar_Explorer.Forms
 
         private void GenerateFilteredItem(string[] searchWords)
         {
-            _openingWindow = Window.SearchItemList;
             ResetAvatarList();
+            _openingWindow = Window.SearchItemList;
+
             var filteredItems = Items
                 .Where(item =>
                     searchWords.All(word =>
@@ -353,10 +354,15 @@ namespace Avatar_Explorer.Forms
 
         private void GenerateFilteredFolderItems(string[] searchWords)
         {
-            _openingWindow = Window.SearchItemList;
             ResetAvatarList();
 
-            var filteredItems = CurrentPath.CurrentSelectedItemFolderInfo.GetAllItem()
+            var fileDatas = _openingWindow == Window.ItemFolderItemsList
+                ? CurrentPath.CurrentSelectedItemFolderInfo.GetItems(CurrentPath.CurrentSelectedItemCategory)
+                : CurrentPath.CurrentSelectedItemFolderInfo.GetAllItem();
+
+            _openingWindow = Window.SearchItemList;
+
+            var filteredItems = fileDatas
                 .Where(file =>
                     searchWords.All(word =>
                         file.FileName.ToLower().Contains(word.ToLower())
@@ -369,7 +375,7 @@ namespace Avatar_Explorer.Forms
                 .ToList();
 
             SearchResultLabel.Text = "フォルダー内検索結果: " + filteredItems.Count + "件" + " (全" +
-                                     CurrentPath.CurrentSelectedItemFolderInfo.GetTotalCount() + "件)";
+                                     fileDatas.Length + "件)";
 
             var index = 0;
             foreach (var file in filteredItems)
