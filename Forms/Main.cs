@@ -18,7 +18,7 @@ namespace Avatar_Explorer.Forms
 
         // Font
         private readonly PrivateFontCollection _fontCollection = new();
-        public FontFamily GuiFont = new("Noto Sans JP");
+        public FontFamily GuiFont;
 
         // Search Mode
         private bool _authorMode;
