@@ -48,6 +48,8 @@ namespace Avatar_Explorer.Forms
             ErrorLabel = new Label();
             AddButton = new Button();
             CustomButton = new Button();
+            folderBrowserDialog = new FolderBrowserDialog();
+            openFolderButton = new Button();
             SuspendLayout();
             // 
             // label1
@@ -86,7 +88,7 @@ namespace Avatar_Explorer.Forms
             FolderTextBox.Font = new Font(_mainForm.GuiFont, 12F);
             FolderTextBox.Location = new Point(124, 61);
             FolderTextBox.Name = "FolderTextBox";
-            FolderTextBox.Size = new Size(407, 31);
+            FolderTextBox.Size = new Size(326, 31);
             FolderTextBox.TabIndex = 3;
             FolderTextBox.TextChanged += FolderTextBox_TextChanged;
             FolderTextBox.DragDrop += FolderTextBox_DragDrop;
@@ -234,11 +236,22 @@ namespace Avatar_Explorer.Forms
             CustomButton.UseVisualStyleBackColor = true;
             CustomButton.Click += CustomButton_Click;
             // 
+            // openFolderButton
+            // 
+            openFolderButton.Location = new Point(456, 61);
+            openFolderButton.Name = "openFolderButton";
+            openFolderButton.Size = new Size(75, 31);
+            openFolderButton.TabIndex = 19;
+            openFolderButton.Text = "フォルダ";
+            openFolderButton.UseVisualStyleBackColor = true;
+            openFolderButton.Click += openFolderButton_Click;
+            // 
             // AddItem
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(550, 414);
+            Controls.Add(openFolderButton);
             Controls.Add(CustomButton);
             Controls.Add(AddButton);
             Controls.Add(ErrorLabel);
@@ -287,5 +300,7 @@ namespace Avatar_Explorer.Forms
         private Label ErrorLabel;
         private Button AddButton;
         private Button CustomButton;
+        private FolderBrowserDialog folderBrowserDialog;
+        private Button openFolderButton;
     }
 }
