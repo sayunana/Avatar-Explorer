@@ -265,5 +265,14 @@ namespace Avatar_Explorer.Forms
             AddButton.Enabled = true;
             ErrorLabel.Text = "";
         }
+
+        private void openFolderButton_Click(object sender, EventArgs e)
+        {
+            var result = folderBrowserDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                FolderTextBox.Text = folderBrowserDialog.SelectedPath;
+            }
+        }
     }
 }
