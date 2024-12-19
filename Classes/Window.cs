@@ -6,7 +6,6 @@
         ItemCategoryList,
         ItemList,
         ItemFolderCategoryList,
-        ItemFolderItemsList,
-        SearchItemList,
+        ItemFolderItemsList
     }
 }

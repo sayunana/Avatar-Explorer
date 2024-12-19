@@ -8,7 +8,7 @@ namespace Avatar_Explorer.Forms
     public sealed partial class Main : Form
     {
         // Current Version
-        private const string CurrentVersion = "v1.0.0";
+        private const string CurrentVersion = "v1.0.1";
 
         // Items Data
         public Item[] Items;
@@ -22,26 +22,42 @@ namespace Avatar_Explorer.Forms
 
         // Search Mode
         private bool _authorMode;
+        private bool _categoryMode;
 
-        private readonly Image _copyImage = Image.FromFile("./Datas/CopyIcon.png");
-        private readonly Image _trashImage = Image.FromFile("./Datas/TrashIcon.png");
-        private readonly Image _editImage = Image.FromFile("./Datas/EditIcon.png");
+        private readonly Image _copyImage;
+        private readonly Image _trashImage;
+        private readonly Image _editImage;
 
         private Window _openingWindow = Window.Nothing;
 
         public Main()
         {
+            if (File.Exists("./Datas/CopyIcon.png"))
+                _copyImage = Image.FromFile("./Datas/CopyIcon.png");
+
+            if (File.Exists("./Datas/TrashIcon.png"))
+                _trashImage = Image.FromFile("./Datas/TrashIcon.png");
+
+            if (File.Exists("./Datas/EditIcon.png"))
+                _editImage = Image.FromFile("./Datas/EditIcon.png");
+
+
             Items = Helper.LoadItemsData();
             AddFontFile();
             InitializeComponent();
             GenerateAvatarList();
             GenerateAuthorList();
+            GenerateCategoryListLeft();
 
             Text = $"VRChat Avatar Explorer {CurrentVersion} by ぷこるふ";
         }
 
         private void AddFontFile()
         {
+            if (!File.Exists("./Datas/NotoSansJP-Regular.ttf"))
+            {
+                MessageBox.Show("フォントファイルが見つかりませんでした", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             _fontCollection.AddFontFile("./Datas/NotoSansJP-Regular.ttf");
             GuiFont = _fontCollection.Families[0];
         }
@@ -64,6 +80,7 @@ namespace Avatar_Explorer.Forms
                     CurrentPath.CurrentSelectedItemCategory = null;
                     CurrentPath.CurrentSelectedItem = null;
                     _authorMode = false;
+                    _categoryMode = false;
                     GenerateCategoryList();
                     PathTextBox.Text = GeneratePath();
                 };
@@ -101,10 +118,38 @@ namespace Avatar_Explorer.Forms
                     CurrentPath.CurrentSelectedItemCategory = null;
                     CurrentPath.CurrentSelectedItem = null;
                     _authorMode = true;
+                    _categoryMode = false;
                     GenerateCategoryList();
                     PathTextBox.Text = GeneratePath();
                 };
                 AvatarAuthorPage.Controls.Add(button);
+                index++;
+            }
+        }
+
+        private void GenerateCategoryListLeft()
+        {
+            CategoryPage.Controls.Clear();
+            var index = 0;
+            foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
+            {
+                if (itemType is ItemType.Unknown) continue;
+
+                var items = Items.Where(item => item.Type == itemType);
+                var itemCount = items.Count();
+                if (itemCount == 0) continue;
+                Button button = Helper.CreateButton("./Datas/FolderIcon.png", Helper.GetCategoryName(itemType),
+                    itemCount + "個の項目", true);
+                button.Location = new Point(0, (70 * index) + 2);
+                button.Click += (_, _) =>
+                {
+                    CurrentPath.CurrentSelectedCategory = itemType;
+                    _authorMode = false;
+                    _categoryMode = true;
+                    GenerateItems();
+                    PathTextBox.Text = GeneratePath();
+                };
+                CategoryPage.Controls.Add(button);
                 index++;
             }
         }
@@ -145,14 +190,25 @@ namespace Avatar_Explorer.Forms
             _openingWindow = Window.ItemList;
             ResetAvatarList();
 
-            var filteredItems = _authorMode
-                ? Items.Where(item =>
+            var filteredItems = Items.AsEnumerable();
+            if (_authorMode)
+            {
+                filteredItems = Items.Where(item =>
                     item.Type == CurrentPath.CurrentSelectedCategory &&
-                    item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName)
-                : Items.Where(item =>
+                    item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName);
+            }
+            else if (_categoryMode)
+            {
+                filteredItems = Items.Where(item =>
+                    item.Type == CurrentPath.CurrentSelectedCategory);
+            }
+            else
+            {
+                filteredItems = Items.Where(item =>
                     item.Type == CurrentPath.CurrentSelectedCategory &&
                     (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) ||
                      item.SupportedAvatar.Length == 0));
+            }
 
             var index = 0;
             foreach (Item item in filteredItems)
@@ -213,6 +269,7 @@ namespace Avatar_Explorer.Forms
                     addItem.ShowDialog();
                     GenerateAvatarList();
                     GenerateAuthorList();
+                    GenerateCategoryListLeft();
                 };
 
                 contextMenuStrip.Items.Add(toolStripMenuItem2);
@@ -301,7 +358,6 @@ namespace Avatar_Explorer.Forms
         private void GenerateFilteredItem(string[] searchWords)
         {
             ResetAvatarList();
-            _openingWindow = Window.SearchItemList;
 
             var filteredItems = Items
                 .Where(item =>
@@ -388,6 +444,7 @@ namespace Avatar_Explorer.Forms
                     addItem.ShowDialog();
                     GenerateAvatarList();
                     GenerateAuthorList();
+                    GenerateCategoryListLeft();
                 };
 
                 contextMenuStrip.Items.Add(toolStripMenuItem2);
@@ -402,11 +459,13 @@ namespace Avatar_Explorer.Forms
         {
             ResetAvatarList();
 
-            var fileDatas = _openingWindow == Window.ItemFolderItemsList
-                ? CurrentPath.CurrentSelectedItemFolderInfo.GetItems(CurrentPath.CurrentSelectedItemCategory)
-                : CurrentPath.CurrentSelectedItemFolderInfo.GetAllItem();
-
-            _openingWindow = Window.SearchItemList;
+            var fileDatas = _openingWindow switch
+            {
+                Window.ItemFolderItemsList => CurrentPath.CurrentSelectedItemFolderInfo.GetItems(CurrentPath
+                    .CurrentSelectedItemCategory),
+                Window.ItemFolderCategoryList => CurrentPath.CurrentSelectedItemFolderInfo.GetAllItem(),
+                _ => Array.Empty<FileData>()
+            };
 
             var filteredItems = fileDatas
                 .Where(file =>
@@ -464,45 +523,60 @@ namespace Avatar_Explorer.Forms
             addItem.ShowDialog();
             GenerateAvatarList();
             GenerateAuthorList();
+            GenerateCategoryListLeft();
         }
 
         // Generate Path
         private string GeneratePath()
         {
-            if (!_authorMode)
+            if (_authorMode)
             {
-                if (CurrentPath.CurrentSelectedAvatar == null) return "";
+                if (CurrentPath.CurrentSelectedAuthor == null) return "";
                 if (CurrentPath.CurrentSelectedCategory == ItemType.Unknown)
-                    return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar);
+                    return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName);
                 if (CurrentPath.CurrentSelectedItem == null)
-                    return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
+                    return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
                            Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory);
                 if (CurrentPath.CurrentSelectedItemCategory == null)
-                    return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
+                    return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
                            Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
                            Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title);
 
-                return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
+                return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
                        Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
                        Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" +
-                       Helper.RemoveFormat(CurrentPath.CurrentSelectedItemCategory);
+                       CurrentPath.CurrentSelectedItemCategory;
             }
 
-            if (CurrentPath.CurrentSelectedAuthor == null) return "";
+            if (_categoryMode)
+            {
+                if (CurrentPath.CurrentSelectedCategory == ItemType.Unknown) return "";
+                if (CurrentPath.CurrentSelectedItem == null)
+                    return Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory);
+                if (CurrentPath.CurrentSelectedItemCategory == null)
+                    return Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
+                           Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title);
+
+                return Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
+                       Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" +
+                       CurrentPath.CurrentSelectedItemCategory;
+            }
+
+            if (CurrentPath.CurrentSelectedAvatar == null) return "";
             if (CurrentPath.CurrentSelectedCategory == ItemType.Unknown)
-                return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName);
+                return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar);
             if (CurrentPath.CurrentSelectedItem == null)
-                return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
+                return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
                        Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory);
             if (CurrentPath.CurrentSelectedItemCategory == null)
-                return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
+                return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
                        Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
                        Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title);
 
-            return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
+            return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
                    Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
                    Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" +
-                   CurrentPath.CurrentSelectedItemCategory;
+                   Helper.RemoveFormat(CurrentPath.CurrentSelectedItemCategory);
         }
 
         private void GeneratePathFromItem(Item item)
@@ -530,6 +604,8 @@ namespace Avatar_Explorer.Forms
                 PathTextBox.Text = GeneratePath();
                 return;
             }
+
+            if (_categoryMode) return;
 
             if (CurrentPath.CurrentSelectedCategory != ItemType.Unknown)
             {
@@ -648,6 +724,7 @@ namespace Avatar_Explorer.Forms
             addItem.ShowDialog();
             GenerateAvatarList();
             GenerateAuthorList();
+            GenerateCategoryListLeft();
         }
 
         // Export to CSV
