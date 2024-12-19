@@ -115,7 +115,7 @@ namespace Avatar_Explorer.Classes
             PictureBox pictureBox = new PictureBox();
             pictureBox.Size = new Size(56, 56);
             pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox.Image = Image.FromFile(File.Exists(imagePath) ? imagePath : "./Datas/FileIcon.png");
+            pictureBox.Image = ResizeImage(File.Exists(imagePath) ? imagePath : "./Datas/FileIcon.png", 100, 100);
             pictureBox.Location = new Point(3, 3);
             button.Controls.Add(pictureBox);
 
@@ -242,6 +242,18 @@ namespace Avatar_Explorer.Classes
                 default:
                     return "./Datas/FileIcon.png";
             }
+        }
+
+        public static void DragEnter(object _, DragEventArgs e) => e.Effect = DragDropEffects.All;
+
+        private static Image ResizeImage(string imagePath, int width, int height)
+        {
+            using var originalImage = Image.FromFile(imagePath);
+            var resizedImage = new Bitmap(width, height);
+            using var graphics = Graphics.FromImage(resizedImage);
+            graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            graphics.DrawImage(originalImage, 0, 0, width, height);
+            return resizedImage;
         }
     }
 }

@@ -52,8 +52,6 @@ namespace Avatar_Explorer.Forms
             FolderTextBox.Text = dragFilePathArr[0];
         }
 
-        private void FolderTextBox_DragEnter(object sender, DragEventArgs e) => e.Effect = DragDropEffects.All;
-
         private async void AddButton_Click(object sender, EventArgs e)
         {
             Item.Title = TitleTextBox.Text;

@@ -157,17 +157,35 @@ namespace Avatar_Explorer.Forms
 
                 ContextMenuStrip contextMenuStrip = new();
 
-                ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー", _copyImage);
-                toolStripMenuItem.Click += (_, _) =>
+                if (item.BoothId != -1)
                 {
-                    if (item.BoothId == -1)
+                    ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー", _copyImage);
+                    toolStripMenuItem.Click += (_, _) =>
                     {
-                        MessageBox.Show("BoothIDが存在しません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
+                        try
+                        {
+                            Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("クリップボードにコピーできませんでした", "エラー", MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
+                    };
 
-                    Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
-                };
+                    ToolStripMenuItem toolStripMenuItem1 = new("Boothリンクを開く", _copyImage);
+                    toolStripMenuItem1.Click += (_, _) =>
+                    {
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = "https://booth.pm/ja/items/" + item.BoothId,
+                            UseShellExecute = true
+                        });
+                    };
+
+                    contextMenuStrip.Items.Add(toolStripMenuItem);
+                    contextMenuStrip.Items.Add(toolStripMenuItem1);
+                }
 
                 ToolStripMenuItem toolStripMenuItem2 = new("削除", _trashImage);
                 toolStripMenuItem2.Click += (_, _) =>
@@ -185,7 +203,6 @@ namespace Avatar_Explorer.Forms
                     GenerateAuthorList();
                 };
 
-                contextMenuStrip.Items.Add(toolStripMenuItem);
                 contextMenuStrip.Items.Add(toolStripMenuItem2);
                 contextMenuStrip.Items.Add(toolStripMenuItem3);
                 button.ContextMenuStrip = contextMenuStrip;
@@ -315,17 +332,35 @@ namespace Avatar_Explorer.Forms
 
                 ContextMenuStrip contextMenuStrip = new();
 
-                ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー", _copyImage);
-                toolStripMenuItem.Click += (_, _) =>
+                if (item.BoothId != -1)
                 {
-                    if (item.BoothId == -1)
+                    ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー", _copyImage);
+                    toolStripMenuItem.Click += (_, _) =>
                     {
-                        MessageBox.Show("BoothIDが存在しません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
+                        try
+                        {
+                            Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("クリップボードにコピーできませんでした", "エラー", MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
+                    };
 
-                    Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
-                };
+                    ToolStripMenuItem toolStripMenuItem1 = new("Boothリンクを開く", _copyImage);
+                    toolStripMenuItem1.Click += (_, _) =>
+                    {
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = "https://booth.pm/ja/items/" + item.BoothId,
+                            UseShellExecute = true
+                        });
+                    };
+
+                    contextMenuStrip.Items.Add(toolStripMenuItem);
+                    contextMenuStrip.Items.Add(toolStripMenuItem1);
+                }
 
                 ToolStripMenuItem toolStripMenuItem2 = new("削除", _trashImage);
                 toolStripMenuItem2.Click += (_, _) =>
@@ -343,7 +378,6 @@ namespace Avatar_Explorer.Forms
                     GenerateAuthorList();
                 };
 
-                contextMenuStrip.Items.Add(toolStripMenuItem);
                 contextMenuStrip.Items.Add(toolStripMenuItem2);
                 contextMenuStrip.Items.Add(toolStripMenuItem3);
                 button.ContextMenuStrip = contextMenuStrip;
@@ -461,12 +495,12 @@ namespace Avatar_Explorer.Forms
 
         private void GeneratePathFromItem(Item item)
         {
-            Debug.WriteLine(item.SupportedAvatar.FirstOrDefault());
             CurrentPath.CurrentSelectedAvatar = item.SupportedAvatar.FirstOrDefault() ?? "*";
             CurrentPath.CurrentSelectedCategory = item.Type;
             CurrentPath.CurrentSelectedItem = item;
         }
 
+        // Undo Button
         private void UndoButton_Click(object sender, EventArgs e)
         {
             if (CurrentPath.CurrentSelectedItemCategory != null)
@@ -500,11 +534,10 @@ namespace Avatar_Explorer.Forms
             }
         }
 
-        private void Main_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            Helper.SaveItemsData(Items);
-        }
+        // Save Config
+        private void Main_FormClosing(object sender, FormClosingEventArgs e) => Helper.SaveItemsData(Items);
 
+        // Search Box
         private void SearchBox_TextChanged(object sender, EventArgs e)
         {
             if (SearchBox.Text == "")
@@ -550,6 +583,7 @@ namespace Avatar_Explorer.Forms
             }
         }
 
+        // ResetAvatarList
         private void ResetAvatarList(bool startLabelVisible = false)
         {
             for (int i = AvatarItemExplorer.Controls.Count - 1; i >= 0; i--)
@@ -565,8 +599,7 @@ namespace Avatar_Explorer.Forms
             }
         }
 
-        private void AvatarItemExplorer_DragEnter(object sender, DragEventArgs e) => e.Effect = DragDropEffects.All;
-
+        // Drag and Drop Item Folder
         private void AvatarItemExplorer_DragDrop(object sender, DragEventArgs e)
         {
             if (e.Data == null) return;
@@ -578,8 +611,6 @@ namespace Avatar_Explorer.Forms
             AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, false, null, folderPath);
             addItem.ShowDialog();
         }
-
-        private void AvatarPage_DragEnter(object sender, DragEventArgs e) => e.Effect = DragDropEffects.All;
 
         private void AvatarPage_DragDrop(object sender, DragEventArgs e)
         {
@@ -595,6 +626,7 @@ namespace Avatar_Explorer.Forms
             GenerateAuthorList();
         }
 
+        // Export to CSV
         private void ExportButton_Click(object sender, EventArgs e)
         {
             if (!Directory.Exists("./Output"))

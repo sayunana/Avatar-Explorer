@@ -1,4 +1,6 @@
-﻿namespace Avatar_Explorer.Forms
+﻿using Avatar_Explorer.Classes;
+
+namespace Avatar_Explorer.Forms
 {
     partial class Main
     {
@@ -87,7 +89,7 @@
             AvatarPage.Text = "アバター";
             AvatarPage.UseVisualStyleBackColor = true;
             AvatarPage.DragDrop += AvatarPage_DragDrop;
-            AvatarPage.DragEnter += AvatarPage_DragEnter;
+            AvatarPage.DragEnter += Helper.DragEnter;
             // 
             // AvatarAuthorPage
             // 
@@ -132,7 +134,7 @@
             AvatarItemExplorer.Text = "アイテム";
             AvatarItemExplorer.UseVisualStyleBackColor = true;
             AvatarItemExplorer.DragDrop += AvatarItemExplorer_DragDrop;
-            AvatarItemExplorer.DragEnter += AvatarItemExplorer_DragEnter;
+            AvatarItemExplorer.DragEnter += Helper.DragEnter;
             // 
             // StartLabel
             // 

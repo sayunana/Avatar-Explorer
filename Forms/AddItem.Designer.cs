@@ -1,4 +1,6 @@
-﻿namespace Avatar_Explorer.Forms
+﻿using Avatar_Explorer.Classes;
+
+namespace Avatar_Explorer.Forms
 {
     sealed partial class AddItem
     {
@@ -88,7 +90,7 @@
             FolderTextBox.TabIndex = 3;
             FolderTextBox.TextChanged += FolderTextBox_TextChanged;
             FolderTextBox.DragDrop += FolderTextBox_DragDrop;
-            FolderTextBox.DragEnter += FolderTextBox_DragEnter;
+            FolderTextBox.DragEnter += Helper.DragEnter;
             // 
             // BoothURLTextBox
             // 
