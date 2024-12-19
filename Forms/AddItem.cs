@@ -49,6 +49,13 @@ namespace Avatar_Explorer.Forms
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
             string[]? dragFilePathArr = (string[]?)e.Data.GetData(DataFormats.FileDrop, false);
             if (dragFilePathArr == null) return;
+
+            if (File.Exists(dragFilePathArr[0]))
+            {
+                MessageBox.Show("フォルダを選択してください", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             FolderTextBox.Text = dragFilePathArr[0];
         }
 
@@ -228,6 +235,14 @@ namespace Avatar_Explorer.Forms
             if (!Directory.Exists(FolderTextBox.Text))
             {
                 SetErrorState("エラー: フォルダパスが存在しません");
+            }
+            else if (File.Exists(FolderTextBox.Text))
+            {
+                SetErrorState("エラー: フォルダパスがファイルです");
+            }
+            else if (string.IsNullOrEmpty(FolderTextBox.Text))
+            {
+                SetErrorState("エラー: フォルダパスが入力されていません");
             }
             else if (_mainForm.Items.Any(i => i.ItemPath == FolderTextBox.Text) && !_edit)
             {

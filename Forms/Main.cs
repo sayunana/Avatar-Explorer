@@ -620,6 +620,12 @@ namespace Avatar_Explorer.Forms
             if (dragFilePathArr == null) return;
             var folderPath = dragFilePathArr[0];
 
+            if (File.Exists(folderPath))
+            {
+                MessageBox.Show("フォルダを選択してください", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, false, null, folderPath);
             addItem.ShowDialog();
         }
@@ -631,6 +637,12 @@ namespace Avatar_Explorer.Forms
             string[]? dragFilePathArr = (string[]?)e.Data.GetData(DataFormats.FileDrop, false);
             if (dragFilePathArr == null) return;
             var folderPath = dragFilePathArr[0];
+
+            if (File.Exists(folderPath))
+            {
+                MessageBox.Show("フォルダを選択してください", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             AddItem addItem = new(this, ItemType.Avatar, false, null, folderPath);
             addItem.ShowDialog();
