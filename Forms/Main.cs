@@ -43,7 +43,6 @@ namespace Avatar_Explorer.Forms
         private void AddFontFile()
         {
             _fontCollection.AddFontFile("./Datas/NotoSansJP-Regular.ttf");
-            Debug.WriteLine(_fontCollection.Families[0].Name);
             GuiFont = _fontCollection.Families[0];
         }
 
