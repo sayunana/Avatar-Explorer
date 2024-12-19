@@ -53,7 +53,7 @@ namespace Avatar_Explorer.Forms
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Noto Sans JP", 12F);
+            label1.Font = new Font(_mainForm.GuiFont, 12F);
             label1.Location = new Point(41, 64);
             label1.Name = "label1";
             label1.Size = new Size(74, 23);
@@ -63,7 +63,7 @@ namespace Avatar_Explorer.Forms
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Noto Sans JP", 12F);
+            label2.Font = new Font(_mainForm.GuiFont, 12F);
             label2.Location = new Point(22, 109);
             label2.Name = "label2";
             label2.Size = new Size(94, 23);
@@ -73,7 +73,7 @@ namespace Avatar_Explorer.Forms
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Noto Sans JP", 20F);
+            label3.Font = new Font(_mainForm.GuiFont, 20F);
             label3.Location = new Point(12, 9);
             label3.Name = "label3";
             label3.Size = new Size(203, 39);
@@ -83,7 +83,7 @@ namespace Avatar_Explorer.Forms
             // FolderTextBox
             // 
             FolderTextBox.AllowDrop = true;
-            FolderTextBox.Font = new Font("Noto Sans JP", 12F);
+            FolderTextBox.Font = new Font(_mainForm.GuiFont, 12F);
             FolderTextBox.Location = new Point(124, 61);
             FolderTextBox.Name = "FolderTextBox";
             FolderTextBox.Size = new Size(407, 31);
@@ -94,7 +94,7 @@ namespace Avatar_Explorer.Forms
             // 
             // BoothURLTextBox
             // 
-            BoothURLTextBox.Font = new Font("Noto Sans JP", 12F);
+            BoothURLTextBox.Font = new Font(_mainForm.GuiFont, 12F);
             BoothURLTextBox.Location = new Point(124, 101);
             BoothURLTextBox.Name = "BoothURLTextBox";
             BoothURLTextBox.Size = new Size(407, 31);
@@ -113,7 +113,7 @@ namespace Avatar_Explorer.Forms
             // label4
             // 
             label4.AutoSize = true;
-            label4.Font = new Font("Noto Sans JP", 12F);
+            label4.Font = new Font(_mainForm.GuiFont, 12F);
             label4.Location = new Point(61, 274);
             label4.Name = "label4";
             label4.Size = new Size(58, 23);
@@ -134,7 +134,7 @@ namespace Avatar_Explorer.Forms
             // label5
             // 
             label5.AutoSize = true;
-            label5.Font = new Font("Noto Sans JP", 12F);
+            label5.Font = new Font(_mainForm.GuiFont, 12F);
             label5.Location = new Point(17, 319);
             label5.Name = "label5";
             label5.Size = new Size(105, 23);
@@ -154,7 +154,7 @@ namespace Avatar_Explorer.Forms
             // AuthorTextBox
             // 
             AuthorTextBox.Enabled = false;
-            AuthorTextBox.Font = new Font("Noto Sans JP", 10F);
+            AuthorTextBox.Font = new Font(_mainForm.GuiFont, 10F);
             AuthorTextBox.Location = new Point(129, 235);
             AuthorTextBox.Name = "AuthorTextBox";
             AuthorTextBox.Size = new Size(407, 27);
@@ -164,7 +164,7 @@ namespace Avatar_Explorer.Forms
             // TitleTextBox
             // 
             TitleTextBox.Enabled = false;
-            TitleTextBox.Font = new Font("Noto Sans JP", 10F);
+            TitleTextBox.Font = new Font(_mainForm.GuiFont, 10F);
             TitleTextBox.Location = new Point(129, 199);
             TitleTextBox.Name = "TitleTextBox";
             TitleTextBox.Size = new Size(407, 27);
@@ -175,7 +175,7 @@ namespace Avatar_Explorer.Forms
             // label6
             // 
             label6.AutoSize = true;
-            label6.Font = new Font("Noto Sans JP", 12F);
+            label6.Font = new Font(_mainForm.GuiFont, 12F);
             label6.Location = new Point(64, 235);
             label6.Name = "label6";
             label6.Size = new Size(42, 23);
@@ -185,7 +185,7 @@ namespace Avatar_Explorer.Forms
             // label7
             // 
             label7.AutoSize = true;
-            label7.Font = new Font("Noto Sans JP", 12F);
+            label7.Font = new Font(_mainForm.GuiFont, 12F);
             label7.Location = new Point(49, 203);
             label7.Name = "label7";
             label7.Size = new Size(74, 23);
@@ -195,7 +195,7 @@ namespace Avatar_Explorer.Forms
             // label8
             // 
             label8.AutoSize = true;
-            label8.Font = new Font("Noto Sans JP", 18F);
+            label8.Font = new Font(_mainForm.GuiFont, 18F);
             label8.Location = new Point(22, 154);
             label8.Name = "label8";
             label8.Size = new Size(232, 35);
@@ -205,7 +205,7 @@ namespace Avatar_Explorer.Forms
             // ErrorLabel
             // 
             ErrorLabel.AutoSize = true;
-            ErrorLabel.Font = new Font("Noto Sans JP", 13F);
+            ErrorLabel.Font = new Font(_mainForm.GuiFont, 13F);
             ErrorLabel.ForeColor = Color.Red;
             ErrorLabel.Location = new Point(17, 369);
             ErrorLabel.Name = "ErrorLabel";

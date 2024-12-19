@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Drawing.Text;
 using System.Text;
 using Avatar_Explorer.Classes;
 
@@ -15,6 +16,10 @@ namespace Avatar_Explorer.Forms
         // Current Path
         public CurrentPath CurrentPath = new();
 
+        // Font
+        private readonly PrivateFontCollection _fontCollection = new();
+        public FontFamily GuiFont = new("Noto Sans JP");
+
         // Search Mode
         private bool _authorMode;
 
@@ -27,11 +32,19 @@ namespace Avatar_Explorer.Forms
         public Main()
         {
             Items = Helper.LoadItemsData();
+            AddFontFile();
             InitializeComponent();
             GenerateAvatarList();
             GenerateAuthorList();
 
             Text = $"VRChat Avatar Explorer {CurrentVersion} by ‚Õ‚±‚é‚Ó";
+        }
+
+        private void AddFontFile()
+        {
+            _fontCollection.AddFontFile("./Datas/NotoSansJP-Regular.ttf");
+            Debug.WriteLine(_fontCollection.Families[0].Name);
+            GuiFont = _fontCollection.Families[0];
         }
 
         // Generate List (LEFT)

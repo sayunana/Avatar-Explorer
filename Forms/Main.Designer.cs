@@ -60,7 +60,7 @@ namespace Avatar_Explorer.Forms
             // 
             // PathTextBox
             // 
-            PathTextBox.Font = new Font("Noto Sans JP", 10F);
+            PathTextBox.Font = new Font(GuiFont, 10F);
             PathTextBox.Location = new Point(148, 16);
             PathTextBox.Name = "PathTextBox";
             PathTextBox.Size = new Size(733, 27);
@@ -139,7 +139,7 @@ namespace Avatar_Explorer.Forms
             // StartLabel
             // 
             StartLabel.AutoSize = true;
-            StartLabel.Font = new Font("Noto Sans JP", 15F);
+            StartLabel.Font = new Font(GuiFont, 15F);
             StartLabel.Location = new Point(165, 198);
             StartLabel.Name = "StartLabel";
             StartLabel.Size = new Size(591, 58);
@@ -149,7 +149,7 @@ namespace Avatar_Explorer.Forms
             // 
             // SearchBox
             // 
-            SearchBox.Font = new Font("Noto Sans JP", 10F);
+            SearchBox.Font = new Font(GuiFont, 10F);
             SearchBox.Location = new Point(980, 16);
             SearchBox.Name = "SearchBox";
             SearchBox.Size = new Size(270, 27);
@@ -159,7 +159,7 @@ namespace Avatar_Explorer.Forms
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Noto Sans JP", 12F);
+            label1.Font = new Font(GuiFont, 12F);
             label1.Location = new Point(932, 20);
             label1.Name = "label1";
             label1.Size = new Size(42, 23);
@@ -169,7 +169,7 @@ namespace Avatar_Explorer.Forms
             // SearchResultLabel
             // 
             SearchResultLabel.AutoSize = true;
-            SearchResultLabel.Font = new Font("Noto Sans JP", 10F);
+            SearchResultLabel.Font = new Font(GuiFont, 10F);
             SearchResultLabel.Location = new Point(971, 45);
             SearchResultLabel.Name = "SearchResultLabel";
             SearchResultLabel.Size = new Size(0, 20);
