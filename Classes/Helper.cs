@@ -108,7 +108,7 @@ namespace Avatar_Explorer.Classes
 
         public static Button CreateButton(string imagePath, string labelTitle, string? deskription, bool @short = false, string tooltip = "")
         {
-            var buttonWidth = @short ? 319 : 882;
+            var buttonWidth = @short ? 303 : 874;
             Button button = new Button();
             button.Size = new Size(buttonWidth, 64);
 

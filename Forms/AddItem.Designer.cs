@@ -50,13 +50,14 @@ namespace Avatar_Explorer.Forms
             CustomButton = new Button();
             folderBrowserDialog = new FolderBrowserDialog();
             openFolderButton = new Button();
+            label9 = new Label();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Font = new Font(_mainForm.GuiFont, 12F);
-            label1.Location = new Point(41, 64);
+            label1.Location = new Point(38, 85);
             label1.Name = "label1";
             label1.Size = new Size(74, 23);
             label1.TabIndex = 0;
@@ -66,7 +67,7 @@ namespace Avatar_Explorer.Forms
             // 
             label2.AutoSize = true;
             label2.Font = new Font(_mainForm.GuiFont, 12F);
-            label2.Location = new Point(22, 109);
+            label2.Location = new Point(19, 130);
             label2.Name = "label2";
             label2.Size = new Size(94, 23);
             label2.TabIndex = 1;
@@ -86,7 +87,7 @@ namespace Avatar_Explorer.Forms
             // 
             FolderTextBox.AllowDrop = true;
             FolderTextBox.Font = new Font(_mainForm.GuiFont, 12F);
-            FolderTextBox.Location = new Point(124, 61);
+            FolderTextBox.Location = new Point(121, 82);
             FolderTextBox.Name = "FolderTextBox";
             FolderTextBox.Size = new Size(326, 31);
             FolderTextBox.TabIndex = 3;
@@ -97,14 +98,14 @@ namespace Avatar_Explorer.Forms
             // BoothURLTextBox
             // 
             BoothURLTextBox.Font = new Font(_mainForm.GuiFont, 12F);
-            BoothURLTextBox.Location = new Point(124, 101);
+            BoothURLTextBox.Location = new Point(121, 122);
             BoothURLTextBox.Name = "BoothURLTextBox";
-            BoothURLTextBox.Size = new Size(407, 31);
+            BoothURLTextBox.Size = new Size(415, 31);
             BoothURLTextBox.TabIndex = 4;
             // 
             // GetButton
             // 
-            GetButton.Location = new Point(409, 321);
+            GetButton.Location = new Point(409, 348);
             GetButton.Name = "GetButton";
             GetButton.Size = new Size(122, 36);
             GetButton.TabIndex = 5;
@@ -116,7 +117,7 @@ namespace Avatar_Explorer.Forms
             // 
             label4.AutoSize = true;
             label4.Font = new Font(_mainForm.GuiFont, 12F);
-            label4.Location = new Point(61, 274);
+            label4.Location = new Point(61, 296);
             label4.Name = "label4";
             label4.Size = new Size(58, 23);
             label4.TabIndex = 7;
@@ -127,7 +128,7 @@ namespace Avatar_Explorer.Forms
             TypeComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             TypeComboBox.FormattingEnabled = true;
             TypeComboBox.Items.AddRange(new object[] { "アバター", "衣装", "テクスチャ", "ギミック", "アクセサリー", "髪型", "アニメーション", "ツール", "シェーダー" });
-            TypeComboBox.Location = new Point(129, 276);
+            TypeComboBox.Location = new Point(129, 298);
             TypeComboBox.Name = "TypeComboBox";
             TypeComboBox.Size = new Size(186, 23);
             TypeComboBox.TabIndex = 8;
@@ -137,7 +138,7 @@ namespace Avatar_Explorer.Forms
             // 
             label5.AutoSize = true;
             label5.Font = new Font(_mainForm.GuiFont, 12F);
-            label5.Location = new Point(17, 319);
+            label5.Location = new Point(17, 341);
             label5.Name = "label5";
             label5.Size = new Size(105, 23);
             label5.TabIndex = 9;
@@ -145,7 +146,7 @@ namespace Avatar_Explorer.Forms
             // 
             // SelectAvatar
             // 
-            SelectAvatar.Location = new Point(129, 312);
+            SelectAvatar.Location = new Point(129, 334);
             SelectAvatar.Name = "SelectAvatar";
             SelectAvatar.Size = new Size(140, 38);
             SelectAvatar.TabIndex = 10;
@@ -157,7 +158,7 @@ namespace Avatar_Explorer.Forms
             // 
             AuthorTextBox.Enabled = false;
             AuthorTextBox.Font = new Font(_mainForm.GuiFont, 10F);
-            AuthorTextBox.Location = new Point(129, 235);
+            AuthorTextBox.Location = new Point(129, 257);
             AuthorTextBox.Name = "AuthorTextBox";
             AuthorTextBox.Size = new Size(407, 27);
             AuthorTextBox.TabIndex = 14;
@@ -167,7 +168,7 @@ namespace Avatar_Explorer.Forms
             // 
             TitleTextBox.Enabled = false;
             TitleTextBox.Font = new Font(_mainForm.GuiFont, 10F);
-            TitleTextBox.Location = new Point(129, 199);
+            TitleTextBox.Location = new Point(129, 221);
             TitleTextBox.Name = "TitleTextBox";
             TitleTextBox.Size = new Size(407, 27);
             TitleTextBox.TabIndex = 13;
@@ -178,7 +179,7 @@ namespace Avatar_Explorer.Forms
             // 
             label6.AutoSize = true;
             label6.Font = new Font(_mainForm.GuiFont, 12F);
-            label6.Location = new Point(64, 235);
+            label6.Location = new Point(64, 257);
             label6.Name = "label6";
             label6.Size = new Size(42, 23);
             label6.TabIndex = 12;
@@ -188,7 +189,7 @@ namespace Avatar_Explorer.Forms
             // 
             label7.AutoSize = true;
             label7.Font = new Font(_mainForm.GuiFont, 12F);
-            label7.Location = new Point(49, 203);
+            label7.Location = new Point(49, 225);
             label7.Name = "label7";
             label7.Size = new Size(74, 23);
             label7.TabIndex = 11;
@@ -198,7 +199,7 @@ namespace Avatar_Explorer.Forms
             // 
             label8.AutoSize = true;
             label8.Font = new Font(_mainForm.GuiFont, 18F);
-            label8.Location = new Point(22, 154);
+            label8.Location = new Point(22, 176);
             label8.Name = "label8";
             label8.Size = new Size(232, 35);
             label8.TabIndex = 15;
@@ -218,7 +219,7 @@ namespace Avatar_Explorer.Forms
             // AddButton
             // 
             AddButton.Enabled = false;
-            AddButton.Location = new Point(409, 366);
+            AddButton.Location = new Point(409, 393);
             AddButton.Name = "AddButton";
             AddButton.Size = new Size(122, 36);
             AddButton.TabIndex = 17;
@@ -228,7 +229,7 @@ namespace Avatar_Explorer.Forms
             // 
             // CustomButton
             // 
-            CustomButton.Location = new Point(409, 279);
+            CustomButton.Location = new Point(409, 306);
             CustomButton.Name = "CustomButton";
             CustomButton.Size = new Size(122, 36);
             CustomButton.TabIndex = 18;
@@ -238,19 +239,30 @@ namespace Avatar_Explorer.Forms
             // 
             // openFolderButton
             // 
-            openFolderButton.Location = new Point(456, 61);
+            openFolderButton.Location = new Point(453, 82);
             openFolderButton.Name = "openFolderButton";
-            openFolderButton.Size = new Size(75, 31);
+            openFolderButton.Size = new Size(85, 31);
             openFolderButton.TabIndex = 19;
-            openFolderButton.Text = "フォルダ";
+            openFolderButton.Text = "フォルダを開く";
             openFolderButton.UseVisualStyleBackColor = true;
             openFolderButton.Click += openFolderButton_Click;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Font = new Font(_mainForm.GuiFont, 9.3F);
+            label9.Location = new Point(19, 52);
+            label9.Name = "label9";
+            label9.Size = new Size(464, 19);
+            label9.TabIndex = 20;
+            label9.Text = "Tip: フォルダを下の欄にドラッグアンドドロップすることでも入力できます！";
             // 
             // AddItem
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(550, 414);
+            ClientSize = new Size(550, 436);
+            Controls.Add(label9);
             Controls.Add(openFolderButton);
             Controls.Add(CustomButton);
             Controls.Add(AddButton);
@@ -302,5 +314,6 @@ namespace Avatar_Explorer.Forms
         private Button CustomButton;
         private FolderBrowserDialog folderBrowserDialog;
         private Button openFolderButton;
+        private Label label9;
     }
 }
