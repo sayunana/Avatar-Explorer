@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Drawing.Text;
+using System.IO.Compression;
 using System.Text;
 using Avatar_Explorer.Classes;
 
@@ -748,6 +749,30 @@ namespace Avatar_Explorer.Forms
             }
 
             MessageBox.Show("Outputフォルダにエクスポートが完了しました！\nファイル名: " + fileName, "完了", MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+
+        // Make Backup
+        private void MakeBackupButton_Click(object sender, EventArgs e)
+        {
+            if (!Directory.Exists("./Backup"))
+            {
+                Directory.CreateDirectory("./Backup");
+            }
+
+            var fileName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip";
+
+            try
+            {
+                ZipFile.CreateFromDirectory("./Datas", "./Backup/" + fileName);
+            }
+            catch
+            {
+                MessageBox.Show("バックアップに失敗しました", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            MessageBox.Show("Backupフォルダにバックアップが完了しました！\n\n復元したい場合はBackupフォルダの中身を解凍し、全てをDatasフォルダの中身と置き換えれば大丈夫です！\n※ソフトはその間起動しないようにしてください！\n\nファイル名: " + fileName, "完了", MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
         }
     }

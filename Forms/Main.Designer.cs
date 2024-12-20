@@ -44,6 +44,7 @@ namespace Avatar_Explorer.Forms
             label1 = new Label();
             SearchResultLabel = new Label();
             ExportButton = new Button();
+            MakeBackupButton = new Button();
             AvatarSearchFilterList.SuspendLayout();
             ExplorerList.SuspendLayout();
             AvatarItemExplorer.SuspendLayout();
@@ -197,11 +198,22 @@ namespace Avatar_Explorer.Forms
             ExportButton.UseVisualStyleBackColor = true;
             ExportButton.Click += ExportButton_Click;
             // 
+            // MakeBackupButton
+            // 
+            MakeBackupButton.Location = new Point(209, 641);
+            MakeBackupButton.Name = "MakeBackupButton";
+            MakeBackupButton.Size = new Size(161, 46);
+            MakeBackupButton.TabIndex = 11;
+            MakeBackupButton.Text = "バックアップの作成";
+            MakeBackupButton.UseVisualStyleBackColor = true;
+            MakeBackupButton.Click += MakeBackupButton_Click;
+            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1266, 699);
+            Controls.Add(MakeBackupButton);
             Controls.Add(ExportButton);
             Controls.Add(SearchResultLabel);
             Controls.Add(label1);
@@ -241,5 +253,6 @@ namespace Avatar_Explorer.Forms
         private Label SearchResultLabel;
         private Button ExportButton;
         private TabPage CategoryPage;
+        private Button MakeBackupButton;
     }
 }
