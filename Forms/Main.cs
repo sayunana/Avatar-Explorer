@@ -29,7 +29,11 @@ namespace Avatar_Explorer.Forms
         private readonly Image _trashImage;
         private readonly Image _editImage;
 
+        public string CurrentLanguage = "ja-JP";
+
         private Window _openingWindow = Window.Nothing;
+
+        private readonly Dictionary<string, string> _controlNames = new();
 
         public Main()
         {
@@ -42,12 +46,13 @@ namespace Avatar_Explorer.Forms
             }
             else
             {
-                MessageBox.Show("アイコンファイルが見つかりませんでした。ソフトをもう一度ダウンロードしてください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Helper.Translate("アイコンファイルが見つかりませんでした。ソフトをもう一度ダウンロードしてください。", CurrentLanguage), Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             Items = Helper.LoadItemsData();
             AddFontFile();
             InitializeComponent();
+            LanguageBox.SelectedIndex = 0;
             GenerateAvatarList();
             GenerateAuthorList();
             GenerateCategoryListLeft();
@@ -59,7 +64,7 @@ namespace Avatar_Explorer.Forms
         {
             if (!File.Exists("./Datas/NotoSansJP-Regular.ttf"))
             {
-                MessageBox.Show("フォントファイルが見つかりませんでした", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Helper.Translate("フォントファイルが見つかりませんでした。ソフトをもう一度ダウンロードしてください。", CurrentLanguage), Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             _fontCollection.AddFontFile("./Datas/NotoSansJP-Regular.ttf");
             GuiFont = _fontCollection.Families[0];
@@ -72,7 +77,7 @@ namespace Avatar_Explorer.Forms
             var index = 0;
             foreach (Item item in Items.Where(item => item.Type == ItemType.Avatar))
             {
-                Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName, true,
+                Button button = Helper.CreateButton(item.ImagePath, item.Title, Helper.Translate("作者: ", CurrentLanguage) + item.AuthorName, true,
                     item.Title);
                 button.Location = new Point(0, (70 * index) + 7);
                 button.Click += (_, _) =>
@@ -92,7 +97,7 @@ namespace Avatar_Explorer.Forms
 
                 if (item.BoothId != -1)
                 {
-                    ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー", _copyImage);
+                    ToolStripMenuItem toolStripMenuItem = new(Helper.Translate("Boothリンクのコピー", CurrentLanguage), _copyImage);
                     toolStripMenuItem.Click += (_, _) =>
                     {
                         try
@@ -101,12 +106,12 @@ namespace Avatar_Explorer.Forms
                         }
                         catch
                         {
-                            MessageBox.Show("クリップボードにコピーできませんでした", "エラー", MessageBoxButtons.OK,
+                            MessageBox.Show(Helper.Translate("クリップボードにコピーできませんでした", CurrentLanguage), Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
                         }
                     };
 
-                    ToolStripMenuItem toolStripMenuItem1 = new("Boothリンクを開く", _copyImage);
+                    ToolStripMenuItem toolStripMenuItem1 = new(Helper.Translate("Boothリンクを開く", CurrentLanguage), _copyImage);
                     toolStripMenuItem1.Click += (_, _) =>
                     {
                         Process.Start(new ProcessStartInfo
@@ -120,7 +125,7 @@ namespace Avatar_Explorer.Forms
                     contextMenuStrip.Items.Add(toolStripMenuItem1);
                 }
 
-                ToolStripMenuItem toolStripMenuItem2 = new("削除", _trashImage);
+                ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("削除", CurrentLanguage), _trashImage);
                 toolStripMenuItem2.Click += (_, _) =>
                 {
                     var undo = false;
@@ -139,7 +144,7 @@ namespace Avatar_Explorer.Forms
                     GenerateCategoryListLeft();
                 };
 
-                ToolStripMenuItem toolStripMenuItem3 = new("編集", _editImage);
+                ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), _editImage);
                 toolStripMenuItem3.Click += (_, _) =>
                 {
                     AddItem addItem = new(this, item.Type, true, item, null);
@@ -149,7 +154,7 @@ namespace Avatar_Explorer.Forms
                     GenerateCategoryListLeft();
                 };
 
-                ToolStripMenuItem toolStripMenuItem4 = new("サムネイル変更", _editImage);
+                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("サムネイル変更", CurrentLanguage), _editImage);
                 toolStripMenuItem4.Click += (_, _) =>
                 {
                     OpenFileDialog ofd = new()
@@ -160,8 +165,8 @@ namespace Avatar_Explorer.Forms
                     };
 
                     if (ofd.ShowDialog() != DialogResult.OK) return;
-                    MessageBox.Show("サムネイルを変更しました！\n\n変更前: " + item.ImagePath + "\n\n変更後: " + ofd.FileName,
-                        "完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(Helper.Translate("サムネイルを変更しました！", CurrentLanguage) + "\n\n" + Helper.Translate("変更前: ", CurrentLanguage) + item.ImagePath + "\n\n" + Helper.Translate("変更後: ", CurrentLanguage) + ofd.FileName,
+                        Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     item.ImagePath = ofd.FileName;
                     GenerateItems();
                 };
@@ -195,7 +200,7 @@ namespace Avatar_Explorer.Forms
             foreach (var author in authors)
             {
                 Button button = Helper.CreateButton(author.AuthorImagePath, author.AuthorName,
-                    Items.Count(item => item.AuthorName == author.AuthorName) + "個の項目", true, author.AuthorName);
+                    Items.Count(item => item.AuthorName == author.AuthorName) + Helper.Translate("個の項目", CurrentLanguage), true, author.AuthorName);
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
@@ -212,18 +217,18 @@ namespace Avatar_Explorer.Forms
 
                 ContextMenuStrip contextMenuStrip = new();
 
-                ToolStripMenuItem toolStripMenuItem4 = new("サムネイル変更", _editImage);
+                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("サムネイル変更", CurrentLanguage), _editImage);
                 toolStripMenuItem4.Click += (_, _) =>
                 {
                     OpenFileDialog ofd = new()
                     {
-                        Filter = "画像ファイル|*.png;*.jpg",
-                        Title = "サムネイル変更",
+                        Filter = Helper.Translate("画像ファイル|*.png;*.jpg", CurrentLanguage),
+                        Title = Helper.Translate("サムネイル変更", CurrentLanguage),
                         Multiselect = false
                     };
 
                     if (ofd.ShowDialog() != DialogResult.OK) return;
-                    MessageBox.Show("サムネイルを変更しました！\n\n変更前: " + author.AuthorImagePath + "\n\n変更後: " + ofd.FileName,
+                    MessageBox.Show(Helper.Translate("サムネイルを変更しました！", CurrentLanguage) + "\n\n" + Helper.Translate("変更前: ", CurrentLanguage) + author.AuthorImagePath + "\n\n" + Helper.Translate("変更後: ", CurrentLanguage) + ofd.FileName,
                         "完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     foreach (var item in Items.Where(item => item.AuthorName == author.AuthorName))
                     {
@@ -250,8 +255,8 @@ namespace Avatar_Explorer.Forms
                 var items = Items.Where(item => item.Type == itemType);
                 var itemCount = items.Count();
                 if (itemCount == 0) continue;
-                Button button = Helper.CreateButton("./Datas/FolderIcon.png", Helper.GetCategoryName(itemType),
-                    itemCount + "個の項目", true);
+                Button button = Helper.CreateButton("./Datas/FolderIcon.png", Helper.GetCategoryName(itemType, CurrentLanguage),
+                    itemCount + Helper.Translate("個の項目", CurrentLanguage), true);
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
@@ -283,8 +288,8 @@ namespace Avatar_Explorer.Forms
                         item.Type == itemType && (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) ||
                                                   item.SupportedAvatar.Length == 0));
                 if (itemCount == 0) continue;
-                Button button = Helper.CreateButton("./Datas/FolderIcon.png", Helper.GetCategoryName(itemType),
-                    itemCount + "個の項目");
+                Button button = Helper.CreateButton("./Datas/FolderIcon.png", Helper.GetCategoryName(itemType, CurrentLanguage),
+                    itemCount + Helper.Translate("個の項目", CurrentLanguage));
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
@@ -325,7 +330,7 @@ namespace Avatar_Explorer.Forms
             var index = 0;
             foreach (Item item in filteredItems)
             {
-                Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName, false,
+                Button button = Helper.CreateButton(item.ImagePath, item.Title, Helper.Translate("作者: ", CurrentLanguage) + item.AuthorName, false,
                     item.Title);
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
@@ -339,7 +344,7 @@ namespace Avatar_Explorer.Forms
 
                 if (item.BoothId != -1)
                 {
-                    ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー", _copyImage);
+                    ToolStripMenuItem toolStripMenuItem = new(Helper.Translate("Boothリンクのコピー", CurrentLanguage), _copyImage);
                     toolStripMenuItem.Click += (_, _) =>
                     {
                         try
@@ -348,12 +353,12 @@ namespace Avatar_Explorer.Forms
                         }
                         catch
                         {
-                            MessageBox.Show("クリップボードにコピーできませんでした", "エラー", MessageBoxButtons.OK,
+                            MessageBox.Show(Helper.Translate("クリップボードにコピーできませんでした", CurrentLanguage), Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
                         }
                     };
 
-                    ToolStripMenuItem toolStripMenuItem1 = new("Boothリンクを開く", _copyImage);
+                    ToolStripMenuItem toolStripMenuItem1 = new(Helper.Translate("Boothリンクを開く", CurrentLanguage), _copyImage);
                     toolStripMenuItem1.Click += (_, _) =>
                     {
                         Process.Start(new ProcessStartInfo
@@ -367,7 +372,7 @@ namespace Avatar_Explorer.Forms
                     contextMenuStrip.Items.Add(toolStripMenuItem1);
                 }
 
-                ToolStripMenuItem toolStripMenuItem2 = new("削除", _trashImage);
+                ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("削除", CurrentLanguage), _trashImage);
                 toolStripMenuItem2.Click += (_, _) =>
                 {
                     Items = Items.Where(i => i.Title != item.Title).ToArray();
@@ -377,7 +382,7 @@ namespace Avatar_Explorer.Forms
                     GenerateCategoryListLeft();
                 };
 
-                ToolStripMenuItem toolStripMenuItem3 = new("編集", _editImage);
+                ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), _editImage);
                 toolStripMenuItem3.Click += (_, _) =>
                 {
                     AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item, null);
@@ -387,7 +392,7 @@ namespace Avatar_Explorer.Forms
                     GenerateCategoryListLeft();
                 };
 
-                ToolStripMenuItem toolStripMenuItem4 = new("サムネイル変更", _editImage);
+                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("サムネイル変更", CurrentLanguage), _editImage);
                 toolStripMenuItem4.Click += (_, _) =>
                 {
                     OpenFileDialog ofd = new()
@@ -398,8 +403,8 @@ namespace Avatar_Explorer.Forms
                     };
 
                     if (ofd.ShowDialog() != DialogResult.OK) return;
-                    MessageBox.Show("サムネイルを変更しました！\n\n変更前: " + item.ImagePath + "\n\n変更後: " + ofd.FileName,
-                        "完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(Helper.Translate("サムネイルを変更しました！", CurrentLanguage) + "\n\n" + Helper.Translate("変更前: ", CurrentLanguage) + item.ImagePath + "\n\n" + Helper.Translate("変更後: ", CurrentLanguage) + ofd.FileName,
+                        Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     item.ImagePath = ofd.FileName;
                     GenerateItems();
                 };
@@ -435,7 +440,7 @@ namespace Avatar_Explorer.Forms
             {
                 var itemCount = itemFolderInfo.GetItemCount(itemType);
                 if (itemCount == 0) continue;
-                Button button = Helper.CreateButton("./Datas/FolderIcon.png", itemType, itemCount + "個の項目");
+                Button button = Helper.CreateButton("./Datas/FolderIcon.png", Helper.Translate(itemType, CurrentLanguage), itemCount + Helper.Translate("個の項目", CurrentLanguage));
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
@@ -459,12 +464,15 @@ namespace Avatar_Explorer.Forms
             {
                 var imagePath = file.FileExtension is ".png" or ".jpg" ? file.FilePath : "./Datas/FileIcon.png";
                 Button button = Helper.CreateButton(imagePath, file.FileName,
-                    file.FileExtension.Replace(".", "") + "ファイル", false, "開くファイルのパス: " + file.FilePath);
+                    file.FileExtension.Replace(".", "") + Helper.Translate("ファイル", CurrentLanguage), false, Helper.Translate("開くファイルのパス: ", CurrentLanguage) + file.FilePath);
                 button.Location = new Point(0, (70 * index) + 2);
 
                 ContextMenuStrip contextMenuStrip = new();
-                ToolStripMenuItem toolStripMenuItem = new("ファイルのパスを開く", _copyImage);
-                toolStripMenuItem.Click += (_, _) => { Process.Start("explorer.exe", "/select," + file.FilePath); };
+                ToolStripMenuItem toolStripMenuItem = new(Helper.Translate("ファイルのパスを開く", CurrentLanguage), _copyImage);
+                toolStripMenuItem.Click += (_, _) =>
+                {
+                    Process.Start("explorer.exe", "/select," + file.FilePath);
+                };
                 contextMenuStrip.Items.Add(toolStripMenuItem);
                 button.ContextMenuStrip = contextMenuStrip;
 
@@ -514,12 +522,12 @@ namespace Avatar_Explorer.Forms
                 })
                 .ToList();
 
-            SearchResultLabel.Text = "検索結果: " + filteredItems.Count + "件" + " (全" + Items.Length + "件)";
+            SearchResultLabel.Text = Helper.Translate("検索結果: ", CurrentLanguage) + filteredItems.Count + Helper.Translate("件", CurrentLanguage) + Helper.Translate(" (全", CurrentLanguage) + Items.Length + Helper.Translate("件)", CurrentLanguage);
 
             var index = 0;
             foreach (Item item in filteredItems)
             {
-                Button button = Helper.CreateButton(item.ImagePath, item.Title, "作者: " + item.AuthorName, false,
+                Button button = Helper.CreateButton(item.ImagePath, item.Title, Helper.Translate("作者: ", CurrentLanguage) + item.AuthorName, false,
                     item.Title);
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
@@ -535,7 +543,7 @@ namespace Avatar_Explorer.Forms
 
                 if (item.BoothId != -1)
                 {
-                    ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー", _copyImage);
+                    ToolStripMenuItem toolStripMenuItem = new(Helper.Translate("Boothリンクのコピー", CurrentLanguage), _copyImage);
                     toolStripMenuItem.Click += (_, _) =>
                     {
                         try
@@ -544,12 +552,12 @@ namespace Avatar_Explorer.Forms
                         }
                         catch
                         {
-                            MessageBox.Show("クリップボードにコピーできませんでした", "エラー", MessageBoxButtons.OK,
+                            MessageBox.Show(Helper.Translate("クリップボードにコピーできませんでした", CurrentLanguage), "エラー", MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
                         }
                     };
 
-                    ToolStripMenuItem toolStripMenuItem1 = new("Boothリンクを開く", _copyImage);
+                    ToolStripMenuItem toolStripMenuItem1 = new(Helper.Translate("Boothリンクを開く", CurrentLanguage), _copyImage);
                     toolStripMenuItem1.Click += (_, _) =>
                     {
                         Process.Start(new ProcessStartInfo
@@ -563,17 +571,18 @@ namespace Avatar_Explorer.Forms
                     contextMenuStrip.Items.Add(toolStripMenuItem1);
                 }
 
-                ToolStripMenuItem toolStripMenuItem2 = new("削除", _trashImage);
+                ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("削除", CurrentLanguage), _trashImage);
                 toolStripMenuItem2.Click += (_, _) =>
                 {
                     Items = Items.Where(i => i.Title != item.Title).ToArray();
+                    //検索でこれやっていいん...
                     GenerateItems();
                     GenerateAvatarList();
                     GenerateAuthorList();
                     GenerateCategoryListLeft();
                 };
 
-                ToolStripMenuItem toolStripMenuItem3 = new("編集", _editImage);
+                ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), _editImage);
                 toolStripMenuItem3.Click += (_, _) =>
                 {
                     AddItem addItem = new(this, item.Type, true, item, null);
@@ -615,20 +624,23 @@ namespace Avatar_Explorer.Forms
                 })
                 .ToList();
 
-            SearchResultLabel.Text = "フォルダー内検索結果: " + filteredItems.Count + "件" + " (全" +
-                                     fileDatas.Length + "件)";
+            SearchResultLabel.Text = Helper.Translate("フォルダー内検索結果: ", CurrentLanguage) + filteredItems.Count + Helper.Translate("件", CurrentLanguage) + Helper.Translate(" (全", CurrentLanguage) +
+                                                            fileDatas.Length + Helper.Translate("件)", CurrentLanguage);
 
             var index = 0;
             foreach (var file in filteredItems)
             {
                 var imagePath = file.FileExtension is ".png" or ".jpg" ? file.FilePath : "./Datas/FileIcon.png";
                 Button button = Helper.CreateButton(imagePath, file.FileName,
-                    file.FileExtension.Replace(".", "") + "ファイル", false, "開くファイルのパス: " + file.FilePath);
+                    file.FileExtension.Replace(".", "") + Helper.Translate("ファイル", CurrentLanguage), false, Helper.Translate("開くファイルのパス: ", CurrentLanguage) + file.FilePath);
                 button.Location = new Point(0, (70 * index) + 2);
 
                 ContextMenuStrip contextMenuStrip = new();
-                ToolStripMenuItem toolStripMenuItem = new("ファイルのパスを開く", _copyImage);
-                toolStripMenuItem.Click += (_, _) => { Process.Start("explorer.exe", "/select," + file.FilePath); };
+                ToolStripMenuItem toolStripMenuItem = new(Helper.Translate("ファイルのパスを開く", CurrentLanguage), _copyImage);
+                toolStripMenuItem.Click += (_, _) =>
+                {
+                    Process.Start("explorer.exe", "/select," + file.FilePath);
+                };
                 contextMenuStrip.Items.Add(toolStripMenuItem);
                 button.ContextMenuStrip = contextMenuStrip;
 
@@ -672,14 +684,14 @@ namespace Avatar_Explorer.Forms
                     return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName);
                 if (CurrentPath.CurrentSelectedItem == null)
                     return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
-                           Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory);
+                           Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage);
                 if (CurrentPath.CurrentSelectedItemCategory == null)
                     return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
-                           Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
+                           Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + "/" +
                            Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title);
 
                 return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
-                       Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
+                       Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + "/" +
                        Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" +
                        CurrentPath.CurrentSelectedItemCategory;
             }
@@ -688,12 +700,12 @@ namespace Avatar_Explorer.Forms
             {
                 if (CurrentPath.CurrentSelectedCategory == ItemType.Unknown) return "";
                 if (CurrentPath.CurrentSelectedItem == null)
-                    return Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory);
+                    return Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage);
                 if (CurrentPath.CurrentSelectedItemCategory == null)
-                    return Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
+                    return Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + "/" +
                            Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title);
 
-                return Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
+                return Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + "/" +
                        Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" +
                        CurrentPath.CurrentSelectedItemCategory;
             }
@@ -703,14 +715,14 @@ namespace Avatar_Explorer.Forms
                 return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar);
             if (CurrentPath.CurrentSelectedItem == null)
                 return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
-                       Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory);
+                       Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage);
             if (CurrentPath.CurrentSelectedItemCategory == null)
                 return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
-                       Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
+                       Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + "/" +
                        Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title);
 
             return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
-                   Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory) + "/" +
+                   Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + "/" +
                    Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" +
                    Helper.RemoveFormat(CurrentPath.CurrentSelectedItemCategory);
         }
@@ -834,7 +846,7 @@ namespace Avatar_Explorer.Forms
 
             if (File.Exists(folderPath))
             {
-                MessageBox.Show("フォルダを選択してください", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Helper.Translate("フォルダを選択してください", CurrentLanguage), Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -852,7 +864,7 @@ namespace Avatar_Explorer.Forms
 
             if (File.Exists(folderPath))
             {
-                MessageBox.Show("フォルダを選択してください", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Helper.Translate("フォルダを選択してください", CurrentLanguage), Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -881,7 +893,7 @@ namespace Avatar_Explorer.Forms
                     $"{item.Title},{item.AuthorName},{item.AuthorImageFilePath},{item.ImagePath},{item.Type},{string.Join(";", item.SupportedAvatar)},{item.BoothId},{item.ItemPath}");
             }
 
-            MessageBox.Show("Outputフォルダにエクスポートが完了しました！\nファイル名: " + fileName, "完了", MessageBoxButtons.OK,
+            MessageBox.Show(Helper.Translate("Outputフォルダにエクスポートが完了しました！\nファイル名: ", CurrentLanguage) + fileName, Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
         }
 
@@ -901,12 +913,56 @@ namespace Avatar_Explorer.Forms
             }
             catch
             {
-                MessageBox.Show("バックアップに失敗しました", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Helper.Translate("バックアップに失敗しました", CurrentLanguage), Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            MessageBox.Show("Backupフォルダにバックアップが完了しました！\n\n復元したい場合はBackupフォルダの中身を解凍し、全てをDatasフォルダの中身と置き換えれば大丈夫です！\n※ソフトはその間起動しないようにしてください！\n\nファイル名: " + fileName, "完了", MessageBoxButtons.OK,
+            MessageBox.Show(Helper.Translate("Backupフォルダにバックアップが完了しました！\n\n復元したい場合はBackupフォルダの中身を解凍し、全てをDatasフォルダの中身と置き換えれば大丈夫です！\n※ソフトはその間起動しないようにしてください！\n\nファイル名: ", CurrentLanguage) + fileName, Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
+        }
+
+        private void LanguageBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CurrentLanguage = LanguageBox.SelectedIndex switch
+            {
+                0 => "ja-JP",
+                1 => "ko-KR",
+                2 => "en-US",
+                _ => CurrentLanguage
+            };
+
+            foreach (Control control in Controls)
+            {
+                if (control.Name == "LanguageBox") continue;
+                if (control.Text == "") continue;
+                _controlNames.TryAdd(control.Name, control.Text);
+                control.Text = Helper.Translate(_controlNames[control.Name], CurrentLanguage);
+            }
+
+            foreach (Control control in AvatarSearchFilterList.Controls)
+            {
+                if (control.Text == "") continue;
+                _controlNames.TryAdd(control.Name, control.Text);
+                control.Text = Helper.Translate(_controlNames[control.Name], CurrentLanguage);
+            }
+
+            foreach (Control control in ExplorerList.Controls)
+            {
+                if (control.Text == "") continue;
+                _controlNames.TryAdd(control.Name, control.Text);
+                control.Text = Helper.Translate(_controlNames[control.Name], CurrentLanguage);
+            }
+
+            foreach (Control control in AvatarItemExplorer.Controls)
+            {
+                if (control.Text == "") continue;
+                _controlNames.TryAdd(control.Name, control.Text);
+                control.Text = Helper.Translate(_controlNames[control.Name], CurrentLanguage);
+            }
+
+            GenerateAvatarList();
+            GenerateAuthorList();
+            GenerateCategoryListLeft();
         }
     }
 }

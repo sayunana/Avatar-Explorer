@@ -21,20 +21,20 @@ namespace Avatar_Explorer.Forms
             if (folderPath != null) FolderTextBox.Text = folderPath;
 
             TypeComboBox.SelectedIndex = (int)type == 9 ? 0 : (int)type;
-            Text = "アイテムの追加";
+            Text = Helper.Translate("アイテムの追加", _mainForm.CurrentLanguage);
 
             if (!(edit && item != null)) return;
             Item = item;
-            Text = "アイテムの編集";
-            label3.Text = "アイテムの編集";
-            AddButton.Text = "編集";
+            Text = Helper.Translate("アイテムの編集", _mainForm.CurrentLanguage);
+            label3.Text = Helper.Translate("アイテムの編集", _mainForm.CurrentLanguage);
+            AddButton.Text = Helper.Translate("編集", _mainForm.CurrentLanguage);
 
             BoothURLTextBox.Text = $"https://booth.pm/ja/items/{item.BoothId}";
             FolderTextBox.Text = item.ItemPath;
             SupportedAvatar = item.SupportedAvatar;
             TitleTextBox.Text = item.Title;
             AuthorTextBox.Text = item.AuthorName;
-            SelectAvatar.Text = $"選択中: {SupportedAvatar.Length}個";
+            SelectAvatar.Text = Helper.Translate("選択中: ", _mainForm.CurrentLanguage) + SupportedAvatar.Length + Helper.Translate("個", _mainForm.CurrentLanguage);
 
             FolderTextBox.Enabled = false;
             AddButton.Enabled = true;
@@ -52,7 +52,7 @@ namespace Avatar_Explorer.Forms
 
             if (File.Exists(dragFilePathArr[0]))
             {
-                MessageBox.Show("フォルダを選択してください", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Helper.Translate("フォルダを選択してください", _mainForm.CurrentLanguage), Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -69,7 +69,7 @@ namespace Avatar_Explorer.Forms
 
             if (Item.Title == "" || Item.AuthorName == "" || Item.ItemPath == "")
             {
-                MessageBox.Show("タイトル、作者、フォルダパスのどれかが入力されていません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Helper.Translate("タイトル、作者、フォルダパスのどれかが入力されていません", _mainForm.CurrentLanguage), Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -90,8 +90,8 @@ namespace Avatar_Explorer.Forms
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show("サムネイルのダウンロードに失敗しました: " + ex.Message,
-                                "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(Helper.Translate("サムネイルのダウンロードに失敗しました: ", _mainForm.CurrentLanguage) + ex.Message,
+                                Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                 }
@@ -116,8 +116,8 @@ namespace Avatar_Explorer.Forms
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show("作者の画像のダウンロードに失敗しました: " + ex.Message,
-                                "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(Helper.Translate("作者の画像のダウンロードに失敗しました: ", _mainForm.CurrentLanguage) + ex.Message,
+                                Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                 }
@@ -130,14 +130,14 @@ namespace Avatar_Explorer.Forms
             if (_edit)
             {
                 // 同じパスのものを削除してから追加
-                MessageBox.Show("Boothのアイテムを編集しました!\nアイテム名: " + Item.Title + "\n作者: " + Item.AuthorName, "編集完了",
+                MessageBox.Show(Helper.Translate("Boothのアイテムを編集しました!", _mainForm.CurrentLanguage) + "\n" + Helper.Translate("アイテム名: ", _mainForm.CurrentLanguage) + Item.Title + "\n" + Helper.Translate("作者: ", _mainForm.CurrentLanguage) + Item.AuthorName, Helper.Translate("編集完了", _mainForm.CurrentLanguage),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _mainForm.Items = _mainForm.Items.Where(i => i.ItemPath != Item.ItemPath).ToArray();
                 _mainForm.Items = _mainForm.Items.Append(Item).ToArray();
             }
             else
             {
-                MessageBox.Show("Boothのアイテムを追加しました!\nアイテム名: " + Item.Title + "\n作者: " + Item.AuthorName, "追加完了",
+                MessageBox.Show(Helper.Translate("Boothのアイテムを追加しました!", _mainForm.CurrentLanguage) + "\n" + Helper.Translate("アイテム名: ", _mainForm.CurrentLanguage) + Item.Title + "\n" + Helper.Translate("作者: ", _mainForm.CurrentLanguage) + Item.AuthorName, Helper.Translate("追加完了", _mainForm.CurrentLanguage),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _mainForm.Items = _mainForm.Items.Append(Item).ToArray();
             }
@@ -150,27 +150,21 @@ namespace Avatar_Explorer.Forms
             var boothId = BoothURLTextBox.Text.Split('/').Last();
             if (!int.TryParse(boothId, out _))
             {
-                MessageBox.Show("Booth URLが正しくありません", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (_mainForm.Items.Any(i => i.ItemPath == FolderTextBox.Text) && !_edit)
-            {
-                MessageBox.Show("同じパスのアイテムが既に存在します");
+                MessageBox.Show(Helper.Translate("Booth URLが正しくありません", _mainForm.CurrentLanguage), Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             try
             {
                 GetButton.Enabled = false;
-                GetButton.Text = "取得中...";
+                GetButton.Text = Helper.Translate("取得中...", _mainForm.CurrentLanguage);
                 Item = await Helper.GetBoothItemInfoAsync(boothId);
-                GetButton.Text = "情報を取得";
+                GetButton.Text = Helper.Translate("情報を取得", _mainForm.CurrentLanguage);
                 GetButton.Enabled = true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Boothのアイテム情報を取得できませんでした\n" + ex.Message, "エラー", MessageBoxButtons.OK,
+                MessageBox.Show(Helper.Translate("Boothのアイテム情報を取得できませんでした", _mainForm.CurrentLanguage) + "\n" + ex.Message, Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 TitleTextBox.Enabled = true;
                 AuthorTextBox.Enabled = true;
@@ -194,7 +188,7 @@ namespace Avatar_Explorer.Forms
         {
             SelectSupportedAvatar selectSupportedAvatar = new(_mainForm, this);
             selectSupportedAvatar.ShowDialog();
-            SelectAvatar.Text = $"選択中: {SupportedAvatar.Length}個";
+            SelectAvatar.Text = Helper.Translate("選択中: ", _mainForm.CurrentLanguage) + SupportedAvatar.Length + Helper.Translate("個", _mainForm.CurrentLanguage);
         }
 
         private void TypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -206,15 +200,15 @@ namespace Avatar_Explorer.Forms
         {
             if (!_edit && _mainForm.Items.Any(i => i.Title == TitleTextBox.Text))
             {
-                SetErrorState("エラー: 同じタイトルのアイテムが既に存在します");
+                SetErrorState(Helper.Translate("エラー: 同じタイトルのアイテムが既に存在します", _mainForm.CurrentLanguage));
             }
             else if (string.IsNullOrEmpty(TitleTextBox.Text))
             {
-                SetErrorState("エラー: タイトルが入力されていません");
+                SetErrorState(Helper.Translate("エラー: タイトルが入力されていません", _mainForm.CurrentLanguage));
             }
             else if (TitleTextBox.Text == "*")
             {
-                SetErrorState("エラー: タイトルを*にすることはできません");
+                SetErrorState(Helper.Translate("エラー: タイトルを*にすることはできません", _mainForm.CurrentLanguage));
             }
             else
             {
@@ -234,19 +228,19 @@ namespace Avatar_Explorer.Forms
         {
             if (!Directory.Exists(FolderTextBox.Text))
             {
-                SetErrorState("エラー: フォルダパスが存在しません");
+                SetErrorState(Helper.Translate("エラー: フォルダパスが存在しません", _mainForm.CurrentLanguage));
             }
             else if (File.Exists(FolderTextBox.Text))
             {
-                SetErrorState("エラー: フォルダパスがファイルです");
+                SetErrorState(Helper.Translate("エラー: フォルダパスがファイルです", _mainForm.CurrentLanguage));
             }
             else if (string.IsNullOrEmpty(FolderTextBox.Text))
             {
-                SetErrorState("エラー: フォルダパスが入力されていません");
+                SetErrorState(Helper.Translate("エラー: フォルダパスが入力されていません", _mainForm.CurrentLanguage));
             }
             else if (_mainForm.Items.Any(i => i.ItemPath == FolderTextBox.Text) && !_edit)
             {
-                SetErrorState("エラー: 同じパスのアイテムが既に存在します");
+                SetErrorState(Helper.Translate("エラー: 同じパスのアイテムが既に存在します", _mainForm.CurrentLanguage));
             }
             else
             {

@@ -12,6 +12,16 @@ namespace Avatar_Explorer.Forms
             _mainForm = mainForm;
             _addItem = addItem;
             InitializeComponent();
+            if (_mainForm.CurrentLanguage != "ja-JP")
+            {
+                foreach (Control control in Controls)
+                {
+                    if (control.Text != "")
+                    {
+                        control.Text = Helper.Translate(control.Text, _mainForm.CurrentLanguage);
+                    }
+                }
+            }
             GenerateAvatarList();
         }
 
@@ -21,7 +31,7 @@ namespace Avatar_Explorer.Forms
             var index = 0;
             foreach (Item item in _mainForm.Items.Where(item => item.Type == ItemType.Avatar))
             {
-                Button button = CreateAvatarButton(item);
+                Button button = CreateAvatarButton(item, _mainForm.CurrentLanguage);
                 button.Location = new Point(0, (70 * index) + 3);
                 button.BackColor = _addItem.SupportedAvatar.Contains(item.Title) ? Color.LightGreen : Color.FromKnownColor(KnownColor.Control);
                 AvatarList.Controls.Add(button);
@@ -29,7 +39,7 @@ namespace Avatar_Explorer.Forms
             }
         }
 
-        private static Button CreateAvatarButton(Item item)
+        private static Button CreateAvatarButton(Item item, string language)
         {
             Button button = new Button();
             button.Size = new Size(1009, 64);
@@ -49,7 +59,7 @@ namespace Avatar_Explorer.Forms
             button.Controls.Add(title);
 
             Label authorName = new Label();
-            authorName.Text = "作者: " + item.AuthorName;
+            authorName.Text = Helper.Translate("作者: ", language) + item.AuthorName;
             authorName.Location = new Point(60, 25);
             authorName.Size = new Size(200, 20);
 

@@ -48,20 +48,20 @@ namespace Avatar_Explorer.Classes
             return match.Success ? match.Groups[1].Value : "";
         }
 
-        public static string GetCategoryName(ItemType itemType)
+        public static string GetCategoryName(ItemType itemType, string lang)
         {
             return itemType switch
             {
-                ItemType.Avatar => "アバター",
-                ItemType.Clothing => "衣装",
-                ItemType.Texture => "テクスチャ",
-                ItemType.Gimick => "ギミック",
-                ItemType.Accessary => "アクセサリー",
-                ItemType.HairStyle => "髪型",
-                ItemType.Animation => "アニメーション",
-                ItemType.Tool => "ツール",
-                ItemType.Shader => "シェーダー",
-                _ => "不明"
+                ItemType.Avatar => Translate("アバター", lang),
+                ItemType.Clothing => Translate("衣装", lang),
+                ItemType.Texture => Translate("テクスチャ", lang),
+                ItemType.Gimick => Translate("ギミック", lang),
+                ItemType.Accessary => Translate("アクセサリー", lang),
+                ItemType.HairStyle => Translate("髪型", lang),
+                ItemType.Animation => Translate("アニメーション", lang),
+                ItemType.Tool => Translate("ツール", lang),
+                ItemType.Shader => Translate("シェーダー", lang),
+                _ => Translate("不明", lang)
             };
         }
 
@@ -254,6 +254,16 @@ namespace Avatar_Explorer.Classes
             graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
             graphics.DrawImage(originalImage, 0, 0, width, height);
             return resizedImage;
+        }
+
+        public static string Translate(string str, string to)
+        {
+            if (to == "ja-JP") return str;
+            if (!File.Exists($"./Datas/Translate/{to}.json")) return str;
+            var json = File.ReadAllText(($"./Datas/Translate/{to}.json"));
+            var data = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+            if (data == null) return str;
+            return data.TryGetValue(str, out var translated) ? translated : str;
         }
     }
 }

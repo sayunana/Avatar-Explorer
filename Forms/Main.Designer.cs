@@ -45,6 +45,8 @@ namespace Avatar_Explorer.Forms
             SearchResultLabel = new Label();
             ExportButton = new Button();
             MakeBackupButton = new Button();
+            label2 = new Label();
+            LanguageBox = new ComboBox();
             AvatarSearchFilterList.SuspendLayout();
             ExplorerList.SuspendLayout();
             AvatarItemExplorer.SuspendLayout();
@@ -92,7 +94,6 @@ namespace Avatar_Explorer.Forms
             AvatarPage.Text = "アバター";
             AvatarPage.UseVisualStyleBackColor = true;
             AvatarPage.DragDrop += AvatarPage_DragDrop;
-            AvatarPage.DragEnter += Helper.DragEnter;
             // 
             // AvatarAuthorPage
             // 
@@ -147,7 +148,6 @@ namespace Avatar_Explorer.Forms
             AvatarItemExplorer.Text = "アイテム";
             AvatarItemExplorer.UseVisualStyleBackColor = true;
             AvatarItemExplorer.DragDrop += AvatarItemExplorer_DragDrop;
-            AvatarItemExplorer.DragEnter += Helper.DragEnter;
             // 
             // StartLabel
             // 
@@ -208,11 +208,35 @@ namespace Avatar_Explorer.Forms
             MakeBackupButton.UseVisualStyleBackColor = true;
             MakeBackupButton.Click += MakeBackupButton_Click;
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Yu Gothic UI", 13F);
+            label2.Location = new Point(406, 651);
+            label2.Name = "label2";
+            label2.Size = new Size(142, 25);
+            label2.TabIndex = 12;
+            label2.Text = "言語 / Language";
+            // 
+            // LanguageBox
+            // 
+            LanguageBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            LanguageBox.Font = new Font("Yu Gothic UI", 12F);
+            LanguageBox.FormattingEnabled = true;
+            LanguageBox.Items.AddRange(new object[] { "日本語", "한국어", "English" });
+            LanguageBox.Location = new Point(554, 649);
+            LanguageBox.Name = "LanguageBox";
+            LanguageBox.Size = new Size(196, 29);
+            LanguageBox.TabIndex = 13;
+            LanguageBox.SelectedIndexChanged += LanguageBox_SelectedIndexChanged;
+            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1266, 699);
+            Controls.Add(LanguageBox);
+            Controls.Add(label2);
             Controls.Add(MakeBackupButton);
             Controls.Add(ExportButton);
             Controls.Add(SearchResultLabel);
@@ -254,5 +278,7 @@ namespace Avatar_Explorer.Forms
         private Button ExportButton;
         private TabPage CategoryPage;
         private Button MakeBackupButton;
+        private Label label2;
+        private ComboBox LanguageBox;
     }
 }
