@@ -37,7 +37,6 @@
         public FileData[] GetAllItem()
         {
             return ModifyFiles.Concat(TextureFiles).Concat(DocumentFiles).Concat(UnityPackageFiles).Concat(UnkownFiles).ToArray();
-
         }
     }
 
