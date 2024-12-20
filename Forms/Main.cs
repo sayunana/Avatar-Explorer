@@ -209,6 +209,31 @@ namespace Avatar_Explorer.Forms
                     GenerateCategoryList();
                     PathTextBox.Text = GeneratePath();
                 };
+
+                ContextMenuStrip contextMenuStrip = new();
+
+                ToolStripMenuItem toolStripMenuItem4 = new("サムネイル変更", _editImage);
+                toolStripMenuItem4.Click += (_, _) =>
+                {
+                    OpenFileDialog ofd = new()
+                    {
+                        Filter = "画像ファイル|*.png;*.jpg",
+                        Title = "サムネイル変更",
+                        Multiselect = false
+                    };
+
+                    if (ofd.ShowDialog() != DialogResult.OK) return;
+                    MessageBox.Show("サムネイルを変更しました！\n\n変更前: " + author.AuthorImagePath + "\n\n変更後: " + ofd.FileName,
+                        "完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    foreach (var item in Items.Where(item => item.AuthorName == author.AuthorName))
+                    {
+                        item.AuthorImageFilePath = ofd.FileName;
+                    }
+                    GenerateAuthorList();
+                };
+
+                contextMenuStrip.Items.Add(toolStripMenuItem4);
+                button.ContextMenuStrip = contextMenuStrip;
                 AvatarAuthorPage.Controls.Add(button);
                 index++;
             }
