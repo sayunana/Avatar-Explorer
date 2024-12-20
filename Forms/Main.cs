@@ -32,15 +32,17 @@ namespace Avatar_Explorer.Forms
 
         public Main()
         {
-            if (File.Exists("./Datas/CopyIcon.png"))
+            if (File.Exists("./Datas/CopyIcon.png") && File.Exists("./Datas/TrashIcon.png") &&
+                File.Exists("./Datas/EditIcon.png"))
+            {
                 _copyImage = Image.FromFile("./Datas/CopyIcon.png");
-
-            if (File.Exists("./Datas/TrashIcon.png"))
                 _trashImage = Image.FromFile("./Datas/TrashIcon.png");
-
-            if (File.Exists("./Datas/EditIcon.png"))
                 _editImage = Image.FromFile("./Datas/EditIcon.png");
-
+            }
+            else
+            {
+                MessageBox.Show("アイコンファイルが見つかりませんでした。ソフトをもう一度ダウンロードしてください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
             Items = Helper.LoadItemsData();
             AddFontFile();
