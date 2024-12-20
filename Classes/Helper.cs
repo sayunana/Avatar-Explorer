@@ -116,7 +116,7 @@ namespace Avatar_Explorer.Classes
             pictureBox.Size = new Size(56, 56);
             pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox.Image = ResizeImage(File.Exists(imagePath) ? imagePath : "./Datas/FileIcon.png", 100, 100);
-            pictureBox.Location = new Point(3, 3);
+            pictureBox.Location = new Point(4, 4);
             button.Controls.Add(pictureBox);
 
             Label title = new Label();

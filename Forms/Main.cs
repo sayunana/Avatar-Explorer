@@ -87,6 +87,90 @@ namespace Avatar_Explorer.Forms
                     GenerateCategoryList();
                     PathTextBox.Text = GeneratePath();
                 };
+
+                ContextMenuStrip contextMenuStrip = new();
+
+                if (item.BoothId != -1)
+                {
+                    ToolStripMenuItem toolStripMenuItem = new("Boothリンクのコピー", _copyImage);
+                    toolStripMenuItem.Click += (_, _) =>
+                    {
+                        try
+                        {
+                            Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("クリップボードにコピーできませんでした", "エラー", MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
+                    };
+
+                    ToolStripMenuItem toolStripMenuItem1 = new("Boothリンクを開く", _copyImage);
+                    toolStripMenuItem1.Click += (_, _) =>
+                    {
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = "https://booth.pm/ja/items/" + item.BoothId,
+                            UseShellExecute = true
+                        });
+                    };
+
+                    contextMenuStrip.Items.Add(toolStripMenuItem);
+                    contextMenuStrip.Items.Add(toolStripMenuItem1);
+                }
+
+                ToolStripMenuItem toolStripMenuItem2 = new("削除", _trashImage);
+                toolStripMenuItem2.Click += (_, _) =>
+                {
+                    var undo = false;
+                    if (CurrentPath.CurrentSelectedItem?.Title == item.Title)
+                    {
+                        CurrentPath.CurrentSelectedItemCategory = null;
+                        CurrentPath.CurrentSelectedItem = null;
+                        undo = true;
+                        PathTextBox.Text = GeneratePath();
+                    }
+
+                    Items = Items.Where(i => i.Title != item.Title).ToArray();
+                    if (_openingWindow == Window.ItemList || undo) GenerateItems();
+                    GenerateAvatarList();
+                    GenerateAuthorList();
+                    GenerateCategoryListLeft();
+                };
+
+                ToolStripMenuItem toolStripMenuItem3 = new("編集", _editImage);
+                toolStripMenuItem3.Click += (_, _) =>
+                {
+                    AddItem addItem = new(this, item.Type, true, item, null);
+                    addItem.ShowDialog();
+                    GenerateAvatarList();
+                    GenerateAuthorList();
+                    GenerateCategoryListLeft();
+                };
+
+                ToolStripMenuItem toolStripMenuItem4 = new("サムネイル変更", _editImage);
+                toolStripMenuItem4.Click += (_, _) =>
+                {
+                    OpenFileDialog ofd = new()
+                    {
+                        Filter = "画像ファイル|*.png;*.jpg",
+                        Title = "サムネイル変更",
+                        Multiselect = false
+                    };
+
+                    if (ofd.ShowDialog() != DialogResult.OK) return;
+                    MessageBox.Show("サムネイルを変更しました！\n\n変更前: " + item.ImagePath + "\n\n変更後: " + ofd.FileName,
+                        "完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    item.ImagePath = ofd.FileName;
+                    GenerateItems();
+                };
+
+                contextMenuStrip.Items.Add(toolStripMenuItem2);
+                contextMenuStrip.Items.Add(toolStripMenuItem3);
+                contextMenuStrip.Items.Add(toolStripMenuItem4);
+                button.ContextMenuStrip = contextMenuStrip;
+
                 AvatarPage.Controls.Add(button);
                 index++;
             }
@@ -263,6 +347,9 @@ namespace Avatar_Explorer.Forms
                 {
                     Items = Items.Where(i => i.Title != item.Title).ToArray();
                     GenerateItems();
+                    GenerateAvatarList();
+                    GenerateAuthorList();
+                    GenerateCategoryListLeft();
                 };
 
                 ToolStripMenuItem toolStripMenuItem3 = new("編集", _editImage);
@@ -285,13 +372,11 @@ namespace Avatar_Explorer.Forms
                         Multiselect = false
                     };
 
-                    if (ofd.ShowDialog() == DialogResult.OK)
-                    {
-                        MessageBox.Show("サムネイルを変更しました！\n変更前: " + item.ImagePath + "\n変更後: " + ofd.FileName,
-                            "完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        item.ImagePath = ofd.FileName;
-                        GenerateItems();
-                    }
+                    if (ofd.ShowDialog() != DialogResult.OK) return;
+                    MessageBox.Show("サムネイルを変更しました！\n\n変更前: " + item.ImagePath + "\n\n変更後: " + ofd.FileName,
+                        "完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    item.ImagePath = ofd.FileName;
+                    GenerateItems();
                 };
 
                 contextMenuStrip.Items.Add(toolStripMenuItem2);
@@ -458,6 +543,9 @@ namespace Avatar_Explorer.Forms
                 {
                     Items = Items.Where(i => i.Title != item.Title).ToArray();
                     GenerateItems();
+                    GenerateAvatarList();
+                    GenerateAuthorList();
+                    GenerateCategoryListLeft();
                 };
 
                 ToolStripMenuItem toolStripMenuItem3 = new("編集", _editImage);
