@@ -260,7 +260,11 @@ namespace Avatar_Explorer.Forms
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
+                    CurrentPath.CurrentSelectedAuthor = null;
+                    CurrentPath.CurrentSelectedAvatar = null;
                     CurrentPath.CurrentSelectedCategory = itemType;
+                    CurrentPath.CurrentSelectedItemCategory = null;
+                    CurrentPath.CurrentSelectedItem = null;
                     _authorMode = false;
                     _categoryMode = true;
                     GenerateItems();
@@ -693,7 +697,7 @@ namespace Avatar_Explorer.Forms
                 return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
                        Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + "/" +
                        Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" +
-                       CurrentPath.CurrentSelectedItemCategory;
+                       Helper.Translate(CurrentPath.CurrentSelectedItemCategory, CurrentLanguage);
             }
 
             if (_categoryMode)
@@ -707,7 +711,7 @@ namespace Avatar_Explorer.Forms
 
                 return Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + "/" +
                        Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" +
-                       CurrentPath.CurrentSelectedItemCategory;
+                       Helper.Translate(CurrentPath.CurrentSelectedItemCategory, CurrentLanguage);
             }
 
             if (CurrentPath.CurrentSelectedAvatar == null) return "";
@@ -724,7 +728,7 @@ namespace Avatar_Explorer.Forms
             return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
                    Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + "/" +
                    Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" +
-                   Helper.RemoveFormat(CurrentPath.CurrentSelectedItemCategory);
+                   Helper.Translate(CurrentPath.CurrentSelectedItemCategory, CurrentLanguage);
         }
 
         private void GeneratePathFromItem(Item item)

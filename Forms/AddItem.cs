@@ -27,6 +27,11 @@ namespace Avatar_Explorer.Forms
                         control.Text = Helper.Translate(control.Text, _mainForm.CurrentLanguage);
                     }
                 }
+
+                for (var i = 0; i < TypeComboBox.Items.Count; i++)
+                {
+                    TypeComboBox.Items[i] = Helper.Translate(TypeComboBox.Items[i].ToString(), _mainForm.CurrentLanguage);
+                }
             }
 
             if (folderPath != null) FolderTextBox.Text = folderPath;
