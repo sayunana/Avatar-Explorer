@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.InteropServices.JavaScript;
 using Avatar_Explorer.Classes;
 
 namespace Avatar_Explorer.Forms
@@ -48,41 +49,16 @@ namespace Avatar_Explorer.Forms
 
         private static Button CreateAvatarButton(Item item, string language)
         {
-            Button button = new Button();
-            button.Size = new Size(1009, 64);
-
-            PictureBox pictureBox = new PictureBox();
-            pictureBox.Size = new Size(56, 56);
-            pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox.Image = File.Exists(item.ImagePath) ? Image.FromFile(item.ImagePath) : Image.FromFile("./Datas/FileIcon.png");
-            pictureBox.Location = new Point(3, 3);
-            button.Controls.Add(pictureBox);
-
-            Label title = new Label();
-            title.Text = item.Title;
-            title.Location = new Point(60, 3);
-            title.AutoSize = true;
-            title.Font = new Font("Yu Gothic UI", 12F);
-            button.Controls.Add(title);
-
-            Label authorName = new Label();
-            authorName.Text = Helper.Translate("作者: ", language) + item.AuthorName;
-            authorName.Location = new Point(60, 25);
-            authorName.Size = new Size(200, 20);
-
-            button.Controls.Add(authorName);
-
-            pictureBox.Click += (_, _) => button.PerformClick();
-            title.Click += (_, _) => button.PerformClick();
-            authorName.Click += (_, _) => button.PerformClick();
+            CustomItemButton button = new CustomItemButton(true, 1009);
+            button.Picture = File.Exists(item.ImagePath) ? Image.FromFile(item.ImagePath) : Image.FromFile("./Datas/FileIcon.png");
+            button.TitleText = item.Title;
+            button.AuthorName = Helper.Translate("作者: ", language) + item.AuthorName; ;
+            button.ToolTipText = item.Title;
 
             button.Click += (_, _) =>
             {
                 button.BackColor = button.BackColor == Color.LightGreen ? Color.FromKnownColor(KnownColor.Control) : Color.LightGreen;
             };
-
-            ToolTip toolTip = new ToolTip();
-            toolTip.SetToolTip(button, item.Title);
 
             return button;
         }
