@@ -149,8 +149,8 @@ namespace Avatar_Explorer.Forms
                 {
                     OpenFileDialog ofd = new()
                     {
-                        Filter = "画像ファイル|*.png;*.jpg",
-                        Title = "サムネイル変更",
+                        Filter = Helper.Translate("画像ファイル|*.png;*.jpg", CurrentLanguage),
+                        Title = Helper.Translate("サムネイル変更", CurrentLanguage),
                         Multiselect = false
                     };
 
@@ -391,8 +391,8 @@ namespace Avatar_Explorer.Forms
                 {
                     OpenFileDialog ofd = new()
                     {
-                        Filter = "画像ファイル|*.png;*.jpg",
-                        Title = "サムネイル変更",
+                        Filter = Helper.Translate("画像ファイル|*.png;*.jpg", CurrentLanguage),
+                        Title = Helper.Translate("サムネイル変更", CurrentLanguage),
                         Multiselect = false
                     };
 
@@ -587,8 +587,26 @@ namespace Avatar_Explorer.Forms
                     GenerateCategoryListLeft();
                 };
 
+                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("サムネイル変更", CurrentLanguage), _editImage);
+                toolStripMenuItem4.Click += (_, _) =>
+                {
+                    OpenFileDialog ofd = new()
+                    {
+                        Filter = Helper.Translate("画像ファイル|*.png;*.jpg", CurrentLanguage),
+                        Title = Helper.Translate("サムネイル変更", CurrentLanguage),
+                        Multiselect = false
+                    };
+
+                    if (ofd.ShowDialog() != DialogResult.OK) return;
+                    MessageBox.Show(Helper.Translate("サムネイルを変更しました！", CurrentLanguage) + "\n\n" + Helper.Translate("変更前: ", CurrentLanguage) + item.ImagePath + "\n\n" + Helper.Translate("変更後: ", CurrentLanguage) + ofd.FileName,
+                        Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    item.ImagePath = ofd.FileName;
+                    GenerateFilteredItem(searchWords);
+                };
+
                 contextMenuStrip.Items.Add(toolStripMenuItem2);
                 contextMenuStrip.Items.Add(toolStripMenuItem3);
+                contextMenuStrip.Items.Add(toolStripMenuItem4);
                 button.ContextMenuStrip = contextMenuStrip;
                 AvatarItemExplorer.Controls.Add(button);
                 index++;
