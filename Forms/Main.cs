@@ -62,12 +62,14 @@ namespace Avatar_Explorer.Forms
 
         private void AddFontFile()
         {
-            if (!File.Exists("./Datas/NotoSansJP-Regular.ttf"))
+            if (!File.Exists("./Datas/NotoSansJP-Regular.ttf") || !File.Exists("./Datas/NotoSans-Regular.ttf") || !File.Exists("./Datas/NotoSansKR-Regular.ttf"))
             {
                 MessageBox.Show(Helper.Translate("フォントファイルが見つかりませんでした。ソフトをもう一度ダウンロードしてください。", CurrentLanguage), Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             _fontCollection.AddFontFile("./Datas/NotoSansJP-Regular.ttf");
-            GuiFont = _fontCollection.Families[0];
+            _fontCollection.AddFontFile("./Datas/NotoSans-Regular.ttf");
+            _fontCollection.AddFontFile("./Datas/NotoSansKR-Regular.ttf");
+            GuiFont = _fontCollection.Families[1];
         }
 
         // Generate List (LEFT)
@@ -934,6 +936,25 @@ namespace Avatar_Explorer.Forms
                 2 => "en-US",
                 _ => CurrentLanguage
             };
+
+            switch (CurrentLanguage)
+            {
+                case "ja-JP":
+                    {
+                        GuiFont = _fontCollection.Families[1];
+                        break;
+                    }
+                case "ko-KR":
+                    {
+                        GuiFont = _fontCollection.Families[0];
+                        break;
+                    }
+                case "en-US":
+                    {
+                        GuiFont = _fontCollection.Families[2];
+                        break;
+                    }
+            }
 
             foreach (Control control in Controls)
             {
