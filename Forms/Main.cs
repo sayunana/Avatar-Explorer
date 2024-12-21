@@ -69,6 +69,9 @@ namespace Avatar_Explorer.Forms
             _fontCollection.AddFontFile("./Datas/NotoSansJP-Regular.ttf");
             _fontCollection.AddFontFile("./Datas/NotoSans-Regular.ttf");
             _fontCollection.AddFontFile("./Datas/NotoSansKR-Regular.ttf");
+            MessageBox.Show(_fontCollection.Families[0].Name);
+            MessageBox.Show(_fontCollection.Families[1].Name);
+            MessageBox.Show(_fontCollection.Families[2].Name);
             GuiFont = _fontCollection.Families[1];
         }
 
@@ -946,12 +949,12 @@ namespace Avatar_Explorer.Forms
                     }
                 case "ko-KR":
                     {
-                        GuiFont = _fontCollection.Families[0];
+                        GuiFont = _fontCollection.Families[2];
                         break;
                     }
                 case "en-US":
                     {
-                        GuiFont = _fontCollection.Families[2];
+                        GuiFont = _fontCollection.Families[0];
                         break;
                     }
             }
