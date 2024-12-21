@@ -31,7 +31,8 @@ namespace Avatar_Explorer.Forms
 
                 for (var i = 0; i < TypeComboBox.Items.Count; i++)
                 {
-                    TypeComboBox.Items[i] = Helper.Translate(TypeComboBox.Items[i].ToString(), _mainForm.CurrentLanguage);
+                    TypeComboBox.Items[i] =
+                        Helper.Translate(TypeComboBox.Items[i].ToString(), _mainForm.CurrentLanguage);
                 }
             }
 
@@ -48,10 +49,12 @@ namespace Avatar_Explorer.Forms
 
             BoothURLTextBox.Text = $"https://booth.pm/ja/items/{item.BoothId}";
             FolderTextBox.Text = item.ItemPath;
+            MaterialTextBox.Text = item.MaterialPath;
             SupportedAvatar = item.SupportedAvatar;
             TitleTextBox.Text = item.Title;
             AuthorTextBox.Text = item.AuthorName;
-            SelectAvatar.Text = Helper.Translate("選択中: ", _mainForm.CurrentLanguage) + SupportedAvatar.Length + Helper.Translate("個", _mainForm.CurrentLanguage);
+            SelectAvatar.Text = Helper.Translate("選択中: ", _mainForm.CurrentLanguage) + SupportedAvatar.Length +
+                                Helper.Translate("個", _mainForm.CurrentLanguage);
 
             FolderTextBox.Enabled = false;
             AddButton.Enabled = true;
@@ -60,106 +63,13 @@ namespace Avatar_Explorer.Forms
             CustomButton.Enabled = false;
         }
 
-        private void FolderTextBox_DragDrop(object sender, DragEventArgs e)
+        private void CustomButton_Click(object sender, EventArgs e)
         {
-            if (e.Data == null) return;
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
-            string[]? dragFilePathArr = (string[]?)e.Data.GetData(DataFormats.FileDrop, false);
-            if (dragFilePathArr == null) return;
-
-            if (File.Exists(dragFilePathArr[0]))
-            {
-                MessageBox.Show(Helper.Translate("フォルダを選択してください", _mainForm.CurrentLanguage), Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            FolderTextBox.Text = dragFilePathArr[0];
-        }
-
-        private async void AddButton_Click(object sender, EventArgs e)
-        {
-            Item.Title = TitleTextBox.Text;
-            Item.AuthorName = AuthorTextBox.Text;
-            Item.Type = (ItemType)TypeComboBox.SelectedIndex;
-            Item.ItemPath = FolderTextBox.Text;
-            Item.SupportedAvatar = SupportedAvatar;
-
-            if (Item.Title == "" || Item.AuthorName == "" || Item.ItemPath == "")
-            {
-                MessageBox.Show(Helper.Translate("タイトル、作者、フォルダパスのどれかが入力されていません", _mainForm.CurrentLanguage), Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            AddButton.Enabled = false;
-
-            if (Item.BoothId != -1)
-            {
-                var thumbnailPath = Path.Combine("./Datas", "Thumbnail", $"{Item.BoothId}.png");
-                if (!File.Exists(thumbnailPath))
-                {
-                    if (!string.IsNullOrEmpty(Item.ThumbnailUrl))
-                    {
-                        try
-                        {
-                            var thumbnailData = await HttpClient.GetByteArrayAsync(Item.ThumbnailUrl);
-                            await File.WriteAllBytesAsync(thumbnailPath, thumbnailData);
-                            Item.ImagePath = thumbnailPath;
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(Helper.Translate("サムネイルのダウンロードに失敗しました: ", _mainForm.CurrentLanguage) + ex.Message,
-                                Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                }
-                else
-                {
-                    Item.ImagePath = thumbnailPath;
-                }
-            }
-
-            if (!string.IsNullOrEmpty(Item.AuthorId))
-            {
-                var authorImagePath = Path.Combine("./Datas", "AuthorImage", $"{Item.AuthorId}.png");
-                if (!File.Exists(authorImagePath))
-                {
-                    if (!string.IsNullOrEmpty(Item.AuthorImageUrl))
-                    {
-                        try
-                        {
-                            var authorImageData = await HttpClient.GetByteArrayAsync(Item.AuthorImageUrl);
-                            await File.WriteAllBytesAsync(authorImagePath, authorImageData);
-                            Item.AuthorImageFilePath = authorImagePath;
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(Helper.Translate("作者の画像のダウンロードに失敗しました: ", _mainForm.CurrentLanguage) + ex.Message,
-                                Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                }
-                else
-                {
-                    Item.AuthorImageFilePath = authorImagePath;
-                }
-            }
-
-            if (_edit)
-            {
-                // 同じパスのものを削除してから追加
-                MessageBox.Show(Helper.Translate("Boothのアイテムを編集しました!", _mainForm.CurrentLanguage) + "\n" + Helper.Translate("アイテム名: ", _mainForm.CurrentLanguage) + Item.Title + "\n" + Helper.Translate("作者: ", _mainForm.CurrentLanguage) + Item.AuthorName, Helper.Translate("編集完了", _mainForm.CurrentLanguage),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                _mainForm.Items = _mainForm.Items.Where(i => i.ItemPath != Item.ItemPath).ToArray();
-                _mainForm.Items = _mainForm.Items.Append(Item).ToArray();
-            }
-            else
-            {
-                MessageBox.Show(Helper.Translate("Boothのアイテムを追加しました!", _mainForm.CurrentLanguage) + "\n" + Helper.Translate("アイテム名: ", _mainForm.CurrentLanguage) + Item.Title + "\n" + Helper.Translate("作者: ", _mainForm.CurrentLanguage) + Item.AuthorName, Helper.Translate("追加完了", _mainForm.CurrentLanguage),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                _mainForm.Items = _mainForm.Items.Append(Item).ToArray();
-            }
-
-            Close();
+            TitleTextBox.Text = "";
+            AuthorTextBox.Text = "";
+            TitleTextBox.Enabled = true;
+            AuthorTextBox.Enabled = true;
+            _addButtonEnabled = true;
         }
 
         private async void GetButton_Click(object sender, EventArgs e)
@@ -167,7 +77,8 @@ namespace Avatar_Explorer.Forms
             var boothId = BoothURLTextBox.Text.Split('/').Last();
             if (!int.TryParse(boothId, out _))
             {
-                MessageBox.Show(Helper.Translate("Booth URLが正しくありません", _mainForm.CurrentLanguage), Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Helper.Translate("Booth URLが正しくありません", _mainForm.CurrentLanguage),
+                    Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -181,7 +92,9 @@ namespace Avatar_Explorer.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show(Helper.Translate("Boothのアイテム情報を取得できませんでした", _mainForm.CurrentLanguage) + "\n" + ex.Message, Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK,
+                MessageBox.Show(
+                    Helper.Translate("Boothのアイテム情報を取得できませんでした", _mainForm.CurrentLanguage) + "\n" + ex.Message,
+                    Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 TitleTextBox.Enabled = true;
                 AuthorTextBox.Enabled = true;
@@ -207,7 +120,8 @@ namespace Avatar_Explorer.Forms
         {
             SelectSupportedAvatar selectSupportedAvatar = new(_mainForm, this);
             selectSupportedAvatar.ShowDialog();
-            SelectAvatar.Text = Helper.Translate("選択中: ", _mainForm.CurrentLanguage) + SupportedAvatar.Length + Helper.Translate("個", _mainForm.CurrentLanguage);
+            SelectAvatar.Text = Helper.Translate("選択中: ", _mainForm.CurrentLanguage) + SupportedAvatar.Length +
+                                Helper.Translate("個", _mainForm.CurrentLanguage);
         }
 
         private void TypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -215,42 +129,127 @@ namespace Avatar_Explorer.Forms
             SelectAvatar.Enabled = TypeComboBox.SelectedIndex != (int)ItemType.Avatar;
         }
 
-        private void CheckText(object sender, EventArgs e)
+        private async void AddButton_Click(object sender, EventArgs e)
         {
-            if (!_edit && _mainForm.Items.Any(i => i.Title == TitleTextBox.Text))
+            Item.Title = TitleTextBox.Text;
+            Item.AuthorName = AuthorTextBox.Text;
+            Item.Type = (ItemType)TypeComboBox.SelectedIndex;
+            Item.ItemPath = FolderTextBox.Text;
+            Item.SupportedAvatar = SupportedAvatar;
+
+            if (MaterialTextBox.Text != "")
             {
-                SetErrorState(Helper.Translate("エラー: 同じタイトルのアイテムが既に存在します", _mainForm.CurrentLanguage));
-                return;
+                Item.MaterialPath = MaterialTextBox.Text;
             }
-            
-            if (string.IsNullOrEmpty(TitleTextBox.Text))
+
+            if (Item.Title == "" || Item.AuthorName == "" || Item.ItemPath == "")
             {
-                SetErrorState(Helper.Translate("エラー: タイトルが入力されていません", _mainForm.CurrentLanguage));
-                return;
-            }
-            
-            if (TitleTextBox.Text == "*")
-            {
-                SetErrorState(Helper.Translate("エラー: タイトルを*にすることはできません", _mainForm.CurrentLanguage));
+                MessageBox.Show(Helper.Translate("タイトル、作者、フォルダパスのどれかが入力されていません", _mainForm.CurrentLanguage),
+                    Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            if (string.IsNullOrEmpty(AuthorTextBox.Text))
+            AddButton.Enabled = false;
+
+            if (Item.BoothId != -1)
             {
-                SetErrorState(Helper.Translate("エラー: 作者が入力されていません", _mainForm.CurrentLanguage));
-                return;
+                var thumbnailPath = Path.Combine("./Datas", "Thumbnail", $"{Item.BoothId}.png");
+                if (!File.Exists(thumbnailPath))
+                {
+                    if (!string.IsNullOrEmpty(Item.ThumbnailUrl))
+                    {
+                        try
+                        {
+                            var thumbnailData = await HttpClient.GetByteArrayAsync(Item.ThumbnailUrl);
+                            await File.WriteAllBytesAsync(thumbnailPath, thumbnailData);
+                            Item.ImagePath = thumbnailPath;
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(
+                                Helper.Translate("サムネイルのダウンロードに失敗しました: ", _mainForm.CurrentLanguage) + ex.Message,
+                                Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
+                    }
+                }
+                else
+                {
+                    Item.ImagePath = thumbnailPath;
+                }
             }
 
-            ClearErrorState();
+            if (!string.IsNullOrEmpty(Item.AuthorId))
+            {
+                var authorImagePath = Path.Combine("./Datas", "AuthorImage", $"{Item.AuthorId}.png");
+                if (!File.Exists(authorImagePath))
+                {
+                    if (!string.IsNullOrEmpty(Item.AuthorImageUrl))
+                    {
+                        try
+                        {
+                            var authorImageData = await HttpClient.GetByteArrayAsync(Item.AuthorImageUrl);
+                            await File.WriteAllBytesAsync(authorImagePath, authorImageData);
+                            Item.AuthorImageFilePath = authorImagePath;
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(
+                                Helper.Translate("作者の画像のダウンロードに失敗しました: ", _mainForm.CurrentLanguage) + ex.Message,
+                                Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
+                    }
+                }
+                else
+                {
+                    Item.AuthorImageFilePath = authorImagePath;
+                }
+            }
+
+            if (_edit)
+            {
+                // 同じパスのものを削除してから追加
+                MessageBox.Show(
+                    Helper.Translate("Boothのアイテムを編集しました!", _mainForm.CurrentLanguage) + "\n" +
+                    Helper.Translate("アイテム名: ", _mainForm.CurrentLanguage) + Item.Title + "\n" +
+                    Helper.Translate("作者: ", _mainForm.CurrentLanguage) + Item.AuthorName,
+                    Helper.Translate("編集完了", _mainForm.CurrentLanguage),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _mainForm.Items = _mainForm.Items.Where(i => i.ItemPath != Item.ItemPath).ToArray();
+                _mainForm.Items = _mainForm.Items.Append(Item).ToArray();
+            }
+            else
+            {
+                MessageBox.Show(
+                    Helper.Translate("Boothのアイテムを追加しました!", _mainForm.CurrentLanguage) + "\n" +
+                    Helper.Translate("アイテム名: ", _mainForm.CurrentLanguage) + Item.Title + "\n" +
+                    Helper.Translate("作者: ", _mainForm.CurrentLanguage) + Item.AuthorName,
+                    Helper.Translate("追加完了", _mainForm.CurrentLanguage),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _mainForm.Items = _mainForm.Items.Append(Item).ToArray();
+            }
+
+            Close();
         }
 
-        private void CustomButton_Click(object sender, EventArgs e)
+        // Open Folder Button
+        private void openFolderButton_Click(object sender, EventArgs e)
         {
-            TitleTextBox.Text = "";
-            AuthorTextBox.Text = "";
-            TitleTextBox.Enabled = true;
-            AuthorTextBox.Enabled = true;
-            _addButtonEnabled = true;
+            var result = folderBrowserDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                FolderTextBox.Text = folderBrowserDialog.SelectedPath;
+            }
+        }
+
+        private void openMaterialFolderButton_Click(object sender, EventArgs e)
+        {
+            var result = folderBrowserDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                MaterialTextBox.Text = folderBrowserDialog.SelectedPath;
+            }
         }
 
         private void FolderTextBox_TextChanged(object sender, EventArgs e)
@@ -277,6 +276,62 @@ namespace Avatar_Explorer.Forms
             }
         }
 
+        private void MaterialTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (MaterialTextBox.Text != "")
+            {
+                if (Directory.Exists(MaterialTextBox.Text))
+                {
+                    ClearErrorState();
+                }
+                else
+                {
+                    SetErrorState(Helper.Translate("エラー: フォルダパスが存在しません", _mainForm.CurrentLanguage));
+                }
+            }
+            else
+            {
+                ClearErrorState();
+            }
+        }
+
+        // Drag & Drop
+        private void FolderTextBox_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data == null) return;
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            string[]? dragFilePathArr = (string[]?)e.Data.GetData(DataFormats.FileDrop, false);
+            if (dragFilePathArr == null) return;
+
+            if (File.Exists(dragFilePathArr[0]))
+            {
+                MessageBox.Show(Helper.Translate("フォルダを選択してください", _mainForm.CurrentLanguage),
+                    Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            FolderTextBox.Text = dragFilePathArr[0];
+        }
+
+        private void MaterialTextBox_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data == null) return;
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            string[]? dragFilePathArr = (string[]?)e.Data.GetData(DataFormats.FileDrop, false);
+            if (dragFilePathArr == null) return;
+
+            if (Directory.Exists(dragFilePathArr[0]))
+            {
+                MaterialTextBox.Text = dragFilePathArr[0];
+            }
+            else
+            {
+                MessageBox.Show(Helper.Translate("フォルダを選択してください", _mainForm.CurrentLanguage),
+                    Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // Error Label
         private void SetErrorState(string errorMessage)
         {
             AddButton.Enabled = false;
@@ -289,13 +344,34 @@ namespace Avatar_Explorer.Forms
             ErrorLabel.Text = "";
         }
 
-        private void openFolderButton_Click(object sender, EventArgs e)
+        // Check Text
+        private void CheckText(object sender, EventArgs e)
         {
-            var result = folderBrowserDialog.ShowDialog();
-            if (result == DialogResult.OK)
+            if (!_edit && _mainForm.Items.Any(i => i.Title == TitleTextBox.Text))
             {
-                FolderTextBox.Text = folderBrowserDialog.SelectedPath;
+                SetErrorState(Helper.Translate("エラー: 同じタイトルのアイテムが既に存在します", _mainForm.CurrentLanguage));
+                return;
             }
+
+            if (string.IsNullOrEmpty(TitleTextBox.Text))
+            {
+                SetErrorState(Helper.Translate("エラー: タイトルが入力されていません", _mainForm.CurrentLanguage));
+                return;
+            }
+
+            if (TitleTextBox.Text == "*")
+            {
+                SetErrorState(Helper.Translate("エラー: タイトルを*にすることはできません", _mainForm.CurrentLanguage));
+                return;
+            }
+
+            if (string.IsNullOrEmpty(AuthorTextBox.Text))
+            {
+                SetErrorState(Helper.Translate("エラー: 作者が入力されていません", _mainForm.CurrentLanguage));
+                return;
+            }
+
+            ClearErrorState();
         }
     }
 }

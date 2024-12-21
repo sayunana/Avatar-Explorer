@@ -7,6 +7,7 @@
         public string AuthorId { get; set; } = "";
         public int BoothId { get; set; } = -1;
         public string ItemPath { get; set; } = "";
+        public string MaterialPath { get; set; } = "";
         public string ThumbnailUrl { get; set; } = "";
         public string ImagePath { get; set; } = "";
         public string AuthorImageUrl { get; set; } = "";

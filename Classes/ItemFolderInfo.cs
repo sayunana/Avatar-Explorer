@@ -6,6 +6,7 @@
         public FileData[] TextureFiles { get; set; } = Array.Empty<FileData>();
         public FileData[] DocumentFiles { get; set; } = Array.Empty<FileData>();
         public FileData[] UnityPackageFiles { get; set; } = Array.Empty<FileData>();
+        public FileData[] MaterialFiles { get; set; } = Array.Empty<FileData>();
         public FileData[] UnkownFiles { get; set; } = Array.Empty<FileData>();
 
         public int GetItemCount(string type)
@@ -16,6 +17,7 @@
                 "テクスチャ" => TextureFiles.Length,
                 "ドキュメント" => DocumentFiles.Length,
                 "Unityパッケージ" => UnityPackageFiles.Length,
+                "マテリアル" => MaterialFiles.Length,
                 "不明" => UnkownFiles.Length,
                 _ => 0
             };
@@ -29,6 +31,7 @@
                 "テクスチャ" => TextureFiles,
                 "ドキュメント" => DocumentFiles,
                 "Unityパッケージ" => UnityPackageFiles,
+                "マテリアル" => MaterialFiles,
                 "不明" => UnkownFiles,
                 _ => Array.Empty<FileData>()
             };
@@ -36,7 +39,7 @@
 
         public FileData[] GetAllItem()
         {
-            return ModifyFiles.Concat(TextureFiles).Concat(DocumentFiles).Concat(UnityPackageFiles).Concat(UnkownFiles).ToArray();
+            return ModifyFiles.Concat(TextureFiles).Concat(DocumentFiles).Concat(UnityPackageFiles).Concat(MaterialFiles).Concat(UnkownFiles).ToArray();
         }
     }
 

@@ -433,10 +433,11 @@ namespace Avatar_Explorer.Forms
                 "テクスチャ",
                 "ドキュメント",
                 "Unityパッケージ",
+                "マテリアル",
                 "不明"
             };
             if (CurrentPath.CurrentSelectedItem == null) return;
-            ItemFolderInfo itemFolderInfo = Helper.GetItemFolderInfo(CurrentPath.CurrentSelectedItem.ItemPath);
+            ItemFolderInfo itemFolderInfo = Helper.GetItemFolderInfo(CurrentPath.CurrentSelectedItem.ItemPath, CurrentPath.CurrentSelectedItem.MaterialPath);
             CurrentPath.CurrentSelectedItemFolderInfo = itemFolderInfo;
 
             ResetAvatarList();

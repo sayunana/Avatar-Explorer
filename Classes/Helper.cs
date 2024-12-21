@@ -66,7 +66,7 @@ namespace Avatar_Explorer.Classes
             };
         }
 
-        public static ItemFolderInfo GetItemFolderInfo(string path)
+        public static ItemFolderInfo GetItemFolderInfo(string path, string materialPath)
         {
             var itemFolderInfo = new ItemFolderInfo();
             var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
@@ -102,6 +102,20 @@ namespace Avatar_Explorer.Classes
                         itemFolderInfo.UnkownFiles = itemFolderInfo.UnkownFiles.Append(item).ToArray();
                         break;
                 }
+            }
+
+            if (string.IsNullOrEmpty(materialPath)) return itemFolderInfo;
+
+            var materialFiles = Directory.GetFiles(materialPath, "*.*", SearchOption.AllDirectories);
+            foreach (var file in materialFiles)
+            {
+                var item = new FileData
+                {
+                    FileName = Path.GetFileName(file),
+                    FilePath = file
+                };
+
+                itemFolderInfo.MaterialFiles = itemFolderInfo.MaterialFiles.Append(item).ToArray();
             }
 
             return itemFolderInfo;
@@ -155,52 +169,54 @@ namespace Avatar_Explorer.Classes
             var toolTitle = new[] { "ツール", "システム", "Tool", "System" };
             var shaderTitle = new[] { "シェーダー", "Shader" };
 
+            var suggestType = ItemType.Unknown;
+
             if (avatarTitle.Any(title.Contains))
             {
-                return ItemType.Avatar;
+                suggestType = ItemType.Avatar;
             }
 
             if (animationTitle.Any(title.Contains))
             {
-                return ItemType.Animation;
+                suggestType = ItemType.Animation;
             }
 
             if (clothingTitle.Any(title.Contains))
             {
-                return ItemType.Clothing;
+                suggestType = ItemType.Clothing;
             }
 
             if (gimickTitle.Any(title.Contains))
             {
-                return ItemType.Gimick;
+                suggestType = ItemType.Gimick;
             }
 
             if (accessaryTitle.Any(title.Contains))
             {
-                return ItemType.Accessary;
+                suggestType = ItemType.Accessary;
             }
 
             if (hairStyleTitle.Any(title.Contains))
             {
-                return ItemType.HairStyle;
+                suggestType = ItemType.HairStyle;
             }
 
             if (textureTitle.Any(title.Contains))
             {
-                return ItemType.Texture;
+                suggestType = ItemType.Texture;
             }
 
             if (toolTitle.Any(title.Contains))
             {
-                return ItemType.Tool;
+                suggestType = ItemType.Tool;
             }
 
             if (shaderTitle.Any(title.Contains))
             {
-                return ItemType.Shader;
+                suggestType = ItemType.Shader;
             }
 
-            return ItemType.Unknown;
+            return suggestType;
         }
 
         public static string RemoveFormat(string str) => str.Replace(' ', '_').Replace('/', '-');
