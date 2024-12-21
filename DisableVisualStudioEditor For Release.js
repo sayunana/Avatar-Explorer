@@ -1,7 +1,6 @@
 const fs = require('fs');
 
 const data = fs.readFileSync("Forms/Main.Designer.cs", "utf-8");
-
 const replacedData = data.replace(/"Noto Sans JP"/g, "GuiFont");
 fs.writeFileSync("Forms/Main.Designer.cs", replacedData);
 
