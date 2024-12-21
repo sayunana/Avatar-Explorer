@@ -69,9 +69,6 @@ namespace Avatar_Explorer.Forms
             _fontCollection.AddFontFile("./Datas/NotoSansJP-Regular.ttf");
             _fontCollection.AddFontFile("./Datas/NotoSans-Regular.ttf");
             _fontCollection.AddFontFile("./Datas/NotoSansKR-Regular.ttf");
-            MessageBox.Show(_fontCollection.Families[0].Name);
-            MessageBox.Show(_fontCollection.Families[1].Name);
-            MessageBox.Show(_fontCollection.Families[2].Name);
             GuiFont = _fontCollection.Families[1];
         }
 
