@@ -270,7 +270,7 @@ namespace Avatar_Explorer.Classes
             if (TranslateData.TryGetValue(lang, out var data)) return data;
             var json = File.ReadAllText(($"./Datas/Translate/{lang}.json"));
             var translateData = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
-            if (translateData == null) return new();
+            if (translateData == null) return new Dictionary<string, string>();
             TranslateData.Add(lang, translateData);
             return translateData;
         }
