@@ -163,6 +163,7 @@ namespace Avatar_Explorer.Forms
             AuthorTextBox.Size = new Size(407, 27);
             AuthorTextBox.TabIndex = 14;
             AuthorTextBox.Text = "作者未取得";
+            AuthorTextBox.TextChanged += CheckText;
             // 
             // TitleTextBox
             // 
@@ -173,7 +174,7 @@ namespace Avatar_Explorer.Forms
             TitleTextBox.Size = new Size(407, 27);
             TitleTextBox.TabIndex = 13;
             TitleTextBox.Text = "タイトル未取得";
-            TitleTextBox.TextChanged += TitleTextBox_TextChanged;
+            TitleTextBox.TextChanged += CheckText;
             // 
             // label6
             // 
