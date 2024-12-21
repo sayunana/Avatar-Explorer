@@ -146,7 +146,7 @@ namespace Avatar_Explorer.Forms
             // 
             // SelectAvatar
             // 
-            SelectAvatar.Location = new Point(129, 334);
+            SelectAvatar.Location = new Point(190, 334);
             SelectAvatar.Name = "SelectAvatar";
             SelectAvatar.Size = new Size(140, 38);
             SelectAvatar.TabIndex = 10;

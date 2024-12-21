@@ -1,4 +1,5 @@
-﻿using Avatar_Explorer.Classes;
+﻿using System.Reflection;
+using Avatar_Explorer.Classes;
 
 namespace Avatar_Explorer.Forms
 {
@@ -13,6 +14,8 @@ namespace Avatar_Explorer.Forms
             _addItem = addItem;
             InitializeComponent();
 
+            Text = Helper.Translate("対応アバターの選択", _mainForm.CurrentLanguage);
+
             if (_mainForm.CurrentLanguage != "ja-JP")
             {
                 foreach (Control control in Controls)
@@ -22,6 +25,8 @@ namespace Avatar_Explorer.Forms
                         control.Text = Helper.Translate(control.Text, _mainForm.CurrentLanguage);
                     }
                 }
+
+                AvatarList.Text = Helper.Translate(AvatarList.Text, _mainForm.CurrentLanguage);
             }
 
             GenerateAvatarList();
