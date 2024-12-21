@@ -7,6 +7,7 @@ namespace Avatar_Explorer.Forms
         private readonly Main _mainForm;
         private readonly bool _edit;
         private static readonly HttpClient HttpClient = new();
+        private bool _addButtonEnabled;
 
         public Item Item = new();
 
@@ -198,6 +199,8 @@ namespace Avatar_Explorer.Forms
             if (suggestedType != ItemType.Unknown) TypeComboBox.SelectedIndex = (int)suggestedType;
             TitleTextBox.Enabled = true;
             AuthorTextBox.Enabled = true;
+
+            _addButtonEnabled = true;
         }
 
         private void SelectAvatar_Click(object sender, EventArgs e)
@@ -212,24 +215,33 @@ namespace Avatar_Explorer.Forms
             SelectAvatar.Enabled = TypeComboBox.SelectedIndex != (int)ItemType.Avatar;
         }
 
-        private void TitleTextBox_TextChanged(object sender, EventArgs e)
+        private void CheckText(object sender, EventArgs e)
         {
             if (!_edit && _mainForm.Items.Any(i => i.Title == TitleTextBox.Text))
             {
                 SetErrorState(Helper.Translate("エラー: 同じタイトルのアイテムが既に存在します", _mainForm.CurrentLanguage));
+                return;
             }
-            else if (string.IsNullOrEmpty(TitleTextBox.Text))
+            
+            if (string.IsNullOrEmpty(TitleTextBox.Text))
             {
                 SetErrorState(Helper.Translate("エラー: タイトルが入力されていません", _mainForm.CurrentLanguage));
+                return;
             }
-            else if (TitleTextBox.Text == "*")
+            
+            if (TitleTextBox.Text == "*")
             {
                 SetErrorState(Helper.Translate("エラー: タイトルを*にすることはできません", _mainForm.CurrentLanguage));
+                return;
             }
-            else
+
+            if (string.IsNullOrEmpty(AuthorTextBox.Text))
             {
-                ClearErrorState();
+                SetErrorState(Helper.Translate("エラー: 作者が入力されていません", _mainForm.CurrentLanguage));
+                return;
             }
+
+            ClearErrorState();
         }
 
         private void CustomButton_Click(object sender, EventArgs e)
@@ -238,6 +250,7 @@ namespace Avatar_Explorer.Forms
             AuthorTextBox.Text = "";
             TitleTextBox.Enabled = true;
             AuthorTextBox.Enabled = true;
+            _addButtonEnabled = true;
         }
 
         private void FolderTextBox_TextChanged(object sender, EventArgs e)
@@ -272,7 +285,7 @@ namespace Avatar_Explorer.Forms
 
         private void ClearErrorState()
         {
-            AddButton.Enabled = true;
+            if (_addButtonEnabled) AddButton.Enabled = true;
             ErrorLabel.Text = "";
         }
 
