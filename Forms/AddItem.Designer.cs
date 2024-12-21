@@ -208,9 +208,9 @@ namespace Avatar_Explorer.Forms
             // ErrorLabel
             // 
             ErrorLabel.AutoSize = true;
-            ErrorLabel.Font = new Font(_mainForm.GuiFont, 13F);
+            ErrorLabel.Font = new Font(_mainForm.GuiFont, 11F);
             ErrorLabel.ForeColor = Color.Red;
-            ErrorLabel.Location = new Point(17, 369);
+            ErrorLabel.Location = new Point(17, 385);
             ErrorLabel.Name = "ErrorLabel";
             ErrorLabel.Size = new Size(0, 26);
             ErrorLabel.TabIndex = 16;
