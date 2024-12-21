@@ -6,6 +6,7 @@ namespace Avatar_Explorer.Classes
     public class Helper
     {
         private static readonly HttpClient HttpClient = new();
+        private static readonly Dictionary<string, Dictionary<string, string>> TranslateData = new();
 
         public static async Task<Item> GetBoothItemInfoAsync(string id)
         {
@@ -260,10 +261,18 @@ namespace Avatar_Explorer.Classes
         {
             if (to == "ja-JP") return str;
             if (!File.Exists($"./Datas/Translate/{to}.json")) return str;
-            var json = File.ReadAllText(($"./Datas/Translate/{to}.json"));
-            var data = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
-            if (data == null) return str;
+            var data = GetTranslateData(to);
             return data.TryGetValue(str, out var translated) ? translated : str;
+        }
+
+        private static Dictionary<string, string> GetTranslateData(string lang)
+        {
+            if (TranslateData.TryGetValue(lang, out var data)) return data;
+            var json = File.ReadAllText(($"./Datas/Translate/{lang}.json"));
+            var translateData = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+            if (translateData == null) return new();
+            TranslateData.Add(lang, translateData);
+            return translateData;
         }
     }
 }
