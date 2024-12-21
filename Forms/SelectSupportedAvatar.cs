@@ -12,6 +12,7 @@ namespace Avatar_Explorer.Forms
             _mainForm = mainForm;
             _addItem = addItem;
             InitializeComponent();
+
             if (_mainForm.CurrentLanguage != "ja-JP")
             {
                 foreach (Control control in Controls)
@@ -22,6 +23,7 @@ namespace Avatar_Explorer.Forms
                     }
                 }
             }
+
             GenerateAvatarList();
         }
 

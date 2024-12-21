@@ -18,6 +18,17 @@ namespace Avatar_Explorer.Forms
             _mainForm = mainForm;
             InitializeComponent();
 
+            if (_mainForm.CurrentLanguage != "ja-JP")
+            {
+                foreach (Control control in Controls)
+                {
+                    if (control.Text != "")
+                    {
+                        control.Text = Helper.Translate(control.Text, _mainForm.CurrentLanguage);
+                    }
+                }
+            }
+
             if (folderPath != null) FolderTextBox.Text = folderPath;
 
             TypeComboBox.SelectedIndex = (int)type == 9 ? 0 : (int)type;
