@@ -37,20 +37,11 @@ namespace Avatar_Explorer.Forms
 
         public Main()
         {
-            if (File.Exists("./Datas/CopyIcon.png") && File.Exists("./Datas/TrashIcon.png") &&
-                File.Exists("./Datas/EditIcon.png"))
-            {
-                _copyImage = Image.FromFile("./Datas/CopyIcon.png");
-                _trashImage = Image.FromFile("./Datas/TrashIcon.png");
-                _editImage = Image.FromFile("./Datas/EditIcon.png");
-            }
-            else
-            {
-                MessageBox.Show(Helper.Translate("アイコンファイルが見つかりませんでした。ソフトをもう一度ダウンロードしてください。", CurrentLanguage), Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Close();
-            }
-
             Items = Helper.LoadItemsData();
+            _copyImage = Image.FromFile("./Datas/CopyIcon.png");
+            _trashImage = Image.FromFile("./Datas/TrashIcon.png");
+            _editImage = Image.FromFile("./Datas/EditIcon.png");
+
             AddFontFile();
             InitializeComponent();
             LanguageBox.SelectedIndex = 0;
@@ -63,11 +54,6 @@ namespace Avatar_Explorer.Forms
 
         private void AddFontFile()
         {
-            if (!File.Exists("./Datas/NotoSansJP-Regular.ttf") || !File.Exists("./Datas/NotoSans-Regular.ttf") || !File.Exists("./Datas/NotoSansKR-Regular.ttf"))
-            {
-                MessageBox.Show(Helper.Translate("フォントファイルが見つかりませんでした。ソフトをもう一度ダウンロードしてください。", CurrentLanguage), Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Close();
-            }
             _fontCollection.AddFontFile("./Datas/NotoSansJP-Regular.ttf");
             _fontCollection.AddFontFile("./Datas/NotoSans-Regular.ttf");
             _fontCollection.AddFontFile("./Datas/NotoSansKR-Regular.ttf");
