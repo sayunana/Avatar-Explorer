@@ -47,6 +47,7 @@ namespace Avatar_Explorer.Forms
             else
             {
                 MessageBox.Show(Helper.Translate("アイコンファイルが見つかりませんでした。ソフトをもう一度ダウンロードしてください。", CurrentLanguage), Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Close();
             }
 
             Items = Helper.LoadItemsData();
@@ -65,6 +66,7 @@ namespace Avatar_Explorer.Forms
             if (!File.Exists("./Datas/NotoSansJP-Regular.ttf") || !File.Exists("./Datas/NotoSans-Regular.ttf") || !File.Exists("./Datas/NotoSansKR-Regular.ttf"))
             {
                 MessageBox.Show(Helper.Translate("フォントファイルが見つかりませんでした。ソフトをもう一度ダウンロードしてください。", CurrentLanguage), Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Close();
             }
             _fontCollection.AddFontFile("./Datas/NotoSansJP-Regular.ttf");
             _fontCollection.AddFontFile("./Datas/NotoSans-Regular.ttf");

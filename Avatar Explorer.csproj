@@ -16,10 +16,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Include="icon.ico" />
+		<Content Include="icon.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="HtmlAgilityPack" Version="1.11.71" />
 	</ItemGroup>
+
+	<Target Name="CopyAndRunBuildJs" AfterTargets="AfterBuild">
+		<Copy SourceFiles="build.js" DestinationFolder="$(OutDir)" />
+		<Exec Command="node build.js" WorkingDirectory="$(OutDir)" />
+	</Target>
 </Project>

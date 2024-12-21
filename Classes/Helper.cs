@@ -265,6 +265,7 @@ namespace Avatar_Explorer.Classes
 
         private static Image ResizeImage(string imagePath, int width, int height)
         {
+            if (!File.Exists(imagePath)) return new Bitmap(width, height);
             using var originalImage = Image.FromFile(imagePath);
             var resizedImage = new Bitmap(width, height);
             using var graphics = Graphics.FromImage(resizedImage);
