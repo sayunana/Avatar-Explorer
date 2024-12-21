@@ -47,7 +47,7 @@ namespace Avatar_Explorer.Forms
             label3.Text = Helper.Translate("アイテムの編集", _mainForm.CurrentLanguage);
             AddButton.Text = Helper.Translate("編集", _mainForm.CurrentLanguage);
 
-            BoothURLTextBox.Text = $"https://booth.pm/ja/items/{item.BoothId}";
+            BoothURLTextBox.Text = item.BoothId != -1 ? $"https://booth.pm/ja/items/{item.BoothId}" : "";
             FolderTextBox.Text = item.ItemPath;
             MaterialTextBox.Text = item.MaterialPath;
             SupportedAvatar = item.SupportedAvatar;
@@ -61,6 +61,7 @@ namespace Avatar_Explorer.Forms
             TitleTextBox.Enabled = true;
             AuthorTextBox.Enabled = true;
             CustomButton.Enabled = false;
+            _addButtonEnabled = true;
         }
 
         private void CustomButton_Click(object sender, EventArgs e)

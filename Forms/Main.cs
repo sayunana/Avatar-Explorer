@@ -570,8 +570,7 @@ namespace Avatar_Explorer.Forms
                 toolStripMenuItem2.Click += (_, _) =>
                 {
                     Items = Items.Where(i => i.Title != item.Title).ToArray();
-                    //åüçıÇ≈Ç±ÇÍÇ‚Ç¡ÇƒÇ¢Ç¢ÇÒ...
-                    GenerateItems();
+                    GenerateFilteredItem(searchWords);
                     GenerateAvatarList();
                     GenerateAuthorList();
                     GenerateCategoryListLeft();
@@ -582,6 +581,7 @@ namespace Avatar_Explorer.Forms
                 {
                     AddItem addItem = new(this, item.Type, true, item, null);
                     addItem.ShowDialog();
+                    GenerateFilteredItem(searchWords);
                     GenerateAvatarList();
                     GenerateAuthorList();
                     GenerateCategoryListLeft();
