@@ -94,6 +94,7 @@ namespace Avatar_Explorer.Forms
             AvatarPage.Text = "アバター";
             AvatarPage.UseVisualStyleBackColor = true;
             AvatarPage.DragDrop += AvatarPage_DragDrop;
+            AvatarPage.DragEnter += Helper.DragEnter;
             // 
             // AvatarAuthorPage
             // 
@@ -148,6 +149,7 @@ namespace Avatar_Explorer.Forms
             AvatarItemExplorer.Text = "アイテム";
             AvatarItemExplorer.UseVisualStyleBackColor = true;
             AvatarItemExplorer.DragDrop += AvatarItemExplorer_DragDrop;
+            AvatarItemExplorer.DragEnter += Helper.DragEnter;
             // 
             // StartLabel
             // 
