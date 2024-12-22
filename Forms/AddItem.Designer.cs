@@ -60,7 +60,7 @@ namespace Avatar_Explorer.Forms
             // 
             label1.AutoSize = true;
             label1.Font = new Font(_mainForm.GuiFont, 12F);
-            label1.Location = new Point(38, 85);
+            label1.Location = new Point(17, 85);
             label1.Name = "label1";
             label1.Size = new Size(74, 23);
             label1.TabIndex = 0;
@@ -120,7 +120,7 @@ namespace Avatar_Explorer.Forms
             // 
             label4.AutoSize = true;
             label4.Font = new Font(_mainForm.GuiFont, 12F);
-            label4.Location = new Point(60, 333);
+            label4.Location = new Point(17, 332);
             label4.Name = "label4";
             label4.Size = new Size(58, 23);
             label4.TabIndex = 7;
@@ -149,7 +149,7 @@ namespace Avatar_Explorer.Forms
             // 
             // SelectAvatar
             // 
-            SelectAvatar.Location = new Point(176, 371);
+            SelectAvatar.Location = new Point(174, 372);
             SelectAvatar.Name = "SelectAvatar";
             SelectAvatar.Size = new Size(140, 38);
             SelectAvatar.TabIndex = 10;
@@ -183,7 +183,7 @@ namespace Avatar_Explorer.Forms
             // 
             label6.AutoSize = true;
             label6.Font = new Font(_mainForm.GuiFont, 12F);
-            label6.Location = new Point(63, 294);
+            label6.Location = new Point(17, 294);
             label6.Name = "label6";
             label6.Size = new Size(42, 23);
             label6.TabIndex = 12;
@@ -193,7 +193,7 @@ namespace Avatar_Explorer.Forms
             // 
             label7.AutoSize = true;
             label7.Font = new Font(_mainForm.GuiFont, 12F);
-            label7.Location = new Point(48, 262);
+            label7.Location = new Point(17, 258);
             label7.Name = "label7";
             label7.Size = new Size(74, 23);
             label7.TabIndex = 11;
@@ -287,7 +287,7 @@ namespace Avatar_Explorer.Forms
             // 
             label10.AutoSize = true;
             label10.Font = new Font(_mainForm.GuiFont, 12F);
-            label10.Location = new Point(21, 122);
+            label10.Location = new Point(17, 121);
             label10.Name = "label10";
             label10.Size = new Size(90, 23);
             label10.TabIndex = 21;
