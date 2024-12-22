@@ -1171,7 +1171,6 @@ namespace Avatar_Explorer.Forms
 
         private string GetCurrentLanguageCode()
         {
-            //ja-JP, ko-KR, en-US
             return CurrentLanguage switch
             {
                 "ja-JP" => "ja",
