@@ -115,37 +115,8 @@ namespace Avatar_Explorer.Forms
                     contextMenuStrip.Items.Add(toolStripMenuItem1);
                 }
 
-                ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("削除", CurrentLanguage), _trashImage);
+                ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("サムネイル変更", CurrentLanguage), _editImage);
                 toolStripMenuItem2.Click += (_, _) =>
-                {
-                    var undo = false;
-                    if (CurrentPath.CurrentSelectedItem?.Title == item.Title)
-                    {
-                        CurrentPath.CurrentSelectedItemCategory = null;
-                        CurrentPath.CurrentSelectedItem = null;
-                        undo = true;
-                        PathTextBox.Text = GeneratePath();
-                    }
-
-                    Items = Items.Where(i => i.Title != item.Title).ToArray();
-                    if (_openingWindow == Window.ItemList || undo) GenerateItems();
-                    GenerateAvatarList();
-                    GenerateAuthorList();
-                    GenerateCategoryListLeft();
-                };
-
-                ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), _editImage);
-                toolStripMenuItem3.Click += (_, _) =>
-                {
-                    AddItem addItem = new(this, item.Type, true, item, null);
-                    addItem.ShowDialog();
-                    GenerateAvatarList();
-                    GenerateAuthorList();
-                    GenerateCategoryListLeft();
-                };
-
-                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("サムネイル変更", CurrentLanguage), _editImage);
-                toolStripMenuItem4.Click += (_, _) =>
                 {
                     OpenFileDialog ofd = new()
                     {
@@ -159,6 +130,40 @@ namespace Avatar_Explorer.Forms
                         Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     item.ImagePath = ofd.FileName;
                     GenerateItems();
+                };
+
+                ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), _editImage);
+                toolStripMenuItem3.Click += (_, _) =>
+                {
+                    AddItem addItem = new(this, item.Type, true, item, null);
+                    addItem.ShowDialog();
+                    GenerateAvatarList();
+                    GenerateAuthorList();
+                    GenerateCategoryListLeft();
+                };
+
+                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("削除", CurrentLanguage), _trashImage);
+                toolStripMenuItem4.Click += (_, _) =>
+                {
+                    DialogResult result = MessageBox.Show(Helper.Translate("本当に削除しますか？", CurrentLanguage), Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result != DialogResult.Yes) return;
+
+                    var undo = false;
+                    if (CurrentPath.CurrentSelectedItem?.Title == item.Title)
+                    {
+                        CurrentPath.CurrentSelectedItemCategory = null;
+                        CurrentPath.CurrentSelectedItem = null;
+                        undo = true;
+                        PathTextBox.Text = GeneratePath();
+                    }
+
+                    Items = Items.Where(i => i.Title != item.Title).ToArray();
+                    MessageBox.Show(Helper.Translate("削除が完了しました。", CurrentLanguage), Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    if (_openingWindow == Window.ItemList || undo) GenerateItems();
+                    GenerateAvatarList();
+                    GenerateAuthorList();
+                    GenerateCategoryListLeft();
                 };
 
                 contextMenuStrip.Items.Add(toolStripMenuItem2);
@@ -366,28 +371,9 @@ namespace Avatar_Explorer.Forms
                     contextMenuStrip.Items.Add(toolStripMenuItem1);
                 }
 
-                ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("削除", CurrentLanguage), _trashImage);
+
+                ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("サムネイル変更", CurrentLanguage), _editImage);
                 toolStripMenuItem2.Click += (_, _) =>
-                {
-                    Items = Items.Where(i => i.Title != item.Title).ToArray();
-                    GenerateItems();
-                    GenerateAvatarList();
-                    GenerateAuthorList();
-                    GenerateCategoryListLeft();
-                };
-
-                ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), _editImage);
-                toolStripMenuItem3.Click += (_, _) =>
-                {
-                    AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item, null);
-                    addItem.ShowDialog();
-                    GenerateAvatarList();
-                    GenerateAuthorList();
-                    GenerateCategoryListLeft();
-                };
-
-                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("サムネイル変更", CurrentLanguage), _editImage);
-                toolStripMenuItem4.Click += (_, _) =>
                 {
                     OpenFileDialog ofd = new()
                     {
@@ -401,6 +387,31 @@ namespace Avatar_Explorer.Forms
                         Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     item.ImagePath = ofd.FileName;
                     GenerateItems();
+                };
+
+                ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), _editImage);
+                toolStripMenuItem3.Click += (_, _) =>
+                {
+                    AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item, null);
+                    addItem.ShowDialog();
+                    GenerateAvatarList();
+                    GenerateAuthorList();
+                    GenerateCategoryListLeft();
+                };
+
+                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("削除", CurrentLanguage), _trashImage);
+                toolStripMenuItem4.Click += (_, _) =>
+                {
+                    DialogResult result = MessageBox.Show(Helper.Translate("本当に削除しますか？", CurrentLanguage), Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result != DialogResult.Yes) return;
+
+                    Items = Items.Where(i => i.Title != item.Title).ToArray();
+                    MessageBox.Show(Helper.Translate("削除が完了しました。", CurrentLanguage), Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    GenerateItems();
+                    GenerateAvatarList();
+                    GenerateAuthorList();
+                    GenerateCategoryListLeft();
                 };
 
                 contextMenuStrip.Items.Add(toolStripMenuItem2);
@@ -566,29 +577,8 @@ namespace Avatar_Explorer.Forms
                     contextMenuStrip.Items.Add(toolStripMenuItem1);
                 }
 
-                ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("削除", CurrentLanguage), _trashImage);
+                ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("サムネイル変更", CurrentLanguage), _editImage);
                 toolStripMenuItem2.Click += (_, _) =>
-                {
-                    Items = Items.Where(i => i.Title != item.Title).ToArray();
-                    GenerateFilteredItem(searchWords);
-                    GenerateAvatarList();
-                    GenerateAuthorList();
-                    GenerateCategoryListLeft();
-                };
-
-                ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), _editImage);
-                toolStripMenuItem3.Click += (_, _) =>
-                {
-                    AddItem addItem = new(this, item.Type, true, item, null);
-                    addItem.ShowDialog();
-                    GenerateFilteredItem(searchWords);
-                    GenerateAvatarList();
-                    GenerateAuthorList();
-                    GenerateCategoryListLeft();
-                };
-
-                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("サムネイル変更", CurrentLanguage), _editImage);
-                toolStripMenuItem4.Click += (_, _) =>
                 {
                     OpenFileDialog ofd = new()
                     {
@@ -602,6 +592,32 @@ namespace Avatar_Explorer.Forms
                         Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     item.ImagePath = ofd.FileName;
                     GenerateFilteredItem(searchWords);
+                };
+
+                ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), _editImage);
+                toolStripMenuItem3.Click += (_, _) =>
+                {
+                    AddItem addItem = new(this, item.Type, true, item, null);
+                    addItem.ShowDialog();
+                    GenerateFilteredItem(searchWords);
+                    GenerateAvatarList();
+                    GenerateAuthorList();
+                    GenerateCategoryListLeft();
+                };
+
+                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("削除", CurrentLanguage), _trashImage);
+                toolStripMenuItem4.Click += (_, _) =>
+                {
+                    DialogResult result = MessageBox.Show(Helper.Translate("本当に削除しますか？", CurrentLanguage), Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result != DialogResult.Yes) return;
+
+                    Items = Items.Where(i => i.Title != item.Title).ToArray();
+                    MessageBox.Show(Helper.Translate("削除が完了しました。", CurrentLanguage), Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    GenerateFilteredItem(searchWords);
+                    GenerateAvatarList();
+                    GenerateAuthorList();
+                    GenerateCategoryListLeft();
                 };
 
                 contextMenuStrip.Items.Add(toolStripMenuItem2);

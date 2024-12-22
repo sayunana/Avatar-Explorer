@@ -86,5 +86,8 @@
   "Unityパッケージ": "Unity Package",
   "アバターリスト": "Avatar List",
   "対応アバターの選択": "Select Supported Avatar",
-  "マテリアル": "Material"
+  "マテリアル": "Material",
+  "本当に削除しますか？": "Are you sure you want to delete?",
+  "確認": "Confirm",
+  "削除が完了しました。": "Deletion completed."
 }
