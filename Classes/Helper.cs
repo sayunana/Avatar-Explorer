@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace Avatar_Explorer.Classes
 {
@@ -10,28 +11,18 @@ namespace Avatar_Explorer.Classes
 
         public static async Task<Item> GetBoothItemInfoAsync(string id)
         {
-            var url = $"https://booth.pm/ja/items/{id}";
+            var url = $"https://booth.pm/ja/items/{id}.json";
             var response = await HttpClient.GetStringAsync(url);
-            var htmlDoc = new HtmlAgilityPack.HtmlDocument();
-            htmlDoc.LoadHtml(response);
+            var json = JObject.Parse(response);
 
-            var title = htmlDoc.DocumentNode.SelectSingleNode("//h2[@class='font-bold leading-[32px] m-0 text-[24px]']")?.InnerText?.Trim();
-            title ??= "";
-            title = title.Replace("&amp;", "＆");
-
-            var authorNode =
-                htmlDoc.DocumentNode.SelectSingleNode(
-                    "//a[@data-product-list='from market_show via market_item_detail to shop_index']");
-            var author = authorNode?.InnerText?.Trim() ?? "";
-            var authorUrl = authorNode?.GetAttributeValue("href", null) ?? "";
-
-            var imageUrl = htmlDoc.DocumentNode
-                .SelectSingleNode("//meta[@name='twitter:image']")
-                ?.GetAttributeValue("content", null) ?? "";
-
-            var authorIcon = htmlDoc.DocumentNode.SelectSingleNode($"//img[@alt='{author}']")?.GetAttributeValue("src", null) ?? "";
-
+            var title = json["name"]?.ToString() ?? "";
+            var author = json["shop"]?["name"]?.ToString() ?? "";
+            var authorUrl = json["shop"]?["url"]?.ToString() ?? "";
+            var imageUrl = json["images"]?[0]?["original"]?.ToString() ?? "";
+            var authorIcon = json["shop"]?["thumbnail_url"]?.ToString() ?? "";
             var authorId = GetAuthorId(authorUrl);
+            var category = json["category"]?["name"]?.ToString() ?? "";
+            var estimatedCategory = GetItemType(title, category);
 
             return new Item
             {
@@ -39,7 +30,8 @@ namespace Avatar_Explorer.Classes
                 AuthorName = author,
                 ThumbnailUrl = imageUrl,
                 AuthorImageUrl = authorIcon,
-                AuthorId = authorId
+                AuthorId = authorId,
+                Type = estimatedCategory
             };
         }
 
@@ -135,7 +127,7 @@ namespace Avatar_Explorer.Classes
             return button;
         }
 
-        public static ItemType GetItemType(string title)
+        public static ItemType GetItemType(string title, string type)
         {
             var avatarTitle = new[] { "オリジナル3Dモデル", "オリジナル", "Avatar", "Original" };
             var animationTitle = new[] { "アニメーション", "Animation" };
@@ -147,7 +139,16 @@ namespace Avatar_Explorer.Classes
             var toolTitle = new[] { "ツール", "システム", "Tool", "System" };
             var shaderTitle = new[] { "シェーダー", "Shader" };
 
-            var suggestType = ItemType.Unknown;
+            var suggestType = type switch
+            {
+                "3Dキャラクター" => ItemType.Avatar,
+                "3Dモーション・アニメーション" => ItemType.Animation,
+                "3D衣装" => ItemType.Clothing,
+                "3D装飾品" => ItemType.Accessary,
+                "3Dテクスチャ" => ItemType.Texture,
+                "3Dツール・システム" => ItemType.Tool,
+                _ => ItemType.Unknown,
+            };
 
             if (avatarTitle.Any(title.Contains))
             {

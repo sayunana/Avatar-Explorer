@@ -124,9 +124,7 @@ namespace Avatar_Explorer.Forms
             AddButton.Enabled = true;
             TitleTextBox.Text = Item.Title;
             AuthorTextBox.Text = Item.AuthorName;
-
-            var suggestedType = Helper.GetItemType(Item.Title);
-            if (suggestedType != ItemType.Unknown) TypeComboBox.SelectedIndex = (int)suggestedType;
+            if (Item.Type != ItemType.Unknown) TypeComboBox.SelectedIndex = (int)Item.Type;
             TitleTextBox.Enabled = true;
             AuthorTextBox.Enabled = true;
 
