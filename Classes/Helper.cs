@@ -121,38 +121,16 @@ namespace Avatar_Explorer.Classes
             return itemFolderInfo;
         }
 
-        public static Button CreateButton(string imagePath, string labelTitle, string? deskription, bool @short = false, string tooltip = "")
+        public static Button CreateButton(string imagePath, string labelTitle, string? description, bool @short = false, string tooltip = "")
         {
             var buttonWidth = @short ? 303 : 874;
-            Button button = new Button();
-            button.Size = new Size(buttonWidth, 64);
-
-            PictureBox pictureBox = new PictureBox();
-            pictureBox.Size = new Size(56, 56);
-            pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox.Image = ResizeImage(File.Exists(imagePath) ? imagePath : "./Datas/FileIcon.png", 100, 100);
-            pictureBox.Location = new Point(4, 4);
-            button.Controls.Add(pictureBox);
-
-            Label title = new Label();
-            title.Text = labelTitle;
-            title.Location = new Point(60, 3);
-            title.AutoSize = true;
-            title.Font = new Font("Yu Gothic UI", 12F);
-            button.Controls.Add(title);
-
-            Label authorName = new Label();
-            authorName.Text = deskription;
-            authorName.Location = new Point(60, 25);
-            authorName.Size = new Size(200, 20);
-            button.Controls.Add(authorName);
-
-            pictureBox.Click += (_, _) => button.PerformClick();
-            title.Click += (_, _) => button.PerformClick();
-            authorName.Click += (_, _) => button.PerformClick();
-
+            CustomItemButton button = new CustomItemButton(false, buttonWidth);
+            button.Picture = ResizeImage(File.Exists(imagePath) ? imagePath : "./Datas/FileIcon.png", 100, 100);
+            button.TitleText = labelTitle;
+            if (description != null)
+                button.AuthorName = description;
             if (!string.IsNullOrEmpty(tooltip))
-                new ToolTip().SetToolTip(button, tooltip);
+                button.ToolTipText = tooltip;
 
             return button;
         }
