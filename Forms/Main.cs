@@ -143,7 +143,8 @@ namespace Avatar_Explorer.Forms
                         Helper.Translate("変更後: ", CurrentLanguage) + ofd.FileName,
                         Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     item.ImagePath = ofd.FileName;
-                    GenerateItems();
+                    if (_openingWindow == Window.ItemList) GenerateItems();
+                    GenerateAvatarList();
                 };
 
                 ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), _editImage);
@@ -455,6 +456,7 @@ namespace Avatar_Explorer.Forms
                         Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     item.ImagePath = ofd.FileName;
                     GenerateItems();
+                    GenerateAvatarList();
                 };
 
                 ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), _editImage);
@@ -707,6 +709,7 @@ namespace Avatar_Explorer.Forms
                         Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     item.ImagePath = ofd.FileName;
                     GenerateFilteredItem(searchWords);
+                    GenerateAvatarList();
                 };
 
                 ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), _editImage);
