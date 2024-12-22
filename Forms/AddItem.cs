@@ -71,7 +71,7 @@ namespace Avatar_Explorer.Forms
 
         private void CustomButton_Click(object sender, EventArgs e)
         {
-            BoothURLTextBox.Enabled = false;
+            BoothURLTextBox.Text = "";
             TitleTextBox.Text = "";
             AuthorTextBox.Text = "";
             TitleTextBox.Enabled = true;
