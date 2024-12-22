@@ -66,8 +66,13 @@ namespace Avatar_Explorer.Forms
         private void GenerateAvatarList()
         {
             AvatarPage.Controls.Clear();
+
+            var items = Items.Where(item => item.Type == ItemType.Avatar).ToArray();
+            if (items.Length == 0) return;
+            items = items.OrderBy(item => item.Title).ToArray();
+
             var index = 0;
-            foreach (Item item in Items.Where(item => item.Type == ItemType.Avatar))
+            foreach (Item item in items)
             {
                 Button button = Helper.CreateButton(item.ImagePath, item.Title, Helper.Translate("作者: ", CurrentLanguage) + item.AuthorName, true,
                     item.Title);
@@ -193,6 +198,9 @@ namespace Avatar_Explorer.Forms
                     AuthorImagePath = item.AuthorImageFilePath
                 }).ToArray();
             }
+
+            if (authors.Length == 0) return;
+            authors = authors.OrderBy(author => author.AuthorName).ToArray();
 
             foreach (var author in authors)
             {
@@ -327,6 +335,9 @@ namespace Avatar_Explorer.Forms
                     (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) ||
                      item.SupportedAvatar.Length == 0));
             }
+
+            filteredItems = filteredItems.OrderBy(item => item.Title).ToList();
+            if (!filteredItems.Any()) return;
 
             var index = 0;
             foreach (Item item in filteredItems)
@@ -493,9 +504,12 @@ namespace Avatar_Explorer.Forms
             _openingWindow = Window.ItemFolderItemsList;
             ResetAvatarList();
 
+            var files = CurrentPath.CurrentSelectedItemFolderInfo.GetItems(CurrentPath.CurrentSelectedItemCategory);
+            if (files.Length == 0) return;
+            files = files.OrderBy(file => file.FileName).ToArray();
+
             var index = 0;
-            foreach (var file in CurrentPath.CurrentSelectedItemFolderInfo.GetItems(CurrentPath
-                         .CurrentSelectedItemCategory))
+            foreach (var file in files)
             {
                 var imagePath = file.FileExtension is ".png" or ".jpg" ? file.FilePath : "./Datas/FileIcon.png";
                 Button button = Helper.CreateButton(imagePath, file.FileName,
@@ -558,6 +572,7 @@ namespace Avatar_Explorer.Forms
                 .ToList();
 
             SearchResultLabel.Text = Helper.Translate("検索結果: ", CurrentLanguage) + filteredItems.Count + Helper.Translate("件", CurrentLanguage) + Helper.Translate(" (全", CurrentLanguage) + Items.Length + Helper.Translate("件)", CurrentLanguage);
+            if (!filteredItems.Any()) return;
 
             var index = 0;
             foreach (Item item in filteredItems)
@@ -711,6 +726,7 @@ namespace Avatar_Explorer.Forms
 
             SearchResultLabel.Text = Helper.Translate("フォルダー内検索結果: ", CurrentLanguage) + filteredItems.Count + Helper.Translate("件", CurrentLanguage) + Helper.Translate(" (全", CurrentLanguage) +
                                                             fileDatas.Length + Helper.Translate("件)", CurrentLanguage);
+            if (!filteredItems.Any()) return;
 
             var index = 0;
             foreach (var file in filteredItems)

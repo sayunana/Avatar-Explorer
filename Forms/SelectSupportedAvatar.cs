@@ -34,6 +34,11 @@ namespace Avatar_Explorer.Forms
         private void GenerateAvatarList()
         {
             AvatarList.Controls.Clear();
+
+            var items = _mainForm.Items.Where(item => item.Type == ItemType.Avatar).ToList();
+            if (items.Count == 0) return;
+            items = items.OrderBy(item => item.Title).ToList();
+
             var index = 0;
             foreach (Item item in _mainForm.Items.Where(item => item.Type == ItemType.Avatar))
             {
