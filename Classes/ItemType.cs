@@ -5,7 +5,7 @@
         Avatar,
         Clothing,
         Texture,
-        Gimick,
+        Gimmick,
         Accessary,
         HairStyle,
         Animation,
