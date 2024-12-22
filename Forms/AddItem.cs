@@ -18,6 +18,7 @@ namespace Avatar_Explorer.Forms
             _edit = edit;
             _mainForm = mainForm;
             InitializeComponent();
+            ValidCheck();
 
             if (_mainForm.CurrentLanguage != "ja-JP")
             {
@@ -308,7 +309,9 @@ namespace Avatar_Explorer.Forms
         }
 
         // Check Text
-        private void CheckText(object sender, EventArgs e)
+        private void CheckText(object sender, EventArgs e) => ValidCheck();
+
+        private void ValidCheck()
         {
             if (!Directory.Exists(FolderTextBox.Text))
             {
