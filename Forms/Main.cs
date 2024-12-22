@@ -1040,6 +1040,14 @@ namespace Avatar_Explorer.Forms
 
                 var fileName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".csv";
 
+                if (File.Exists("./Output/" + fileName))
+                {
+                    MessageBox.Show(Helper.Translate("ファイル名が重複しています。すこし時間を開けてから再度実行してください。", CurrentLanguage),
+                        Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ExportButton.Enabled = true;
+                    return;
+                }
+
                 using var sw = new StreamWriter("./Output/" + fileName, false, Encoding.UTF8);
                 sw.WriteLine("Title,AuthorName,AuthorImageFilePath,ImagePath,Type,SupportedAvatar,BoothId,ItemPath");
                 foreach (var item in Items)
@@ -1073,6 +1081,15 @@ namespace Avatar_Explorer.Forms
                 }
 
                 var fileName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip";
+
+                if (File.Exists("./Backup/" + fileName))
+                {
+                    MessageBox.Show(Helper.Translate("ファイル名が重複しています。すこし時間を開けてから再度実行してください。", CurrentLanguage),
+                        Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MakeBackupButton.Enabled = true;
+                    return;
+                }
+
                 ZipFile.CreateFromDirectory("./Datas", "./Backup/" + fileName);
 
                 MessageBox.Show(
