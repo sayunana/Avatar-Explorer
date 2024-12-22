@@ -58,25 +58,15 @@ namespace Avatar_Explorer.Forms
             MaterialTextBox.Text = item.MaterialPath;
             FolderTextBox.Enabled = false;
             openFolderButton.Enabled = false;
-            MaterialTextBox.Enabled = false;
-            openMaterialFolderButton.Enabled = false;
             SupportedAvatar = item.SupportedAvatar;
             TitleTextBox.Text = item.Title;
             AuthorTextBox.Text = item.AuthorName;
             SelectAvatar.Text = Helper.Translate("選択中: ", _mainForm.CurrentLanguage) + SupportedAvatar.Length +
                                 Helper.Translate("個", _mainForm.CurrentLanguage);
 
-            if (!Directory.Exists(FolderTextBox.Text))
-            {
-                FolderTextBox.Enabled = true;
-                openFolderButton.Enabled = true;
-            }
-
-            if (MaterialTextBox.Text != "" && !Directory.Exists(MaterialTextBox.Text))
-            {
-                MaterialTextBox.Enabled = true;
-                openMaterialFolderButton.Enabled = true;
-            }
+            if (Directory.Exists(FolderTextBox.Text)) return;
+            FolderTextBox.Enabled = true;
+            openFolderButton.Enabled = true;
         }
 
         private void CustomButton_Click(object sender, EventArgs e)

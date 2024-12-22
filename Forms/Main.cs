@@ -101,7 +101,7 @@ namespace Avatar_Explorer.Forms
                     {
                         try
                         {
-                            Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
+                            Clipboard.SetText($"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId);
                         }
                         catch
                         {
@@ -117,7 +117,7 @@ namespace Avatar_Explorer.Forms
                     {
                         Process.Start(new ProcessStartInfo
                         {
-                            FileName = "https://booth.pm/ja/items/" + item.BoothId,
+                            FileName = $"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId,
                             UseShellExecute = true
                         });
                     };
@@ -411,7 +411,7 @@ namespace Avatar_Explorer.Forms
                     {
                         try
                         {
-                            Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
+                            Clipboard.SetText($"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId);
                         }
                         catch
                         {
@@ -427,7 +427,7 @@ namespace Avatar_Explorer.Forms
                     {
                         Process.Start(new ProcessStartInfo
                         {
-                            FileName = "https://booth.pm/ja/items/" + item.BoothId,
+                            FileName = $"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId,
                             UseShellExecute = true
                         });
                     };
@@ -664,7 +664,7 @@ namespace Avatar_Explorer.Forms
                     {
                         try
                         {
-                            Clipboard.SetText("https://booth.pm/ja/items/" + item.BoothId);
+                            Clipboard.SetText($"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId);
                         }
                         catch
                         {
@@ -680,7 +680,7 @@ namespace Avatar_Explorer.Forms
                     {
                         Process.Start(new ProcessStartInfo
                         {
-                            FileName = "https://booth.pm/ja/items/" + item.BoothId,
+                            FileName = $"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId,
                             UseShellExecute = true
                         });
                     };
@@ -1167,6 +1167,18 @@ namespace Avatar_Explorer.Forms
                 case Window.Nothing:
                     break;
             }
+        }
+
+        private string GetCurrentLanguageCode()
+        {
+            //ja-JP, ko-KR, en-US
+            return CurrentLanguage switch
+            {
+                "ja-JP" => "ja",
+                "ko-KR" => "ko",
+                "en-US" => "en",
+                _ => "js"
+            };
         }
     }
 }
