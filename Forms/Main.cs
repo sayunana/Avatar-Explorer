@@ -152,6 +152,7 @@ namespace Avatar_Explorer.Forms
                 {
                     AddItem addItem = new(this, item.Type, true, item, null);
                     addItem.ShowDialog();
+                    if (_openingWindow == Window.ItemList) GenerateItems();
                     GenerateAvatarList();
                     GenerateAuthorList();
                     GenerateCategoryListLeft();
@@ -464,6 +465,7 @@ namespace Avatar_Explorer.Forms
                 {
                     AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item, null);
                     addItem.ShowDialog();
+                    GenerateItems();
                     GenerateAvatarList();
                     GenerateAuthorList();
                     GenerateCategoryListLeft();
@@ -818,6 +820,7 @@ namespace Avatar_Explorer.Forms
         {
             AddItem addItem = new AddItem(this, CurrentPath.CurrentSelectedCategory, false, null, null);
             addItem.ShowDialog();
+            RefleshWindow();
             GenerateAvatarList();
             GenerateAuthorList();
             GenerateCategoryListLeft();
