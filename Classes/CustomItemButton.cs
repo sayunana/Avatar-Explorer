@@ -2,11 +2,11 @@
 {
     internal class CustomItemButton : Button
     {
-        private PictureBox _pictureBox;
-        private Label _title;
-        private Label _authorName;
+        private readonly PictureBox _pictureBox;
+        private readonly Label _title;
+        private readonly Label _authorName;
+        private readonly ToolTip _toolTip;
         private string _toolTipText;
-        private ToolTip _toolTip;
 
         public Image Picture
         {
@@ -41,13 +41,10 @@
             Size = new Size(buttonWidth, 64);
 
             _pictureBox = new PictureBox();
-            if (isAvatarSelectButton)
-            {
-                // アバター選択画面で画像の位置が異なる
-                _pictureBox.Location = new Point(3, 3);
-            } else {
-                _pictureBox.Location = new Point(4, 4);
-            }
+
+            // アバター選択画面で画像の位置が異なる
+            _pictureBox.Location = isAvatarSelectButton ? new Point(3, 3) : new Point(4, 4);
+
             _pictureBox.Size = new Size(56, 56);
             _pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
             Controls.Add(_pictureBox);
@@ -73,11 +70,11 @@
             // 画像とラベルのイベントが発生した際にボタンのイベントを呼び出す
             foreach (Control control in Controls)
             {
-                control.MouseEnter += (s, e) => OnMouseEnter(e);
-                control.MouseLeave += (s, e) => OnMouseLeave(e);
-                control.MouseMove += (s, e) => OnMouseMove(e);
-                control.MouseDown += (s, e) => OnMouseDown(e);
-                control.MouseClick += (s, e) => OnMouseClick(e);
+                control.MouseEnter += (_, e) => OnMouseEnter(e);
+                control.MouseLeave += (_, e) => OnMouseLeave(e);
+                control.MouseMove += (_, e) => OnMouseMove(e);
+                control.MouseDown += (_, e) => OnMouseDown(e);
+                control.MouseClick += (_, e) => OnMouseClick(e);
             }
         }
 
@@ -97,7 +94,7 @@
         protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
         {
             // エンターキーまたはスペースキーを押下された場合
-            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Space)
+            if (e.KeyCode is Keys.Enter or Keys.Space)
                 ProcessClick();
             base.OnPreviewKeyDown(e);
         }
