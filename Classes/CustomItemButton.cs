@@ -55,7 +55,7 @@
 
             _title = new Label();
             _title.Location = new Point(60, 3);
-            _title.Size = new Size(labelWidth, 20);
+            _title.Size = new Size(labelWidth, 24);
             _title.Font = new Font("Yu Gothic UI", 12F);
             Controls.Add(_title);
 
