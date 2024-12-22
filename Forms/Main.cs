@@ -19,6 +19,7 @@ namespace Avatar_Explorer.Forms
 
         // Font
         private readonly PrivateFontCollection _fontCollection = new();
+        private readonly Dictionary<string, FontFamily> _fontFamilies = new();
         public FontFamily? GuiFont;
 
         // Language
@@ -57,7 +58,24 @@ namespace Avatar_Explorer.Forms
             _fontCollection.AddFontFile("./Datas/Fonts/NotoSansJP-Regular.ttf");
             _fontCollection.AddFontFile("./Datas/Fonts/NotoSans-Regular.ttf");
             _fontCollection.AddFontFile("./Datas/Fonts/NotoSansKR-Regular.ttf");
-            GuiFont = _fontCollection.Families[1];
+
+            foreach (var fontFamily in _fontCollection.Families)
+            {
+                switch (fontFamily.Name)
+                {
+                    case "Noto Sans JP":
+                        _fontFamilies.Add("ja-JP", fontFamily);
+                        break;
+                    case "Noto Sans":
+                        _fontFamilies.Add("en-US", fontFamily);
+                        break;
+                    case "Noto Sans KR":
+                        _fontFamilies.Add("ko-KR", fontFamily);
+                        break;
+                }
+            }
+
+            GuiFont = _fontFamilies[CurrentLanguage];
         }
 
         // Generate List (LEFT)
@@ -1119,13 +1137,7 @@ namespace Avatar_Explorer.Forms
                 _ => CurrentLanguage
             };
 
-            GuiFont = CurrentLanguage switch
-            {
-                "ja-JP" => _fontCollection.Families[1],
-                "ko-KR" => _fontCollection.Families[2],
-                "en-US" => _fontCollection.Families[0],
-                _ => GuiFont
-            };
+            GuiFont = _fontFamilies[CurrentLanguage];
 
             foreach (Control control in Controls)
             {
