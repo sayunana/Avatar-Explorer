@@ -827,7 +827,7 @@ namespace Avatar_Explorer.Forms
         {
             if (_authorMode)
             {
-                if (CurrentPath.CurrentSelectedAuthor == null) return "";
+                if (CurrentPath.CurrentSelectedAuthor == null) return Helper.Translate("ここには現在のパスが表示されます", CurrentLanguage);
                 if (CurrentPath.CurrentSelectedCategory == ItemType.Unknown)
                     return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName);
                 if (CurrentPath.CurrentSelectedItem == null)
@@ -846,7 +846,7 @@ namespace Avatar_Explorer.Forms
 
             if (_categoryMode)
             {
-                if (CurrentPath.CurrentSelectedCategory == ItemType.Unknown) return "";
+                if (CurrentPath.CurrentSelectedCategory == ItemType.Unknown) return Helper.Translate("ここには現在のパスが表示されます", CurrentLanguage);
                 if (CurrentPath.CurrentSelectedItem == null)
                     return Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage);
                 if (CurrentPath.CurrentSelectedItemCategory == null)
@@ -858,7 +858,7 @@ namespace Avatar_Explorer.Forms
                        Helper.Translate(CurrentPath.CurrentSelectedItemCategory, CurrentLanguage);
             }
 
-            if (CurrentPath.CurrentSelectedAvatar == null) return "";
+            if (CurrentPath.CurrentSelectedAvatar == null) return Helper.Translate("ここには現在のパスが表示されます", CurrentLanguage);
             if (CurrentPath.CurrentSelectedCategory == ItemType.Unknown)
                 return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar);
             if (CurrentPath.CurrentSelectedItem == null)
