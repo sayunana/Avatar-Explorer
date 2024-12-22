@@ -1,4 +1,3 @@
-using Avatar_Explorer.Classes;
 using Avatar_Explorer.Forms;
 
 namespace Avatar_Explorer
@@ -15,7 +14,7 @@ namespace Avatar_Explorer
             // see https://aka.ms/applicationconfiguration.
 
             if (!(File.Exists("./Datas/CopyIcon.png") && File.Exists("./Datas/TrashIcon.png") &&
-                File.Exists("./Datas/EditIcon.png")))
+                File.Exists("./Datas/EditIcon.png") && File.Exists("./Datas/OpenIcon.png") && File.Exists("./Datas/FileIcon.png") && File.Exists("./Datas/FolderIcon.png")))
             {
                 MessageBox.Show("Missing required image files. Please reinstall the application.", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);

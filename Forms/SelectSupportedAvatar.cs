@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Avatar_Explorer.Classes;
+﻿using Avatar_Explorer.Classes;
 
 namespace Avatar_Explorer.Forms
 {
@@ -38,6 +37,7 @@ namespace Avatar_Explorer.Forms
             var index = 0;
             foreach (Item item in _mainForm.Items.Where(item => item.Type == ItemType.Avatar))
             {
+                if (item.Title == _addItem.Item.Title) continue;
                 Button button = CreateAvatarButton(item, _mainForm.CurrentLanguage);
                 button.Location = new Point(0, (70 * index) + 3);
                 button.BackColor = _addItem.SupportedAvatar.Contains(item.Title) ? Color.LightGreen : Color.FromKnownColor(KnownColor.Control);
@@ -51,7 +51,7 @@ namespace Avatar_Explorer.Forms
             CustomItemButton button = new CustomItemButton(true, 1009);
             button.Picture = File.Exists(item.ImagePath) ? Image.FromFile(item.ImagePath) : Image.FromFile("./Datas/FileIcon.png");
             button.TitleText = item.Title;
-            button.AuthorName = Helper.Translate("作者: ", language) + item.AuthorName; ;
+            button.AuthorName = Helper.Translate("作者: ", language) + item.AuthorName;
             button.ToolTipText = item.Title;
 
             button.Click += (_, _) =>

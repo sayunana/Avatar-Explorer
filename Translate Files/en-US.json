@@ -68,7 +68,7 @@
   "Booth アイテム情報": "Booth Item Info",
   "追加": "Add",
   "カスタムで追加": "Add Custom",
-  "フォルダを開く": "Open Folder",
+  "フォルダを選択": "Select Folder",
   "Tip: フォルダを下の欄にドラッグアンドドロップすることでも入力できます！": "Tip: You can also input by dragging and dropping a folder into the field below!",
   "対応アバターを選択してください。\r\n選択されてなければ、全アバター対応として扱われます！\r\n": "Please select a compatible avatar.\r\nIf not selected, it will be treated as compatible with all avatars!\r\n",
   "確定": "Confirm",
@@ -89,5 +89,7 @@
   "マテリアル": "Material",
   "本当に削除しますか？": "Are you sure you want to delete?",
   "確認": "Confirm",
-  "削除が完了しました。": "Deletion completed."
+  "削除が完了しました。": "Deletion completed.",
+  "フォルダが見つかりませんでした。編集しますか？": "Folder not found. Edit?",
+  "フォルダを開く": "Open Folder"
 }

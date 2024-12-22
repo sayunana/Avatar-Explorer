@@ -28,6 +28,7 @@ namespace Avatar_Explorer.Forms
         private readonly Image _copyImage;
         private readonly Image _trashImage;
         private readonly Image _editImage;
+        private readonly Image _openImage;
 
         public string CurrentLanguage = "ja-JP";
 
@@ -41,6 +42,7 @@ namespace Avatar_Explorer.Forms
             _copyImage = Image.FromFile("./Datas/CopyIcon.png");
             _trashImage = Image.FromFile("./Datas/TrashIcon.png");
             _editImage = Image.FromFile("./Datas/EditIcon.png");
+            _openImage = Image.FromFile("./Datas/OpenIcon.png");
 
             AddFontFile();
             InitializeComponent();
@@ -334,12 +336,34 @@ namespace Avatar_Explorer.Forms
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
+                    if (!Directory.Exists(item.ItemPath))
+                    {
+                        DialogResult result = MessageBox.Show(Helper.Translate("フォルダが見つかりませんでした。編集しますか？", CurrentLanguage), Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                        if (result != DialogResult.Yes) return;
+                        AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item, null);
+                        addItem.ShowDialog();
+                        GenerateItems();
+                        GenerateAvatarList();
+                        GenerateAuthorList();
+                        GenerateCategoryListLeft();
+                    }
+
                     CurrentPath.CurrentSelectedItem = item;
                     GenerateItemCategoryList();
                     PathTextBox.Text = GeneratePath();
                 };
 
                 ContextMenuStrip contextMenuStrip = new();
+
+                if (Directory.Exists(item.ItemPath))
+                {
+                    ToolStripMenuItem toolStripMenuItem = new(Helper.Translate("フォルダを開く", CurrentLanguage), _openImage);
+                    toolStripMenuItem.Click += (_, _) =>
+                    {
+                        Process.Start("explorer.exe", item.ItemPath);
+                    };
+                    contextMenuStrip.Items.Add(toolStripMenuItem);
+                }
 
                 if (item.BoothId != -1)
                 {
@@ -538,6 +562,18 @@ namespace Avatar_Explorer.Forms
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
+                    if (!Directory.Exists(item.ItemPath))
+                    {
+                        DialogResult result = MessageBox.Show(Helper.Translate("フォルダが見つかりませんでした。編集しますか？", CurrentLanguage), Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                        if (result != DialogResult.Yes) return;
+                        AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item, null);
+                        addItem.ShowDialog();
+                        GenerateFilteredItem(searchWords);
+                        GenerateAvatarList();
+                        GenerateAuthorList();
+                        GenerateCategoryListLeft();
+                    }
+
                     _authorMode = false;
                     GeneratePathFromItem(item);
                     SearchBox.Text = "";
@@ -546,6 +582,16 @@ namespace Avatar_Explorer.Forms
                 };
 
                 ContextMenuStrip contextMenuStrip = new();
+
+                if (Directory.Exists(item.ItemPath))
+                {
+                    ToolStripMenuItem toolStripMenuItem = new(Helper.Translate("フォルダを開く", CurrentLanguage), _openImage);
+                    toolStripMenuItem.Click += (_, _) =>
+                    {
+                        Process.Start("explorer.exe", item.ItemPath);
+                    };
+                    contextMenuStrip.Items.Add(toolStripMenuItem);
+                }
 
                 if (item.BoothId != -1)
                 {

@@ -56,7 +56,18 @@ namespace Avatar_Explorer.Forms
             SelectAvatar.Text = Helper.Translate("選択中: ", _mainForm.CurrentLanguage) + SupportedAvatar.Length +
                                 Helper.Translate("個", _mainForm.CurrentLanguage);
 
-            FolderTextBox.Enabled = false;
+            if (!Directory.Exists(FolderTextBox.Text))
+            {
+                FolderTextBox.Enabled = true;
+                openFolderButton.Enabled = true;
+            }
+
+            if (MaterialTextBox.Text != "" && !Directory.Exists(MaterialTextBox.Text))
+            {
+                MaterialTextBox.Enabled = true;
+                openMaterialFolderButton.Enabled = true;
+            }
+
             AddButton.Enabled = true;
             TitleTextBox.Enabled = true;
             AuthorTextBox.Enabled = true;
@@ -66,6 +77,7 @@ namespace Avatar_Explorer.Forms
 
         private void CustomButton_Click(object sender, EventArgs e)
         {
+            BoothURLTextBox.Enabled = false;
             TitleTextBox.Text = "";
             AuthorTextBox.Text = "";
             TitleTextBox.Enabled = true;
@@ -136,7 +148,7 @@ namespace Avatar_Explorer.Forms
             Item.AuthorName = AuthorTextBox.Text;
             Item.Type = (ItemType)TypeComboBox.SelectedIndex;
             Item.ItemPath = FolderTextBox.Text;
-            Item.SupportedAvatar = SupportedAvatar;
+            if (Item.Type != ItemType.Avatar) Item.SupportedAvatar = SupportedAvatar;
 
             if (MaterialTextBox.Text != "")
             {
@@ -253,49 +265,6 @@ namespace Avatar_Explorer.Forms
             }
         }
 
-        private void FolderTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (!Directory.Exists(FolderTextBox.Text))
-            {
-                SetErrorState(Helper.Translate("エラー: フォルダパスが存在しません", _mainForm.CurrentLanguage));
-            }
-            else if (File.Exists(FolderTextBox.Text))
-            {
-                SetErrorState(Helper.Translate("エラー: フォルダパスがファイルです", _mainForm.CurrentLanguage));
-            }
-            else if (string.IsNullOrEmpty(FolderTextBox.Text))
-            {
-                SetErrorState(Helper.Translate("エラー: フォルダパスが入力されていません", _mainForm.CurrentLanguage));
-            }
-            else if (_mainForm.Items.Any(i => i.ItemPath == FolderTextBox.Text) && !_edit)
-            {
-                SetErrorState(Helper.Translate("エラー: 同じパスのアイテムが既に存在します", _mainForm.CurrentLanguage));
-            }
-            else
-            {
-                ClearErrorState();
-            }
-        }
-
-        private void MaterialTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (MaterialTextBox.Text != "")
-            {
-                if (Directory.Exists(MaterialTextBox.Text))
-                {
-                    ClearErrorState();
-                }
-                else
-                {
-                    SetErrorState(Helper.Translate("エラー: フォルダパスが存在しません", _mainForm.CurrentLanguage));
-                }
-            }
-            else
-            {
-                ClearErrorState();
-            }
-        }
-
         // Drag & Drop
         private void FolderTextBox_DragDrop(object sender, DragEventArgs e)
         {
@@ -348,6 +317,42 @@ namespace Avatar_Explorer.Forms
         // Check Text
         private void CheckText(object sender, EventArgs e)
         {
+            if (!Directory.Exists(FolderTextBox.Text))
+            {
+                SetErrorState(Helper.Translate("エラー: フォルダパスが存在しません", _mainForm.CurrentLanguage));
+                return;
+            }
+
+            if (File.Exists(FolderTextBox.Text))
+            {
+                SetErrorState(Helper.Translate("エラー: フォルダパスがファイルです", _mainForm.CurrentLanguage));
+                return;
+            }
+
+            if (string.IsNullOrEmpty(FolderTextBox.Text))
+            {
+                SetErrorState(Helper.Translate("エラー: フォルダパスが入力されていません", _mainForm.CurrentLanguage));
+                return;
+            }
+
+            if (_mainForm.Items.Any(i => i.ItemPath == FolderTextBox.Text) && !_edit)
+            {
+                SetErrorState(Helper.Translate("エラー: 同じパスのアイテムが既に存在します", _mainForm.CurrentLanguage));
+                return;
+            }
+
+            if (MaterialTextBox.Text != "" && !Directory.Exists(MaterialTextBox.Text))
+            {
+                SetErrorState(Helper.Translate("エラー: マテリアルフォルダパスが存在しません", _mainForm.CurrentLanguage));
+                return;
+            }
+
+            if (MaterialTextBox.Text != "" && File.Exists(MaterialTextBox.Text))
+            {
+                SetErrorState(Helper.Translate("エラー: マテリアルフォルダパスがファイルです", _mainForm.CurrentLanguage));
+                return;
+            }
+
             if (!_edit && _mainForm.Items.Any(i => i.Title == TitleTextBox.Text))
             {
                 SetErrorState(Helper.Translate("エラー: 同じタイトルのアイテムが既に存在します", _mainForm.CurrentLanguage));

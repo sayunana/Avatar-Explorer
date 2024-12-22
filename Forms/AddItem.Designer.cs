@@ -94,7 +94,7 @@ namespace Avatar_Explorer.Forms
             FolderTextBox.Name = "FolderTextBox";
             FolderTextBox.Size = new Size(326, 31);
             FolderTextBox.TabIndex = 3;
-            FolderTextBox.TextChanged += FolderTextBox_TextChanged;
+            FolderTextBox.TextChanged += CheckText;
             FolderTextBox.DragDrop += FolderTextBox_DragDrop;
             FolderTextBox.DragEnter += Helper.DragEnter;
             // 
@@ -247,7 +247,7 @@ namespace Avatar_Explorer.Forms
             openFolderButton.Name = "openFolderButton";
             openFolderButton.Size = new Size(85, 31);
             openFolderButton.TabIndex = 19;
-            openFolderButton.Text = "フォルダを開く";
+            openFolderButton.Text = "フォルダを選択";
             openFolderButton.UseVisualStyleBackColor = true;
             openFolderButton.Click += openFolderButton_Click;
             // 
@@ -267,7 +267,7 @@ namespace Avatar_Explorer.Forms
             openMaterialFolderButton.Name = "openMaterialFolderButton";
             openMaterialFolderButton.Size = new Size(85, 31);
             openMaterialFolderButton.TabIndex = 23;
-            openMaterialFolderButton.Text = "フォルダを開く";
+            openMaterialFolderButton.Text = "フォルダを選択";
             openMaterialFolderButton.UseVisualStyleBackColor = true;
             openMaterialFolderButton.Click += openMaterialFolderButton_Click;
             // 
@@ -279,7 +279,7 @@ namespace Avatar_Explorer.Forms
             MaterialTextBox.Name = "MaterialTextBox";
             MaterialTextBox.Size = new Size(326, 31);
             MaterialTextBox.TabIndex = 22;
-            MaterialTextBox.TextChanged += MaterialTextBox_TextChanged;
+            MaterialTextBox.TextChanged += CheckText;
             MaterialTextBox.DragDrop += MaterialTextBox_DragDrop;
             MaterialTextBox.DragEnter += Helper.DragEnter;
             // 
