@@ -30,17 +30,8 @@ for (let i = 0; i < translateFilesLength; i++) {
     console.log("Copying: " + file);
 }
 
-const ICON_FILES = "../../../Icons";
-const iconFiles = fs.readdirSync(ICON_FILES);
-const iconFilesLength = iconFiles.length;
-console.log("Icon Files: " + iconFilesLength);
-
-for (let i = 0; i < iconFilesLength; i++) {
-    const file = iconFiles[i];
-    const filePath = path.join(ICON_FILES, file);
-    const destPath = path.join("Datas", file);
-    fs.copyFileSync(filePath, destPath);
-    console.log("Copying: " + file);
+if (!fs.existsSync("Datas/Fonts")) {
+    fs.mkdirSync("Datas/Fonts");
 }
 
 const FONT_FILES = "../../../Font Files";
@@ -51,7 +42,7 @@ console.log("Font Files: " + fontFilesLength);
 for (let i = 0; i < fontFilesLength; i++) {
     const file = fontFiles[i];
     const filePath = path.join(FONT_FILES, file);
-    const destPath = path.join("Datas", file);
+    const destPath = path.join("Datas/Fonts", file);
     fs.copyFileSync(filePath, destPath);
     console.log("Copying: " + file);
 }

@@ -25,10 +25,10 @@ namespace Avatar_Explorer.Forms
         private bool _authorMode;
         private bool _categoryMode;
 
-        private readonly Image _copyImage;
-        private readonly Image _trashImage;
-        private readonly Image _editImage;
-        private readonly Image _openImage;
+        private readonly Image _copyImage = Image.FromStream(new MemoryStream(Properties.Resources.CopyIcon));
+        private readonly Image _trashImage = Image.FromStream(new MemoryStream(Properties.Resources.TrashIcon));
+        private readonly Image _editImage = Image.FromStream(new MemoryStream(Properties.Resources.EditIcon));
+        private readonly Image _openImage = Image.FromStream(new MemoryStream(Properties.Resources.OpenIcon));
 
         public string CurrentLanguage = "ja-JP";
 
@@ -39,10 +39,6 @@ namespace Avatar_Explorer.Forms
         public Main()
         {
             Items = Helper.LoadItemsData();
-            _copyImage = Image.FromFile("./Datas/CopyIcon.png");
-            _trashImage = Image.FromFile("./Datas/TrashIcon.png");
-            _editImage = Image.FromFile("./Datas/EditIcon.png");
-            _openImage = Image.FromFile("./Datas/OpenIcon.png");
 
             AddFontFile();
             InitializeComponent();
@@ -56,9 +52,9 @@ namespace Avatar_Explorer.Forms
 
         private void AddFontFile()
         {
-            _fontCollection.AddFontFile("./Datas/NotoSansJP-Regular.ttf");
-            _fontCollection.AddFontFile("./Datas/NotoSans-Regular.ttf");
-            _fontCollection.AddFontFile("./Datas/NotoSansKR-Regular.ttf");
+            _fontCollection.AddFontFile("./Datas/Fonts/NotoSansJP-Regular.ttf");
+            _fontCollection.AddFontFile("./Datas/Fonts/NotoSans-Regular.ttf");
+            _fontCollection.AddFontFile("./Datas/Fonts/NotoSansKR-Regular.ttf");
             GuiFont = _fontCollection.Families[1];
         }
 
@@ -77,7 +73,7 @@ namespace Avatar_Explorer.Forms
                 Button button = Helper.CreateButton(item.ImagePath, item.Title,
                     Helper.Translate("作者: ", CurrentLanguage) + item.AuthorName, true,
                     item.Title);
-                button.Location = new Point(0, (70 * index) + 7);
+                button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
                     CurrentPath.CurrentSelectedAvatar = item.Title;
@@ -174,7 +170,7 @@ namespace Avatar_Explorer.Forms
                         PathTextBox.Text = GeneratePath();
                     }
 
-                    Items = Items.Where(i => i.Title != item.Title).ToArray();
+                    Items = Items.Where(i => i.ItemPath != item.ItemPath).ToArray();
                     MessageBox.Show(Helper.Translate("削除が完了しました。", CurrentLanguage),
                         Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -478,7 +474,7 @@ namespace Avatar_Explorer.Forms
                         Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result != DialogResult.Yes) return;
 
-                    Items = Items.Where(i => i.Title != item.Title).ToArray();
+                    Items = Items.Where(i => i.ItemPath != item.ItemPath).ToArray();
                     MessageBox.Show(Helper.Translate("削除が完了しました。", CurrentLanguage),
                         Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -732,7 +728,7 @@ namespace Avatar_Explorer.Forms
                         Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result != DialogResult.Yes) return;
 
-                    Items = Items.Where(i => i.Title != item.Title).ToArray();
+                    Items = Items.Where(i => i.ItemPath != item.ItemPath).ToArray();
                     MessageBox.Show(Helper.Translate("削除が完了しました。", CurrentLanguage),
                         Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
 

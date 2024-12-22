@@ -349,12 +349,6 @@ namespace Avatar_Explorer.Forms
                 return;
             }
 
-            if (!_edit && _mainForm.Items.Any(i => i.Title == TitleTextBox.Text))
-            {
-                SetErrorState(Helper.Translate("エラー: 同じタイトルのアイテムが既に存在します", _mainForm.CurrentLanguage));
-                return;
-            }
-
             if (string.IsNullOrEmpty(TitleTextBox.Text))
             {
                 SetErrorState(Helper.Translate("エラー: タイトルが入力されていません", _mainForm.CurrentLanguage));

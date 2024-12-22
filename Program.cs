@@ -13,15 +13,7 @@ namespace Avatar_Explorer
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
 
-            if (!(File.Exists("./Datas/CopyIcon.png") && File.Exists("./Datas/TrashIcon.png") &&
-                File.Exists("./Datas/EditIcon.png") && File.Exists("./Datas/OpenIcon.png") && File.Exists("./Datas/FileIcon.png") && File.Exists("./Datas/FolderIcon.png")))
-            {
-                MessageBox.Show("Missing required image files. Please reinstall the application.", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (!File.Exists("./Datas/NotoSansJP-Regular.ttf") || !File.Exists("./Datas/NotoSans-Regular.ttf") || !File.Exists("./Datas/NotoSansKR-Regular.ttf"))
+            if (!File.Exists("./Datas/Fonts/NotoSansJP-Regular.ttf") || !File.Exists("./Datas/Fonts/NotoSans-Regular.ttf") || !File.Exists("./Datas/Fonts/NotoSansKR-Regular.ttf"))
             {
                 MessageBox.Show("Missing required font files. Please reinstall the application.", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
