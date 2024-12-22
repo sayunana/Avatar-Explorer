@@ -920,7 +920,9 @@ namespace Avatar_Explorer.Forms
         private void Main_FormClosing(object sender, FormClosingEventArgs e) => Helper.SaveItemsData(Items);
 
         // Search Box
-        private void SearchBox_TextChanged(object sender, EventArgs e)
+        private void SearchBox_TextChanged(object sender, EventArgs e) => SearchItems();
+
+        private void SearchItems()
         {
             if (SearchBox.Text == "")
             {
@@ -1135,8 +1137,15 @@ namespace Avatar_Explorer.Forms
             GenerateAvatarList();
             GenerateAuthorList();
             GenerateCategoryListLeft();
-            RefleshWindow();
             PathTextBox.Text = GeneratePath();
+            if (SearchBox.Text != "")
+            {
+                SearchItems();
+            }
+            else
+            {
+                RefleshWindow();
+            }
         }
 
         private void RefleshWindow()
