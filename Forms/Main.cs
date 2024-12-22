@@ -584,7 +584,7 @@ namespace Avatar_Explorer.Forms
             var index = 0;
             foreach (var file in files)
             {
-                var imagePath = file.FileExtension is ".png" or ".jpg" ? file.FilePath : "./Datas/FileIcon.png";
+                var imagePath = file.FileExtension is ".png" or ".jpg" ? file.FilePath : "";
                 Button button = Helper.CreateButton(imagePath, file.FileName,
                     file.FileExtension.Replace(".", "") + Helper.Translate("ファイル", CurrentLanguage), false,
                     Helper.Translate("開くファイルのパス: ", CurrentLanguage) + file.FilePath);
@@ -839,7 +839,7 @@ namespace Avatar_Explorer.Forms
             var index = 0;
             foreach (var file in filteredItems)
             {
-                var imagePath = file.FileExtension is ".png" or ".jpg" ? file.FilePath : "./Datas/FileIcon.png";
+                var imagePath = file.FileExtension is ".png" or ".jpg" ? file.FilePath : "";
                 Button button = Helper.CreateButton(imagePath, file.FileName,
                     file.FileExtension.Replace(".", "") + Helper.Translate("ファイル", CurrentLanguage), false,
                     Helper.Translate("開くファイルのパス: ", CurrentLanguage) + file.FilePath);

@@ -6,6 +6,7 @@ namespace Avatar_Explorer.Forms
     {
         private readonly Main _mainForm;
         private readonly AddItem _addItem;
+        private static readonly Image FileImage = Image.FromStream(new MemoryStream(Properties.Resources.FileIcon));
 
         public SelectSupportedAvatar(Main mainForm, AddItem addItem)
         {
@@ -54,7 +55,7 @@ namespace Avatar_Explorer.Forms
         private static Button CreateAvatarButton(Item item, string language)
         {
             CustomItemButton button = new CustomItemButton(true, 1009);
-            button.Picture = File.Exists(item.ImagePath) ? Image.FromFile(item.ImagePath) : Image.FromFile("./Datas/FileIcon.png");
+            button.Picture = File.Exists(item.ImagePath) ? Image.FromFile(item.ImagePath) : FileImage;
             button.TitleText = item.Title;
             button.AuthorName = Helper.Translate("作者: ", language) + item.AuthorName;
             button.ToolTipText = item.Title;
