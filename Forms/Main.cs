@@ -328,6 +328,7 @@ namespace Avatar_Explorer.Forms
             foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
             {
                 if (itemType is ItemType.Unknown) continue;
+
                 var itemCount = _authorMode
                     ? Items.Count(item =>
                         item.Type == itemType && item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName)
@@ -335,16 +336,19 @@ namespace Avatar_Explorer.Forms
                         item.Type == itemType && (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) ||
                                                   item.SupportedAvatar.Length == 0));
                 if (itemCount == 0) continue;
+
                 Button button = Helper.CreateButton(null,
                     Helper.GetCategoryName(itemType, CurrentLanguage),
                     itemCount + Helper.Translate("ŒÂ‚Ì€–Ú", CurrentLanguage));
                 button.Location = new Point(0, (70 * index) + 2);
+
                 button.Click += (_, _) =>
                 {
                     CurrentPath.CurrentSelectedCategory = itemType;
                     GenerateItems();
                     PathTextBox.Text = GeneratePath();
                 };
+
                 AvatarItemExplorer.Controls.Add(button);
                 index++;
             }
@@ -551,15 +555,18 @@ namespace Avatar_Explorer.Forms
             {
                 var itemCount = itemFolderInfo.GetItemCount(itemType);
                 if (itemCount == 0) continue;
+
                 Button button = Helper.CreateButton(null,
                     Helper.Translate(itemType, CurrentLanguage), itemCount + Helper.Translate("ŒÂ‚Ì€–Ú", CurrentLanguage));
                 button.Location = new Point(0, (70 * index) + 2);
+
                 button.Click += (_, _) =>
                 {
                     CurrentPath.CurrentSelectedItemCategory = itemType;
                     GenerateItemFiles();
                     PathTextBox.Text = GeneratePath();
                 };
+
                 AvatarItemExplorer.Controls.Add(button);
                 index++;
             }
@@ -613,6 +620,7 @@ namespace Avatar_Explorer.Forms
                         }
                     }
                 };
+
                 AvatarItemExplorer.Controls.Add(button);
                 index++;
             }
@@ -867,6 +875,7 @@ namespace Avatar_Explorer.Forms
                         }
                     }
                 };
+
                 AvatarItemExplorer.Controls.Add(button);
                 index++;
             }
