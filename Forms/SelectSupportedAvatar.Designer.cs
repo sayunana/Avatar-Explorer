@@ -1,6 +1,6 @@
 ﻿namespace Avatar_Explorer.Forms
 {
-    partial class SelectSupportedAvatar
+    sealed partial class SelectSupportedAvatar
     {
         /// <summary>
         /// Required designer variable.

@@ -32,8 +32,9 @@ namespace Avatar_Explorer.Forms
 
                 for (var i = 0; i < TypeComboBox.Items.Count; i++)
                 {
-                    TypeComboBox.Items[i] =
-                        Helper.Translate(TypeComboBox.Items[i].ToString(), _mainForm.CurrentLanguage);
+                    var text = TypeComboBox.Items[i]?.ToString();
+                    if (text == null) continue;
+                    TypeComboBox.Items[i] = Helper.Translate(text, _mainForm.CurrentLanguage);
                 }
             }
 

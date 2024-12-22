@@ -2,7 +2,7 @@
 
 namespace Avatar_Explorer.Forms
 {
-    public partial class SelectSupportedAvatar : Form
+    public sealed partial class SelectSupportedAvatar : Form
     {
         private readonly Main _mainForm;
         private readonly AddItem _addItem;

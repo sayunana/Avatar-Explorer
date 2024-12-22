@@ -193,32 +193,6 @@ namespace Avatar_Explorer.Classes
             return data ?? Array.Empty<Item>();
         }
 
-        public static string GetItemImagePath(FileInfo file)
-        {
-            switch (file.Extension)
-            {
-                case ".png":
-                case ".jpg":
-                    return file.FullName;
-                case ".psd":
-                    return "./Datas/PhotoshopIcon.png";
-                case ".blend":
-                    return "./Datas/BlenderIcon.png";
-                case ".fbx":
-                    return "./Datas/FbxIcon.png";
-                case ".unitypackage":
-                    return "./Datas/UnityIcon.png";
-                case ".txt":
-                    return "./Datas/TxtIcon.png";
-                case ".md":
-                    return "./Datas/MarkdownIcon.png";
-                case ".pdf":
-                    return "./Datas/PdfIcon.png";
-                default:
-                    return "./Datas/FileIcon.png";
-            }
-        }
-
         public static void DragEnter(object _, DragEventArgs e) => e.Effect = DragDropEffects.All;
 
         private static Image ResizeImage(string imagePath, int width, int height)
