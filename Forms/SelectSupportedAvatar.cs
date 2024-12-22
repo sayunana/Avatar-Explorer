@@ -55,6 +55,7 @@ namespace Avatar_Explorer.Forms
         private static Button CreateAvatarButton(Item item, string language)
         {
             CustomItemButton button = new CustomItemButton(true, 1009);
+            button.ImagePath = item.ImagePath;
             button.Picture = File.Exists(item.ImagePath) ? Image.FromFile(item.ImagePath) : FileImage;
             button.TitleText = item.Title;
             button.AuthorName = Helper.Translate("作者: ", language) + item.AuthorName;

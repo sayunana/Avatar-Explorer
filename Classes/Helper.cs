@@ -129,6 +129,7 @@ namespace Avatar_Explorer.Classes
                 button.Picture = File.Exists(imagePath) ? ResizeImage(imagePath, 100, 100) : FileImage;
             }
 
+            button.ImagePath = imagePath;
             button.TitleText = labelTitle;
             if (description != null)
                 button.AuthorName = description;

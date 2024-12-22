@@ -7,12 +7,15 @@
         private readonly Label _authorName;
         private readonly ToolTip _toolTip;
         private string _toolTipText;
+        private Form? _previewForm;
 
         public Image Picture
         {
             get => _pictureBox.Image;
             set => _pictureBox.Image = value;
         }
+
+        public string? ImagePath { get; set; }
 
         public string TitleText
         {
@@ -76,6 +79,44 @@
                 control.MouseDown += (_, e) => OnMouseDown(e);
                 control.MouseClick += (_, e) => OnMouseClick(e);
             }
+
+            _pictureBox.MouseEnter += PictureBox_MouseEnter;
+            _pictureBox.MouseLeave += PictureBox_MouseLeave;
+        }
+
+        private void PictureBox_MouseEnter(object? sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(ImagePath)) return;
+            if (!File.Exists(ImagePath)) return;
+
+            _previewForm = new Form
+            {
+                FormBorderStyle = FormBorderStyle.None,
+                StartPosition = FormStartPosition.Manual,
+                Size = new Size(200, 200),
+                BackColor = Color.Black,
+                ShowInTaskbar = false,
+                TopMost = true
+            };
+
+            var previewPictureBox = new PictureBox
+            {
+                Dock = DockStyle.Fill,
+                Image = Image.FromFile(ImagePath),
+                SizeMode = PictureBoxSizeMode.StretchImage
+            };
+
+            _previewForm.Controls.Add(previewPictureBox);
+
+            var cursorPosition = Cursor.Position;
+            _previewForm.Location = new Point(cursorPosition.X + 10, cursorPosition.Y + 10);
+            _previewForm.Show();
+        }
+
+        private void PictureBox_MouseLeave(object? sender, EventArgs e)
+        {
+            _previewForm?.Close();
+            _previewForm = null;
         }
 
         protected override void OnClick(EventArgs e)
