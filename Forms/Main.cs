@@ -1176,7 +1176,7 @@ namespace Avatar_Explorer.Forms
                 "ja-JP" => "ja",
                 "ko-KR" => "ko",
                 "en-US" => "en",
-                _ => "js"
+                _ => "ja"
             };
         }
     }
