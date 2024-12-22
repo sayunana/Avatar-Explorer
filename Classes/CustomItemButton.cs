@@ -43,28 +43,32 @@
         {
             Size = new Size(buttonWidth, 64);
 
-            _pictureBox = new PictureBox();
-
-            // アバター選択画面で画像の位置が異なる
-            _pictureBox.Location = isAvatarSelectButton ? new Point(3, 3) : new Point(4, 4);
-
-            _pictureBox.Size = new Size(56, 56);
-            _pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            // アバター選択画面で画像の位置が異なるためLocationは1づつずらす
+            _pictureBox = new PictureBox
+            {
+                Location = isAvatarSelectButton ? new Point(3, 3) : new Point(4, 4),
+                Size = new Size(56, 56),
+                SizeMode = PictureBoxSizeMode.StretchImage
+            };
             Controls.Add(_pictureBox);
 
             // タイトルが長すぎる場合にボタンの幅を超えないようにする
             // ボタンの幅 - ラベルのX位置 - 余裕を持たせて数px引く
             var labelWidth = buttonWidth - 60 - 5;
 
-            _title = new Label();
-            _title.Location = new Point(60, 3);
-            _title.Size = new Size(labelWidth, 24);
-            _title.Font = new Font("Yu Gothic UI", 12F);
+            _title = new Label
+            {
+                Location = new Point(60, 3),
+                Size = new Size(labelWidth, 24),
+                Font = new Font("Yu Gothic UI", 12F)
+            };
             Controls.Add(_title);
 
-            _authorName = new Label();
-            _authorName.Location = new Point(60, 25);
-            _authorName.Size = new Size(labelWidth, 20);
+            _authorName = new Label
+            {
+                Location = new Point(60, 25),
+                Size = new Size(labelWidth, 20)
+            };
             Controls.Add(_authorName);
 
             _toolTipText = "";
@@ -86,36 +90,49 @@
 
         private void PictureBox_MouseEnter(object? sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(ImagePath)) return;
-            if (!File.Exists(ImagePath)) return;
+            if (string.IsNullOrEmpty(ImagePath) || !File.Exists(ImagePath)) return;
 
-            _previewForm = new Form
+            try
             {
-                FormBorderStyle = FormBorderStyle.None,
-                StartPosition = FormStartPosition.Manual,
-                Size = new Size(200, 200),
-                BackColor = Color.Black,
-                ShowInTaskbar = false,
-                TopMost = true
-            };
+                _previewForm = new Form
+                {
+                    FormBorderStyle = FormBorderStyle.None,
+                    StartPosition = FormStartPosition.Manual,
+                    Size = new Size(200, 200),
+                    BackColor = Color.Black,
+                    ShowInTaskbar = false,
+                    TopMost = true
+                };
 
-            var previewPictureBox = new PictureBox
+                var previewPictureBox = new PictureBox
+                {
+                    Dock = DockStyle.Fill,
+                    Image = Image.FromFile(ImagePath),
+                    SizeMode = PictureBoxSizeMode.StretchImage
+                };
+
+                _previewForm.Controls.Add(previewPictureBox);
+
+                var cursorPosition = Cursor.Position;
+                var screenBounds = Screen.FromPoint(cursorPosition).WorkingArea;
+
+                int formX = Math.Min(cursorPosition.X + 10, screenBounds.Right - _previewForm.Width);
+                int formY = Math.Min(cursorPosition.Y + 10, screenBounds.Bottom - _previewForm.Height);
+
+                _previewForm.Location = new Point(formX, formY);
+                _previewForm.Show();
+            }
+            catch (Exception ex) when (ex is FileNotFoundException or OutOfMemoryException)
             {
-                Dock = DockStyle.Fill,
-                Image = Image.FromFile(ImagePath),
-                SizeMode = PictureBoxSizeMode.StretchImage
-            };
-
-            _previewForm.Controls.Add(previewPictureBox);
-
-            var cursorPosition = Cursor.Position;
-            _previewForm.Location = new Point(cursorPosition.X + 10, cursorPosition.Y + 10);
-            _previewForm.Show();
+                Console.WriteLine($"Failed to load image: {ex.Message}");
+            }
         }
 
         private void PictureBox_MouseLeave(object? sender, EventArgs e)
         {
-            _previewForm?.Close();
+            if (_previewForm == null) return;
+            _previewForm.Close();
+            _previewForm.Dispose();
             _previewForm = null;
         }
 
