@@ -50,6 +50,10 @@ namespace Avatar_Explorer.Forms
             BoothURLTextBox.Text = item.BoothId != -1 ? $"https://booth.pm/ja/items/{item.BoothId}" : "";
             FolderTextBox.Text = item.ItemPath;
             MaterialTextBox.Text = item.MaterialPath;
+            FolderTextBox.Enabled = false;
+            openFolderButton.Enabled = false;
+            MaterialTextBox.Enabled = false;
+            openMaterialFolderButton.Enabled = false;
             SupportedAvatar = item.SupportedAvatar;
             TitleTextBox.Text = item.Title;
             AuthorTextBox.Text = item.AuthorName;

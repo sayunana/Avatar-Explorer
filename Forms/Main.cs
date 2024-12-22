@@ -360,6 +360,11 @@ namespace Avatar_Explorer.Forms
                     ToolStripMenuItem toolStripMenuItem = new(Helper.Translate("フォルダを開く", CurrentLanguage), _openImage);
                     toolStripMenuItem.Click += (_, _) =>
                     {
+                        if (!Directory.Exists(item.ItemPath))
+                        {
+                            MessageBox.Show(Helper.Translate("フォルダが見つかりませんでした。", CurrentLanguage), Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
                         Process.Start("explorer.exe", item.ItemPath);
                     };
                     contextMenuStrip.Items.Add(toolStripMenuItem);
@@ -588,6 +593,11 @@ namespace Avatar_Explorer.Forms
                     ToolStripMenuItem toolStripMenuItem = new(Helper.Translate("フォルダを開く", CurrentLanguage), _openImage);
                     toolStripMenuItem.Click += (_, _) =>
                     {
+                        if (!Directory.Exists(item.ItemPath))
+                        {
+                            MessageBox.Show(Helper.Translate("フォルダが見つかりませんでした。", CurrentLanguage), Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
                         Process.Start("explorer.exe", item.ItemPath);
                     };
                     contextMenuStrip.Items.Add(toolStripMenuItem);
