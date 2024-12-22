@@ -1034,52 +1034,64 @@ namespace Avatar_Explorer.Forms
         // Export to CSV
         private void ExportButton_Click(object sender, EventArgs e)
         {
-            if (!Directory.Exists("./Output"))
+            try
             {
-                Directory.CreateDirectory("./Output");
+                ExportButton.Enabled = false;
+                if (!Directory.Exists("./Output"))
+                {
+                    Directory.CreateDirectory("./Output");
+                }
+
+                var fileName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".csv";
+
+                using var sw = new StreamWriter("./Output/" + fileName, false, Encoding.UTF8);
+                sw.WriteLine("Title,AuthorName,AuthorImageFilePath,ImagePath,Type,SupportedAvatar,BoothId,ItemPath");
+                foreach (var item in Items)
+                {
+                    sw.WriteLine(
+                        $"{item.Title},{item.AuthorName},{item.AuthorImageFilePath},{item.ImagePath},{item.Type},{string.Join(";", item.SupportedAvatar)},{item.BoothId},{item.ItemPath}");
+                }
+
+                MessageBox.Show(Helper.Translate("Outputフォルダにエクスポートが完了しました！\nファイル名: ", CurrentLanguage) + fileName,
+                    Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                ExportButton.Enabled = true;
             }
-
-            var fileName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".csv";
-
-            using var sw = new StreamWriter("./Output/" + fileName, false, Encoding.UTF8);
-            sw.WriteLine("Title,AuthorName,AuthorImageFilePath,ImagePath,Type,SupportedAvatar,BoothId,ItemPath");
-            foreach (var item in Items)
+            catch
             {
-                sw.WriteLine(
-                    $"{item.Title},{item.AuthorName},{item.AuthorImageFilePath},{item.ImagePath},{item.Type},{string.Join(";", item.SupportedAvatar)},{item.BoothId},{item.ItemPath}");
+                MessageBox.Show(Helper.Translate("エクスポートに失敗しました", CurrentLanguage),
+                    Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ExportButton.Enabled = true;
             }
-
-            MessageBox.Show(Helper.Translate("Outputフォルダにエクスポートが完了しました！\nファイル名: ", CurrentLanguage) + fileName,
-                Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
         }
 
         // Make Backup
         private void MakeBackupButton_Click(object sender, EventArgs e)
         {
-            if (!Directory.Exists("./Backup"))
-            {
-                Directory.CreateDirectory("./Backup");
-            }
-
-            var fileName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip";
-
             try
             {
+                MakeBackupButton.Enabled = false;
+                if (!Directory.Exists("./Backup"))
+                {
+                    Directory.CreateDirectory("./Backup");
+                }
+
+                var fileName = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip";
                 ZipFile.CreateFromDirectory("./Datas", "./Backup/" + fileName);
+
+                MessageBox.Show(
+                    Helper.Translate(
+                        "Backupフォルダにバックアップが完了しました！\n\n復元したい場合はBackupフォルダの中身を解凍し、全てをDatasフォルダの中身と置き換えれば大丈夫です！\n※ソフトはその間起動しないようにしてください！\n\nファイル名: ",
+                        CurrentLanguage) + fileName, Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                MakeBackupButton.Enabled = true;
             }
             catch
             {
                 MessageBox.Show(Helper.Translate("バックアップに失敗しました", CurrentLanguage),
                     Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                MakeBackupButton.Enabled = true;
             }
-
-            MessageBox.Show(
-                Helper.Translate(
-                    "Backupフォルダにバックアップが完了しました！\n\n復元したい場合はBackupフォルダの中身を解凍し、全てをDatasフォルダの中身と置き換えれば大丈夫です！\n※ソフトはその間起動しないようにしてください！\n\nファイル名: ",
-                    CurrentLanguage) + fileName, Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
         }
 
         private void LanguageBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -1092,24 +1104,13 @@ namespace Avatar_Explorer.Forms
                 _ => CurrentLanguage
             };
 
-            switch (CurrentLanguage)
+            GuiFont = CurrentLanguage switch
             {
-                case "ja-JP":
-                    {
-                        GuiFont = _fontCollection.Families[1];
-                        break;
-                    }
-                case "ko-KR":
-                    {
-                        GuiFont = _fontCollection.Families[2];
-                        break;
-                    }
-                case "en-US":
-                    {
-                        GuiFont = _fontCollection.Families[0];
-                        break;
-                    }
-            }
+                "ja-JP" => _fontCollection.Families[1],
+                "ko-KR" => _fontCollection.Families[2],
+                "en-US" => _fontCollection.Families[0],
+                _ => GuiFont
+            };
 
             foreach (Control control in Controls)
             {
