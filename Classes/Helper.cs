@@ -129,15 +129,18 @@ namespace Avatar_Explorer.Classes
 
         public static ItemType GetItemType(string title, string type)
         {
-            var avatarTitle = new[] { "オリジナル3Dモデル", "オリジナル", "Avatar", "Original" };
-            var animationTitle = new[] { "アニメーション", "Animation" };
-            var clothingTitle = new[] { "衣装", "Clothing" };
-            var gimickTitle = new[] { "ギミック", "Gimick" };
-            var accessaryTitle = new[] { "アクセサリ", "Accessary" };
-            var hairStyleTitle = new[] { "髪", "Hair" };
-            var textureTitle = new[] { "テクスチャ", "Eye", "Texture" };
-            var toolTitle = new[] { "ツール", "システム", "Tool", "System" };
-            var shaderTitle = new[] { "シェーダー", "Shader" };
+            var titleMappings = new Dictionary<string[], ItemType>
+            {
+                { new[] { "オリジナル3Dモデル", "オリジナル", "Avatar", "Original" }, ItemType.Avatar },
+                { new[] { "アニメーション", "Animation" }, ItemType.Animation },
+                { new[] { "衣装", "Clothing" }, ItemType.Clothing },
+                { new[] { "ギミック", "Gimick" }, ItemType.Gimick },
+                { new[] { "アクセサリ", "Accessary" }, ItemType.Accessary },
+                { new[] { "髪", "Hair" }, ItemType.HairStyle },
+                { new[] { "テクスチャ", "Eye", "Texture" }, ItemType.Texture },
+                { new[] { "ツール", "システム", "Tool", "System" }, ItemType.Tool },
+                { new[] { "シェーダー", "Shader" }, ItemType.Shader }
+            };
 
             var suggestType = type switch
             {
@@ -149,52 +152,15 @@ namespace Avatar_Explorer.Classes
                 "3D装飾品" => ItemType.Accessary,
                 "3Dテクスチャ" => ItemType.Texture,
                 "3Dツール・システム" => ItemType.Tool,
-                _ => ItemType.Unknown,
+                _ => ItemType.Unknown
             };
 
-            if (avatarTitle.Any(title.Contains))
+            foreach (var mapping in titleMappings)
             {
-                suggestType = ItemType.Avatar;
-            }
-
-            if (animationTitle.Any(title.Contains))
-            {
-                suggestType = ItemType.Animation;
-            }
-
-            if (clothingTitle.Any(title.Contains))
-            {
-                suggestType = ItemType.Clothing;
-            }
-
-            if (gimickTitle.Any(title.Contains))
-            {
-                suggestType = ItemType.Gimick;
-            }
-
-            if (accessaryTitle.Any(title.Contains))
-            {
-                suggestType = ItemType.Accessary;
-            }
-
-            if (hairStyleTitle.Any(title.Contains))
-            {
-                suggestType = ItemType.HairStyle;
-            }
-
-            if (textureTitle.Any(title.Contains))
-            {
-                suggestType = ItemType.Texture;
-            }
-
-            if (toolTitle.Any(title.Contains))
-            {
-                suggestType = ItemType.Tool;
-            }
-
-            if (shaderTitle.Any(title.Contains))
-            {
-                suggestType = ItemType.Shader;
+                if (mapping.Key.Any(title.Contains))
+                {
+                    return mapping.Value;
+                }
             }
 
             return suggestType;
