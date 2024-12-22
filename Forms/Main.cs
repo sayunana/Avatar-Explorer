@@ -19,7 +19,7 @@ namespace Avatar_Explorer.Forms
 
         // Font
         private readonly PrivateFontCollection _fontCollection = new();
-        public FontFamily GuiFont;
+        public FontFamily? GuiFont;
 
         // Search Mode
         private bool _authorMode;
@@ -272,7 +272,7 @@ namespace Avatar_Explorer.Forms
                 var items = Items.Where(item => item.Type == itemType);
                 var itemCount = items.Count();
                 if (itemCount == 0) continue;
-                Button button = Helper.CreateButton("./Datas/FolderIcon.png",
+                Button button = Helper.CreateButton(null,
                     Helper.GetCategoryName(itemType, CurrentLanguage),
                     itemCount + Helper.Translate("ŒÂ‚Ì€–Ú", CurrentLanguage), true);
                 button.Location = new Point(0, (70 * index) + 2);
@@ -310,7 +310,7 @@ namespace Avatar_Explorer.Forms
                         item.Type == itemType && (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) ||
                                                   item.SupportedAvatar.Length == 0));
                 if (itemCount == 0) continue;
-                Button button = Helper.CreateButton("./Datas/FolderIcon.png",
+                Button button = Helper.CreateButton(null,
                     Helper.GetCategoryName(itemType, CurrentLanguage),
                     itemCount + Helper.Translate("ŒÂ‚Ì€–Ú", CurrentLanguage));
                 button.Location = new Point(0, (70 * index) + 2);
@@ -517,7 +517,7 @@ namespace Avatar_Explorer.Forms
             {
                 var itemCount = itemFolderInfo.GetItemCount(itemType);
                 if (itemCount == 0) continue;
-                Button button = Helper.CreateButton("./Datas/FolderIcon.png",
+                Button button = Helper.CreateButton(null,
                     Helper.Translate(itemType, CurrentLanguage), itemCount + Helper.Translate("ŒÂ‚Ì€–Ú", CurrentLanguage));
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>

@@ -8,6 +8,8 @@ namespace Avatar_Explorer.Classes
     {
         private static readonly HttpClient HttpClient = new();
         private static readonly Dictionary<string, Dictionary<string, string>> TranslateData = new();
+        private static readonly Image FileImage = Image.FromStream(new MemoryStream(Properties.Resources.FileIcon));
+        private static readonly Image FolderImage = Image.FromStream(new MemoryStream(Properties.Resources.FolderIcon));
 
         public static async Task<Item> GetBoothItemInfoAsync(string id)
         {
@@ -113,11 +115,20 @@ namespace Avatar_Explorer.Classes
             return itemFolderInfo;
         }
 
-        public static Button CreateButton(string imagePath, string labelTitle, string? description, bool @short = false, string tooltip = "")
+        public static Button CreateButton(string? imagePath, string labelTitle, string? description, bool @short = false, string tooltip = "")
         {
             var buttonWidth = @short ? 303 : 874;
             CustomItemButton button = new CustomItemButton(false, buttonWidth);
-            button.Picture = ResizeImage(File.Exists(imagePath) ? imagePath : "./Datas/FileIcon.png", 100, 100);
+
+            if (imagePath == null)
+            {
+                button.Picture = FolderImage;
+            }
+            else
+            {
+                button.Picture = File.Exists(imagePath) ? ResizeImage(imagePath, 100, 100) : FileImage;
+            }
+
             button.TitleText = labelTitle;
             if (description != null)
                 button.AuthorName = description;
