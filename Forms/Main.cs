@@ -905,6 +905,8 @@ namespace Avatar_Explorer.Forms
         // Undo Button
         private void UndoButton_Click(object sender, EventArgs e)
         {
+            SearchBox.Text = "";
+
             if (CurrentPath.CurrentSelectedItemCategory != null)
             {
                 CurrentPath.CurrentSelectedItemCategory = null;

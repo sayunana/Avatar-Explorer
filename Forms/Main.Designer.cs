@@ -164,7 +164,7 @@ namespace Avatar_Explorer.Forms
             // 
             // SearchBox
             // 
-            SearchBox.Font = new Font(GuiFont, 10F);
+            SearchBox.Font = new Font("Yu Gothic UI", 11F);
             SearchBox.Location = new Point(980, 16);
             SearchBox.Name = "SearchBox";
             SearchBox.Size = new Size(270, 27);
@@ -185,7 +185,7 @@ namespace Avatar_Explorer.Forms
             // 
             SearchResultLabel.AutoSize = true;
             SearchResultLabel.Font = new Font(GuiFont, 10F);
-            SearchResultLabel.Location = new Point(971, 45);
+            SearchResultLabel.Location = new Point(917, 45);
             SearchResultLabel.Name = "SearchResultLabel";
             SearchResultLabel.Size = new Size(0, 20);
             SearchResultLabel.TabIndex = 9;
