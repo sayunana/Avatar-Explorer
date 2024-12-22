@@ -831,16 +831,16 @@ namespace Avatar_Explorer.Forms
                 if (CurrentPath.CurrentSelectedCategory == ItemType.Unknown)
                     return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName);
                 if (CurrentPath.CurrentSelectedItem == null)
-                    return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
+                    return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + " / " +
                            Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage);
                 if (CurrentPath.CurrentSelectedItemCategory == null)
-                    return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
-                           Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + "/" +
+                    return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + " / " +
+                           Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + " / " +
                            Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title);
 
-                return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + "/" +
-                       Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + "/" +
-                       Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" +
+                return Helper.RemoveFormat(CurrentPath.CurrentSelectedAuthor.AuthorName) + " / " +
+                       Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + " / " +
+                       Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + " / " +
                        Helper.Translate(CurrentPath.CurrentSelectedItemCategory, CurrentLanguage);
             }
 
@@ -850,11 +850,11 @@ namespace Avatar_Explorer.Forms
                 if (CurrentPath.CurrentSelectedItem == null)
                     return Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage);
                 if (CurrentPath.CurrentSelectedItemCategory == null)
-                    return Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + "/" +
+                    return Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + " / " +
                            Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title);
 
-                return Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + "/" +
-                       Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" +
+                return Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + " / " +
+                       Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + " / " +
                        Helper.Translate(CurrentPath.CurrentSelectedItemCategory, CurrentLanguage);
             }
 
@@ -862,16 +862,16 @@ namespace Avatar_Explorer.Forms
             if (CurrentPath.CurrentSelectedCategory == ItemType.Unknown)
                 return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar);
             if (CurrentPath.CurrentSelectedItem == null)
-                return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
+                return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + " / " +
                        Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage);
             if (CurrentPath.CurrentSelectedItemCategory == null)
-                return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
-                       Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + "/" +
+                return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + " / " +
+                       Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + " / " +
                        Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title);
 
-            return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + "/" +
-                   Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + "/" +
-                   Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + "/" +
+            return Helper.RemoveFormat(CurrentPath.CurrentSelectedAvatar) + " / " +
+                   Helper.GetCategoryName(CurrentPath.CurrentSelectedCategory, CurrentLanguage) + " / " +
+                   Helper.RemoveFormat(CurrentPath.CurrentSelectedItem.Title) + " / " +
                    Helper.Translate(CurrentPath.CurrentSelectedItemCategory, CurrentLanguage);
         }
 

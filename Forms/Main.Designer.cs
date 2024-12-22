@@ -64,7 +64,7 @@ namespace Avatar_Explorer.Forms
             // 
             // PathTextBox
             // 
-            PathTextBox.Font = new Font(GuiFont, 10F);
+            PathTextBox.Font = new Font("Yu Gothic UI", 10F);
             PathTextBox.Location = new Point(148, 16);
             PathTextBox.Name = "PathTextBox";
             PathTextBox.Size = new Size(733, 27);
