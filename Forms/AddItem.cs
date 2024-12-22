@@ -116,6 +116,7 @@ namespace Avatar_Explorer.Forms
                 TitleTextBox.Enabled = true;
                 AuthorTextBox.Enabled = true;
                 GetButton.Enabled = true;
+                GetButton.Text = Helper.Translate("情報を取得", _mainForm.CurrentLanguage);
                 Item = new Item();
             }
 
