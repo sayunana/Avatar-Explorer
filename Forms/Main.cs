@@ -131,11 +131,16 @@ namespace Avatar_Explorer.Forms
                         new(Helper.Translate("Boothリンクを開く", CurrentLanguage), _copyImage);
                     toolStripMenuItem1.Click += (_, _) =>
                     {
-                        Process.Start(new ProcessStartInfo
+                        try
                         {
-                            FileName = $"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId,
-                            UseShellExecute = true
-                        });
+                            Process.Start($"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId);
+                        }
+                        catch
+                        {
+                            MessageBox.Show(Helper.Translate("リンクを開けませんでした。", CurrentLanguage),
+                                Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
                     };
 
                     contextMenuStrip.Items.Add(toolStripMenuItem);
@@ -443,11 +448,20 @@ namespace Avatar_Explorer.Forms
                         new(Helper.Translate("Boothリンクを開く", CurrentLanguage), _copyImage);
                     toolStripMenuItem1.Click += (_, _) =>
                     {
-                        Process.Start(new ProcessStartInfo
+                        try
                         {
-                            FileName = $"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId,
-                            UseShellExecute = true
-                        });
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = $"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId,
+                                UseShellExecute = true
+                            });
+                        }
+                        catch
+                        {
+                            MessageBox.Show(Helper.Translate("リンクを開けませんでした。", CurrentLanguage),
+                                Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
                     };
 
                     contextMenuStrip.Items.Add(toolStripMenuItem);
@@ -587,7 +601,16 @@ namespace Avatar_Explorer.Forms
                     }
                     catch
                     {
-                        Process.Start("explorer.exe", "/select," + file.FilePath);
+                        try
+                        {
+                            Process.Start("explorer.exe", "/select," + file.FilePath);
+                        }
+                        catch
+                        {
+                            MessageBox.Show(Helper.Translate("ファイルを開けませんでした。", CurrentLanguage),
+                                Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
                     }
                 };
                 AvatarItemExplorer.Controls.Add(button);
@@ -698,11 +721,20 @@ namespace Avatar_Explorer.Forms
                         new(Helper.Translate("Boothリンクを開く", CurrentLanguage), _copyImage);
                     toolStripMenuItem1.Click += (_, _) =>
                     {
-                        Process.Start(new ProcessStartInfo
+                        try
                         {
-                            FileName = $"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId,
-                            UseShellExecute = true
-                        });
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = $"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId,
+                                UseShellExecute = true
+                            });
+                        }
+                        catch
+                        {
+                            MessageBox.Show(Helper.Translate("リンクを開けませんでした。", CurrentLanguage),
+                                Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
                     };
 
                     contextMenuStrip.Items.Add(toolStripMenuItem);
@@ -823,7 +855,16 @@ namespace Avatar_Explorer.Forms
                     }
                     catch
                     {
-                        Process.Start("explorer.exe", "/select," + file.FilePath);
+                        try
+                        {
+                            Process.Start("explorer.exe", "/select," + file.FilePath);
+                        }
+                        catch
+                        {
+                            MessageBox.Show(Helper.Translate("ファイルを開けませんでした。", CurrentLanguage),
+                                Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
                     }
                 };
                 AvatarItemExplorer.Controls.Add(button);
