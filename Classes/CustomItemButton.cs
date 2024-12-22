@@ -36,6 +36,10 @@
             {
                 _toolTipText = value;
                 _toolTip.SetToolTip(this, _toolTipText);
+                foreach (Control control in Controls)
+                {
+                    _toolTip.SetToolTip(control, _toolTipText);
+                }
             }
         }
 
