@@ -142,8 +142,10 @@ namespace Avatar_Explorer.Classes
             var suggestType = type switch
             {
                 "3Dキャラクター" => ItemType.Avatar,
+                "3Dモデル（その他）" => ItemType.Avatar,
                 "3Dモーション・アニメーション" => ItemType.Animation,
                 "3D衣装" => ItemType.Clothing,
+                "3D小道具" => ItemType.Gimick,
                 "3D装飾品" => ItemType.Accessary,
                 "3Dテクスチャ" => ItemType.Texture,
                 "3Dツール・システム" => ItemType.Tool,
