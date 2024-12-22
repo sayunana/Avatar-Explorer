@@ -21,16 +21,18 @@ namespace Avatar_Explorer.Forms
         private readonly PrivateFontCollection _fontCollection = new();
         public FontFamily? GuiFont;
 
+        // Language
+        public string CurrentLanguage = "ja-JP";
+
         // Search Mode
         private bool _authorMode;
         private bool _categoryMode;
 
+        // Images
         private readonly Image _copyImage = Image.FromStream(new MemoryStream(Properties.Resources.CopyIcon));
         private readonly Image _trashImage = Image.FromStream(new MemoryStream(Properties.Resources.TrashIcon));
         private readonly Image _editImage = Image.FromStream(new MemoryStream(Properties.Resources.EditIcon));
         private readonly Image _openImage = Image.FromStream(new MemoryStream(Properties.Resources.OpenIcon));
-
-        public string CurrentLanguage = "ja-JP";
 
         private Window _openingWindow = Window.Nothing;
 
