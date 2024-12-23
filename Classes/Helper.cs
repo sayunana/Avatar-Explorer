@@ -274,5 +274,13 @@ namespace Avatar_Explorer.Classes
             var commonAvatarsArray = commonAvatars.Where(x => x.Avatars.Contains(path)).ToArray();
             return item.SupportedAvatar.Any(supportedAvatar => commonAvatarsArray.Any(x => x.Avatars.Contains(supportedAvatar)));
         }
+
+        public static string GetCommonAvatarName(Item item, CommonAvatar[] commonAvatars, string? path)
+        {
+            if (string.IsNullOrEmpty(path)) return "";
+            var commonAvatarsArray = commonAvatars.Where(x => x.Avatars.Contains(path)).ToArray();
+            return item.SupportedAvatar.Select(supportedAvatar => commonAvatarsArray.FirstOrDefault(x => x.Avatars.Contains(supportedAvatar)))
+                .FirstOrDefault(commonAvatar => commonAvatar != null)?.Name ?? "";
+        }
     }
 }

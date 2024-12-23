@@ -108,6 +108,7 @@
   "共通素体データの更新が完了しました。": "Common avatar data updated.",
   "追加、編集する共通素体を選択してください。": "Please select the common avatar to add or edit.",
   "共通素体名: ": "Common Avatar Name: ",
+  "共通素体: ": "Common Avatar: ",
   "新しく共通素体グループが作成されます": "A new common avatar group will be created",
   "削除する共通素体が見つかりませんでした。": "Common avatar to delete not found."
 }

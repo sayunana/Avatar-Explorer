@@ -70,7 +70,7 @@
             _authorName = new Label
             {
                 Location = new Point(60, 25),
-                Size = new Size(labelWidth, 20)
+                Size = new Size(labelWidth, 40)
             };
             Controls.Add(_authorName);
 

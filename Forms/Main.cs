@@ -413,9 +413,20 @@ namespace Avatar_Explorer.Forms
             var index = 0;
             foreach (Item item in filteredItems)
             {
-                Button button = Helper.CreateButton(item.ImagePath, item.Title,
-                    Helper.Translate("ìŽÒ: ", CurrentLanguage) + item.AuthorName, false,
-                    item.Title);
+                var authorText = Helper.Translate("ìŽÒ: ", CurrentLanguage) + item.AuthorName;
+
+                if (Helper.IsSupportedAvatarOrCommon(item, CommonAvatars, CurrentPath.CurrentSelectedAvatarPath) &&
+                    item.SupportedAvatar.Length != 0 &&
+                    !item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatarPath))
+                {
+                    var commonAvatarName = Helper.GetCommonAvatarName(item, CommonAvatars, CurrentPath.CurrentSelectedAvatarPath);
+                    if (commonAvatarName != "")
+                    {
+                        authorText += "\n" + Helper.Translate("‹¤’Ê‘f‘Ì: ", CurrentLanguage) + commonAvatarName;
+                    }
+                }
+
+                Button button = Helper.CreateButton(item.ImagePath, item.Title, authorText, false, item.Title);
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
