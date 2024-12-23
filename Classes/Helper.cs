@@ -115,7 +115,8 @@ namespace Avatar_Explorer.Classes
             return itemFolderInfo;
         }
 
-        public static Button CreateButton(string? imagePath, string labelTitle, string? description, bool @short = false, string tooltip = "")
+        public static Button CreateButton(string? imagePath, string labelTitle, string? description,
+            bool @short = false, string tooltip = "")
         {
             var buttonWidth = @short ? 303 : 874;
             CustomItemButton button = new CustomItemButton(false, buttonWidth);
@@ -223,6 +224,31 @@ namespace Avatar_Explorer.Classes
             if (translateData == null) return new Dictionary<string, string>();
             TranslateData.Add(lang, translateData);
             return translateData;
+        }
+
+        public static Item[] FixSupportedAvatarPath(Item[] items)
+        {
+            var avatars = items.Where(x => x.Type == ItemType.Avatar).ToArray();
+            foreach (var item in items)
+            {
+                if (item.SupportedAvatar.Length == 0) continue;
+                foreach (var supportedAvatar in item.SupportedAvatar)
+                {
+                    var avatar = avatars.FirstOrDefault(x => x.Title == supportedAvatar);
+                    if (avatar == null) continue;
+                    item.SupportedAvatar = item.SupportedAvatar.Where(x => x != supportedAvatar).Append(avatar.ItemPath).ToArray();
+                }
+            }
+
+            return items;
+        }
+
+        public static string? GetAvatarName(Item[] items, string? path)
+        {
+            if (string.IsNullOrEmpty(path)) return null;
+            items = items.Where(x => x.Type == ItemType.Avatar).ToArray();
+            var item = items.FirstOrDefault(x => x.ItemPath == path);
+            return item?.Title;
         }
     }
 }

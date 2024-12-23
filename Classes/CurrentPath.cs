@@ -3,6 +3,7 @@
     public class CurrentPath
     {
         public string? CurrentSelectedAvatar;
+        public string? CurrentSelectedAvatarPath;
         public Author? CurrentSelectedAuthor;
         public ItemType CurrentSelectedCategory = ItemType.Unknown;
         public Item? CurrentSelectedItem;

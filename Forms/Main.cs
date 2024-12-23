@@ -43,6 +43,9 @@ namespace Avatar_Explorer.Forms
         {
             Items = Helper.LoadItemsData();
 
+            //Fix Supported Avatar Path
+            Items = Helper.FixSupportedAvatarPath(Items);
+
             AddFontFile();
             InitializeComponent();
             LanguageBox.SelectedIndex = 0;
@@ -97,6 +100,7 @@ namespace Avatar_Explorer.Forms
                 button.Click += (_, _) =>
                 {
                     CurrentPath.CurrentSelectedAvatar = item.Title;
+                    CurrentPath.CurrentSelectedAvatarPath = item.ItemPath;
                     CurrentPath.CurrentSelectedAuthor = null;
                     CurrentPath.CurrentSelectedCategory = ItemType.Unknown;
                     CurrentPath.CurrentSelectedItemCategory = null;
@@ -244,6 +248,7 @@ namespace Avatar_Explorer.Forms
                 {
                     CurrentPath.CurrentSelectedAuthor = author;
                     CurrentPath.CurrentSelectedAvatar = null;
+                    CurrentPath.CurrentSelectedAvatarPath = null;
                     CurrentPath.CurrentSelectedCategory = ItemType.Unknown;
                     CurrentPath.CurrentSelectedItemCategory = null;
                     CurrentPath.CurrentSelectedItem = null;
@@ -305,6 +310,7 @@ namespace Avatar_Explorer.Forms
                 {
                     CurrentPath.CurrentSelectedAuthor = null;
                     CurrentPath.CurrentSelectedAvatar = null;
+                    CurrentPath.CurrentSelectedAvatarPath = null;
                     CurrentPath.CurrentSelectedCategory = itemType;
                     CurrentPath.CurrentSelectedItemCategory = null;
                     CurrentPath.CurrentSelectedItem = null;
@@ -333,7 +339,7 @@ namespace Avatar_Explorer.Forms
                     ? Items.Count(item =>
                         item.Type == itemType && item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName)
                     : Items.Count(item =>
-                        item.Type == itemType && (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) ||
+                        item.Type == itemType && (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatarPath) ||
                                                   item.SupportedAvatar.Length == 0));
                 if (itemCount == 0) continue;
 
@@ -375,7 +381,7 @@ namespace Avatar_Explorer.Forms
             {
                 filteredItems = Items.Where(item =>
                     item.Type == CurrentPath.CurrentSelectedCategory &&
-                    (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatar) ||
+                    (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatarPath) ||
                      item.SupportedAvatar.Length == 0));
             }
 
@@ -947,7 +953,9 @@ namespace Avatar_Explorer.Forms
 
         private void GeneratePathFromItem(Item item)
         {
-            CurrentPath.CurrentSelectedAvatar = item.SupportedAvatar.FirstOrDefault() ?? "*";
+            var avatarName = Helper.GetAvatarName(Items, item.SupportedAvatar.FirstOrDefault());
+            CurrentPath.CurrentSelectedAvatar = avatarName ?? "*";
+            CurrentPath.CurrentSelectedAvatarPath = item.SupportedAvatar.FirstOrDefault();
             CurrentPath.CurrentSelectedCategory = item.Type;
             CurrentPath.CurrentSelectedItem = item;
         }
@@ -985,6 +993,7 @@ namespace Avatar_Explorer.Forms
             if (CurrentPath.CurrentSelectedAvatar == "*")
             {
                 CurrentPath.CurrentSelectedAvatar = null;
+                CurrentPath.CurrentSelectedAvatarPath = null;
                 ResetAvatarList(true);
                 PathTextBox.Text = GeneratePath();
             }
@@ -1129,8 +1138,16 @@ namespace Avatar_Explorer.Forms
                 sw.WriteLine("Title,AuthorName,AuthorImageFilePath,ImagePath,Type,SupportedAvatar,BoothId,ItemPath");
                 foreach (var item in Items)
                 {
+                    string[] avatarNames = Array.Empty<string>();
+                    foreach (var avatar in item.SupportedAvatar)
+                    {
+                        var avatarName = Helper.GetAvatarName(Items, avatar);
+                        if (avatarName == null) continue;
+                        avatarNames = avatarNames.Append(avatarName).ToArray();
+                    }
+
                     sw.WriteLine(
-                        $"{item.Title},{item.AuthorName},{item.AuthorImageFilePath},{item.ImagePath},{item.Type},{string.Join(";", item.SupportedAvatar)},{item.BoothId},{item.ItemPath}");
+                        $"{item.Title},{item.AuthorName},{item.AuthorImageFilePath},{item.ImagePath},{item.Type},{string.Join(";", avatarNames)},{item.BoothId},{item.ItemPath}");
                 }
 
                 MessageBox.Show(Helper.Translate("Outputフォルダにエクスポートが完了しました！\nファイル名: ", CurrentLanguage) + fileName,
