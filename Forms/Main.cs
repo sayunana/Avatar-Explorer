@@ -1371,7 +1371,14 @@ namespace Avatar_Explorer.Forms
 
                 var result2 = MessageBox.Show(Helper.Translate("Thumbnailフォルダ、AuthorImageフォルダもコピーしますか？", CurrentLanguage),
                     Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result2 != DialogResult.Yes) return;
+                if (result2 != DialogResult.Yes)
+                {
+                    RefleshWindow();
+                    GenerateAvatarList();
+                    GenerateAuthorList();
+                    GenerateCategoryListLeft();
+                    return;
+                }
 
                 var thumbnailPath = fbd.SelectedPath + "/Thumbnail";
                 var authorImagePath = fbd.SelectedPath + "/AuthorImage";
