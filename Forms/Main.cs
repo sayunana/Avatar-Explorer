@@ -32,11 +32,6 @@ namespace Avatar_Explorer.Forms
         private bool _authorMode;
         private bool _categoryMode;
 
-        // Images
-        private readonly Image _copyImage = Image.FromStream(new MemoryStream(Properties.Resources.CopyIcon));
-        private readonly Image _trashImage = Image.FromStream(new MemoryStream(Properties.Resources.TrashIcon));
-        private readonly Image _editImage = Image.FromStream(new MemoryStream(Properties.Resources.EditIcon));
-        private readonly Image _openImage = Image.FromStream(new MemoryStream(Properties.Resources.OpenIcon));
 
         private Window _openingWindow = Window.Nothing;
 
@@ -212,7 +207,7 @@ namespace Avatar_Explorer.Forms
                 if (item.BoothId != -1)
                 {
                     ToolStripMenuItem toolStripMenuItem =
-                        new(Helper.Translate("Boothリンクのコピー", CurrentLanguage), _copyImage);
+                        new(Helper.Translate("Boothリンクのコピー", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.CopyIcon));
                     toolStripMenuItem.Click += (_, _) =>
                     {
                         try
@@ -228,7 +223,7 @@ namespace Avatar_Explorer.Forms
                     };
 
                     ToolStripMenuItem toolStripMenuItem1 =
-                        new(Helper.Translate("Boothリンクを開く", CurrentLanguage), _copyImage);
+                        new(Helper.Translate("Boothリンクを開く", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.CopyIcon));
                     toolStripMenuItem1.Click += (_, _) =>
                     {
                         try
@@ -247,7 +242,7 @@ namespace Avatar_Explorer.Forms
                     contextMenuStrip.Items.Add(toolStripMenuItem1);
                 }
 
-                ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("サムネイル変更", CurrentLanguage), _editImage);
+                ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("サムネイル変更", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.EditIcon));
                 toolStripMenuItem2.Click += (_, _) =>
                 {
                     OpenFileDialog ofd = new()
@@ -268,7 +263,7 @@ namespace Avatar_Explorer.Forms
                     GenerateAvatarList();
                 };
 
-                ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), _editImage);
+                ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.EditIcon));
                 toolStripMenuItem3.Click += (_, _) =>
                 {
                     AddItem addItem = new(this, item.Type, true, item, null);
@@ -279,7 +274,7 @@ namespace Avatar_Explorer.Forms
                     GenerateCategoryListLeft();
                 };
 
-                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("削除", CurrentLanguage), _trashImage);
+                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("削除", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.TrashIcon));
                 toolStripMenuItem4.Click += (_, _) =>
                 {
                     DialogResult result = MessageBox.Show(Helper.Translate("本当に削除しますか？", CurrentLanguage),
@@ -356,7 +351,7 @@ namespace Avatar_Explorer.Forms
 
                 ContextMenuStrip contextMenuStrip = new();
 
-                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("サムネイル変更", CurrentLanguage), _editImage);
+                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("サムネイル変更", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.EditIcon));
                 toolStripMenuItem4.Click += (_, _) =>
                 {
                     OpenFileDialog ofd = new()
@@ -545,7 +540,7 @@ namespace Avatar_Explorer.Forms
 
                 if (Directory.Exists(item.ItemPath))
                 {
-                    ToolStripMenuItem toolStripMenuItem = new(Helper.Translate("フォルダを開く", CurrentLanguage), _openImage);
+                    ToolStripMenuItem toolStripMenuItem = new(Helper.Translate("フォルダを開く", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.OpenIcon));
                     toolStripMenuItem.Click += (_, _) =>
                     {
                         if (!Directory.Exists(item.ItemPath))
@@ -563,7 +558,7 @@ namespace Avatar_Explorer.Forms
                 if (item.BoothId != -1)
                 {
                     ToolStripMenuItem toolStripMenuItem =
-                        new(Helper.Translate("Boothリンクのコピー", CurrentLanguage), _copyImage);
+                        new(Helper.Translate("Boothリンクのコピー", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.CopyIcon));
                     toolStripMenuItem.Click += (_, _) =>
                     {
                         try
@@ -579,7 +574,7 @@ namespace Avatar_Explorer.Forms
                     };
 
                     ToolStripMenuItem toolStripMenuItem1 =
-                        new(Helper.Translate("Boothリンクを開く", CurrentLanguage), _copyImage);
+                        new(Helper.Translate("Boothリンクを開く", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.CopyIcon));
                     toolStripMenuItem1.Click += (_, _) =>
                     {
                         try
@@ -603,7 +598,7 @@ namespace Avatar_Explorer.Forms
                 }
 
 
-                ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("サムネイル変更", CurrentLanguage), _editImage);
+                ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("サムネイル変更", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.EditIcon));
                 toolStripMenuItem2.Click += (_, _) =>
                 {
                     OpenFileDialog ofd = new()
@@ -624,7 +619,7 @@ namespace Avatar_Explorer.Forms
                     GenerateAvatarList();
                 };
 
-                ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), _editImage);
+                ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.EditIcon));
                 toolStripMenuItem3.Click += (_, _) =>
                 {
                     AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item, null);
@@ -635,7 +630,7 @@ namespace Avatar_Explorer.Forms
                     GenerateCategoryListLeft();
                 };
 
-                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("削除", CurrentLanguage), _trashImage);
+                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("削除", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.TrashIcon));
                 toolStripMenuItem4.Click += (_, _) =>
                 {
                     DialogResult result = MessageBox.Show(Helper.Translate("本当に削除しますか？", CurrentLanguage),
@@ -721,7 +716,7 @@ namespace Avatar_Explorer.Forms
                 button.Location = new Point(0, (70 * index) + 2);
 
                 ContextMenuStrip contextMenuStrip = new();
-                ToolStripMenuItem toolStripMenuItem = new(Helper.Translate("ファイルのパスを開く", CurrentLanguage), _copyImage);
+                ToolStripMenuItem toolStripMenuItem = new(Helper.Translate("ファイルのパスを開く", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.CopyIcon));
                 toolStripMenuItem.Click += (_, _) => { Process.Start("explorer.exe", "/select," + file.FilePath); };
                 contextMenuStrip.Items.Add(toolStripMenuItem);
                 button.ContextMenuStrip = contextMenuStrip;
@@ -822,7 +817,7 @@ namespace Avatar_Explorer.Forms
 
                 if (Directory.Exists(item.ItemPath))
                 {
-                    ToolStripMenuItem toolStripMenuItem = new(Helper.Translate("フォルダを開く", CurrentLanguage), _openImage);
+                    ToolStripMenuItem toolStripMenuItem = new(Helper.Translate("フォルダを開く", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.OpenIcon));
                     toolStripMenuItem.Click += (_, _) =>
                     {
                         if (!Directory.Exists(item.ItemPath))
@@ -840,7 +835,7 @@ namespace Avatar_Explorer.Forms
                 if (item.BoothId != -1)
                 {
                     ToolStripMenuItem toolStripMenuItem =
-                        new(Helper.Translate("Boothリンクのコピー", CurrentLanguage), _copyImage);
+                        new(Helper.Translate("Boothリンクのコピー", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.CopyIcon));
                     toolStripMenuItem.Click += (_, _) =>
                     {
                         try
@@ -856,7 +851,7 @@ namespace Avatar_Explorer.Forms
                     };
 
                     ToolStripMenuItem toolStripMenuItem1 =
-                        new(Helper.Translate("Boothリンクを開く", CurrentLanguage), _copyImage);
+                        new(Helper.Translate("Boothリンクを開く", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.CopyIcon));
                     toolStripMenuItem1.Click += (_, _) =>
                     {
                         try
@@ -879,7 +874,7 @@ namespace Avatar_Explorer.Forms
                     contextMenuStrip.Items.Add(toolStripMenuItem1);
                 }
 
-                ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("サムネイル変更", CurrentLanguage), _editImage);
+                ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("サムネイル変更", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.EditIcon));
                 toolStripMenuItem2.Click += (_, _) =>
                 {
                     OpenFileDialog ofd = new()
@@ -900,7 +895,7 @@ namespace Avatar_Explorer.Forms
                     GenerateAvatarList();
                 };
 
-                ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), _editImage);
+                ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("編集", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.EditIcon));
                 toolStripMenuItem3.Click += (_, _) =>
                 {
                     AddItem addItem = new(this, item.Type, true, item, null);
@@ -911,7 +906,7 @@ namespace Avatar_Explorer.Forms
                     GenerateCategoryListLeft();
                 };
 
-                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("削除", CurrentLanguage), _trashImage);
+                ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("削除", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.TrashIcon));
                 toolStripMenuItem4.Click += (_, _) =>
                 {
                     DialogResult result = MessageBox.Show(Helper.Translate("本当に削除しますか？", CurrentLanguage),
@@ -976,7 +971,7 @@ namespace Avatar_Explorer.Forms
                 button.Location = new Point(0, (70 * index) + 2);
 
                 ContextMenuStrip contextMenuStrip = new();
-                ToolStripMenuItem toolStripMenuItem = new(Helper.Translate("ファイルのパスを開く", CurrentLanguage), _copyImage);
+                ToolStripMenuItem toolStripMenuItem = new(Helper.Translate("ファイルのパスを開く", CurrentLanguage), SharedImages.GetImage(SharedImages.Images.CopyIcon));
                 toolStripMenuItem.Click += (_, _) => { Process.Start("explorer.exe", "/select," + file.FilePath); };
                 contextMenuStrip.Items.Add(toolStripMenuItem);
                 button.ContextMenuStrip = contextMenuStrip;
@@ -1185,7 +1180,10 @@ namespace Avatar_Explorer.Forms
             {
                 if (AvatarItemExplorer.Controls[i].Name != "StartLabel")
                 {
+                    var control = AvatarItemExplorer.Controls[i];
                     AvatarItemExplorer.Controls.RemoveAt(i);
+                    // メモリの開放を行う
+                    control.Dispose();
                 }
                 else
                 {

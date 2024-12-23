@@ -8,6 +8,7 @@
         private readonly ToolTip _toolTip;
         private string _toolTipText;
         private Form? _previewForm;
+        private PictureBox? _previewPictureBox;
 
         public Image Picture
         {
@@ -107,14 +108,14 @@
                     TopMost = true
                 };
 
-                var previewPictureBox = new PictureBox
+                _previewPictureBox = new PictureBox
                 {
                     Dock = DockStyle.Fill,
                     Image = Image.FromFile(ImagePath),
                     SizeMode = PictureBoxSizeMode.StretchImage
                 };
 
-                _previewForm.Controls.Add(previewPictureBox);
+                _previewForm.Controls.Add(_previewPictureBox);
 
                 var cursorPosition = Cursor.Position;
                 var screenBounds = Screen.FromPoint(cursorPosition).WorkingArea;
@@ -137,6 +138,21 @@
             _previewForm.Close();
             _previewForm.Dispose();
             _previewForm = null;
+
+            // 画像のメモリ開放
+            if (_previewPictureBox != null)
+            {
+                if (_previewPictureBox.Image != null)
+                {
+                    if (!SharedImages.IsSharedImage(_previewPictureBox.Image))
+                    {
+                        _previewPictureBox.Image.Dispose();
+                    }
+                    _previewPictureBox.Image = null;
+                }
+                _previewPictureBox.Dispose();
+                _previewPictureBox = null;
+            }
         }
 
         protected override void OnClick(EventArgs e)
@@ -166,6 +182,32 @@
             Focus();
             // button.Click += で追加されたイベントを実行する
             base.OnClick(EventArgs.Empty);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            // リソースの解放
+            if (disposing)
+            {
+                if (_pictureBox != null)
+                {
+                    if(_pictureBox.Image != null)
+                    {
+                        if (!SharedImages.IsSharedImage(_pictureBox.Image))
+                        {
+                            _pictureBox.Image.Dispose();
+                        }
+                        _pictureBox.Image = null;
+                    }
+                    _pictureBox.Dispose();
+                }
+                _title?.Dispose();
+                _authorName?.Dispose();
+                _toolTip?.Dispose();
+                _previewForm?.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
     }
 }
