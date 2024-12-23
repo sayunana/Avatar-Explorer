@@ -1333,7 +1333,7 @@ namespace Avatar_Explorer.Forms
             PathTextBox.Text = GeneratePath();
         }
 
-        // Load Data from previous version or backup
+        // 前のバージョン、もしくはバックアップからデータを読み込む
         private void LoadDataFromFolder()
         {
             FolderBrowserDialog fbd = new()
@@ -1355,6 +1355,7 @@ namespace Avatar_Explorer.Forms
                 else
                 {
                     Items = Helper.LoadItemsData(filePath);
+                    Items = Helper.FixSupportedAvatarPath(Items);
                 }
 
                 var filePath2 = fbd.SelectedPath + "/CommonAvatar.json";

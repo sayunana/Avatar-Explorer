@@ -43,6 +43,7 @@ namespace Avatar_Explorer.Forms
             RefleshCommonAvatarButtonColor();
         }
 
+        // 下のアバターリストの作成
         private void GenerateAvatarList()
         {
             AvatarList.Controls.Clear();
@@ -57,7 +58,8 @@ namespace Avatar_Explorer.Forms
                 button.Text = item.Title;
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Tag = item.ItemPath;
-                var commonAvatar = GetCommonAvatar(item.ItemPath);
+
+                var commonAvatar = GetCommonAvatar(CommonAvatarsCombobox.Text);
                 button.BackColor = commonAvatar != null
                     ? commonAvatar.Avatars.Contains(item.ItemPath)
                         ? Color.LightGreen
@@ -69,6 +71,7 @@ namespace Avatar_Explorer.Forms
             }
         }
 
+        // アバターリストのボタン作成
         private static Button CreateAvatarButton(Item item, string language)
         {
             CustomItemButton button = new CustomItemButton(875);
@@ -88,16 +91,22 @@ namespace Avatar_Explorer.Forms
             return button;
         }
 
+        // 共通素体グループ名から共通素体を取得
         private CommonAvatar? GetCommonAvatar(string? name) => string.IsNullOrWhiteSpace(name)
             ? null
             : _commonAvatars.FirstOrDefault(commonAvatar => commonAvatar.Name == name);
 
+        // 共通素体テキストボックス
+        private void CommonAvatarsCombobox_TextChanged(object sender, EventArgs e) =>
+            RefleshCommonAvatarButtonColor();
+
         private void RefleshCommonAvatarButtonColor()
         {
+
             foreach (Button button in AvatarList.Controls)
             {
                 var commonAvatar = GetCommonAvatar(CommonAvatarsCombobox.Text);
-                NewLabel.Visible = commonAvatar == null;
+                NewLabel.Visible = (commonAvatar is null && !string.IsNullOrWhiteSpace(CommonAvatarsCombobox.Text));
                 button.BackColor = commonAvatar != null
                     ? commonAvatar.Avatars.Contains(button.Tag?.ToString())
                         ? Color.LightGreen
@@ -106,9 +115,7 @@ namespace Avatar_Explorer.Forms
             }
         }
 
-        private void CommonAvatarsCombobox_TextChanged(object sender, EventArgs e) =>
-            RefleshCommonAvatarButtonColor();
-
+        // 共通素体グループ削除ボタン
         private void DeleteSelectedGroupButton_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(CommonAvatarsCombobox.Text))
@@ -136,6 +143,7 @@ namespace Avatar_Explorer.Forms
             RefleshCommonAvatarButtonColor();
         }
 
+        // 共通素体追加ボタン
         private void AddButton_Click(object o, EventArgs e)
         {
             var name = CommonAvatarsCombobox.Text;
@@ -145,6 +153,7 @@ namespace Avatar_Explorer.Forms
                     Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
             var commonAvatar = GetCommonAvatar(name);
 
             if (commonAvatar == null)
