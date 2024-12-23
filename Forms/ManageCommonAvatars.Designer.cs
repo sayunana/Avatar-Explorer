@@ -36,6 +36,7 @@
             AvatarList = new TabPage();
             AvatarListTab = new TabControl();
             AddButton = new Button();
+            NewLabel = new Label();
             AvatarListTab.SuspendLayout();
             SuspendLayout();
             // 
@@ -43,9 +44,9 @@
             // 
             CommonAvatarsCombobox.Font = new Font("Yu Gothic UI", 13F);
             CommonAvatarsCombobox.FormattingEnabled = true;
-            CommonAvatarsCombobox.Location = new Point(140, 53);
+            CommonAvatarsCombobox.Location = new Point(237, 53);
             CommonAvatarsCombobox.Name = "CommonAvatarsCombobox";
-            CommonAvatarsCombobox.Size = new Size(241, 31);
+            CommonAvatarsCombobox.Size = new Size(232, 31);
             CommonAvatarsCombobox.TabIndex = 0;
             CommonAvatarsCombobox.TextChanged += CommonAvatarsCombobox_TextChanged;
             // 
@@ -63,7 +64,7 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font(_mainForm.GuiFont, 13F);
-            label2.Location = new Point(22, 53);
+            label2.Location = new Point(16, 53);
             label2.Name = "label2";
             label2.Size = new Size(112, 26);
             label2.TabIndex = 2;
@@ -73,7 +74,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font(_mainForm.GuiFont, 12F);
-            label3.Location = new Point(431, 24);
+            label3.Location = new Point(475, 9);
             label3.Name = "label3";
             label3.Size = new Size(441, 46);
             label3.TabIndex = 3;
@@ -121,11 +122,24 @@
             AddButton.UseVisualStyleBackColor = true;
             AddButton.Click += AddButton_Click;
             // 
+            // NewLabel
+            // 
+            NewLabel.AutoSize = true;
+            NewLabel.Font = new Font("Yu Gothic UI", 12F);
+            NewLabel.ForeColor = Color.ForestGreen;
+            NewLabel.Location = new Point(475, 58);
+            NewLabel.Name = "NewLabel";
+            NewLabel.Size = new Size(253, 21);
+            NewLabel.TabIndex = 0;
+            NewLabel.Text = "新しく共通素体グループが作成されます";
+            NewLabel.Visible = false;
+            // 
             // ManageCommonAvatars
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(932, 553);
+            Controls.Add(NewLabel);
             Controls.Add(AddButton);
             Controls.Add(AvatarListTab);
             Controls.Add(DeleteSelectedGroupButton);
@@ -150,5 +164,6 @@
         private TabPage AvatarList;
         private TabControl AvatarListTab;
         private Button AddButton;
+        private Label NewLabel;
     }
 }
