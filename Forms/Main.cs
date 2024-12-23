@@ -1410,11 +1410,16 @@ namespace Avatar_Explorer.Forms
                 MessageBox.Show(Helper.Translate("コピーが完了しました。", CurrentLanguage),
                     Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch
+            catch (Exception e)
             {
-                MessageBox.Show(Helper.Translate("データの読み込みに失敗しました。", CurrentLanguage),
+                MessageBox.Show(Helper.Translate("データの読み込みに失敗しました。", CurrentLanguage) + "\n\n" + e.Message,
                     Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
+            RefleshWindow();
+            GenerateAvatarList();
+            GenerateAuthorList();
+            GenerateCategoryListLeft();
         }
 
         private void LoadData_Click(object sender, EventArgs e) => LoadDataFromFolder();

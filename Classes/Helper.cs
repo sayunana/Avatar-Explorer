@@ -188,7 +188,7 @@ namespace Avatar_Explorer.Classes
                 var data = JsonSerializer.Deserialize<Item[]>(sr.ReadToEnd());
                 return data ?? Array.Empty<Item>();
             }
-            catch (Exception)
+            catch
             {
                 return Array.Empty<Item>();
             }
@@ -209,7 +209,7 @@ namespace Avatar_Explorer.Classes
                 var data = JsonSerializer.Deserialize<CommonAvatar[]>(sr.ReadToEnd());
                 return data ?? Array.Empty<CommonAvatar>();
             }
-            catch (Exception)
+            catch
             {
                 return Array.Empty<CommonAvatar>();
             }
