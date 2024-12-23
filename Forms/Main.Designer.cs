@@ -48,6 +48,7 @@ namespace Avatar_Explorer.Forms
             label2 = new Label();
             LanguageBox = new ComboBox();
             ManageCommonAvatarButton = new Button();
+            LoadData = new Button();
             AvatarSearchFilterList.SuspendLayout();
             ExplorerList.SuspendLayout();
             AvatarItemExplorer.SuspendLayout();
@@ -193,6 +194,7 @@ namespace Avatar_Explorer.Forms
             // 
             // ExportButton
             // 
+            ExportButton.Font = new Font("Yu Gothic UI", 10F);
             ExportButton.Location = new Point(20, 641);
             ExportButton.Name = "ExportButton";
             ExportButton.Size = new Size(161, 46);
@@ -203,6 +205,7 @@ namespace Avatar_Explorer.Forms
             // 
             // MakeBackupButton
             // 
+            MakeBackupButton.Font = new Font("Yu Gothic UI", 10F);
             MakeBackupButton.Location = new Point(209, 641);
             MakeBackupButton.Name = "MakeBackupButton";
             MakeBackupButton.Size = new Size(161, 46);
@@ -215,7 +218,7 @@ namespace Avatar_Explorer.Forms
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Yu Gothic UI", 13F);
-            label2.Location = new Point(600, 651);
+            label2.Location = new Point(848, 634);
             label2.Name = "label2";
             label2.Size = new Size(142, 25);
             label2.TabIndex = 12;
@@ -227,7 +230,7 @@ namespace Avatar_Explorer.Forms
             LanguageBox.Font = new Font("Yu Gothic UI", 12F);
             LanguageBox.FormattingEnabled = true;
             LanguageBox.Items.AddRange(new object[] { "日本語", "한국어", "English" });
-            LanguageBox.Location = new Point(748, 649);
+            LanguageBox.Location = new Point(824, 662);
             LanguageBox.Name = "LanguageBox";
             LanguageBox.Size = new Size(196, 29);
             LanguageBox.TabIndex = 13;
@@ -235,7 +238,8 @@ namespace Avatar_Explorer.Forms
             // 
             // ManageCommonAvatarButton
             // 
-            ManageCommonAvatarButton.Location = new Point(402, 641);
+            ManageCommonAvatarButton.Font = new Font("Yu Gothic UI", 10F);
+            ManageCommonAvatarButton.Location = new Point(398, 641);
             ManageCommonAvatarButton.Name = "ManageCommonAvatarButton";
             ManageCommonAvatarButton.Size = new Size(161, 46);
             ManageCommonAvatarButton.TabIndex = 14;
@@ -243,11 +247,23 @@ namespace Avatar_Explorer.Forms
             ManageCommonAvatarButton.UseVisualStyleBackColor = true;
             ManageCommonAvatarButton.Click += ManageCommonAvatarButton_Click;
             // 
+            // LoadData
+            // 
+            LoadData.Font = new Font("Yu Gothic UI", 10F);
+            LoadData.Location = new Point(587, 641);
+            LoadData.Name = "LoadData";
+            LoadData.Size = new Size(161, 46);
+            LoadData.TabIndex = 15;
+            LoadData.Text = "データを読み込む";
+            LoadData.UseVisualStyleBackColor = true;
+            LoadData.Click += LoadData_Click;
+            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1266, 699);
+            Controls.Add(LoadData);
             Controls.Add(ManageCommonAvatarButton);
             Controls.Add(LanguageBox);
             Controls.Add(label2);
@@ -295,5 +311,6 @@ namespace Avatar_Explorer.Forms
         private Label label2;
         private ComboBox LanguageBox;
         private Button ManageCommonAvatarButton;
+        private Button LoadData;
     }
 }

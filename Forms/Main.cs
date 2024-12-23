@@ -39,100 +39,8 @@ namespace Avatar_Explorer.Forms
 
         public Main()
         {
-            try
-            {
-                Items = Helper.LoadItemsData();
-                CommonAvatars = Helper.LoadCommonAvatarData();
-            }
-            catch
-            {
-                var result = MessageBox.Show(Helper.Translate("データの読み込みに失敗しました。以前のデータを読み込みますか？\n(初回起動時にも表示されます)", CurrentLanguage),
-                    Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                FolderBrowserDialog fbd = new()
-                {
-                    UseDescriptionForTitle = true,
-                    Description = Helper.Translate("以前のバージョンのDatasフォルダ、もしくは展開したバックアップフォルダを選択してください", CurrentLanguage),
-                    ShowNewFolderButton = false
-                };
-
-                if (result == DialogResult.Yes)
-                {
-                    if (fbd.ShowDialog() == DialogResult.OK)
-                    {
-                        try
-                        {
-                            var filePath = fbd.SelectedPath + "/ItemsData.json";
-                            if (!File.Exists(filePath))
-                            {
-                                MessageBox.Show(Helper.Translate("アイテムファイルが見つかりませんでした。", CurrentLanguage),
-                                    Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                            else
-                            {
-                                Items = Helper.LoadItemsData(filePath);
-                            }
-
-                            var filePath2 = fbd.SelectedPath + "/CommonAvatar.json";
-                            if (!File.Exists(filePath2))
-                            {
-                                MessageBox.Show(Helper.Translate("共通素体ファイルが見つかりませんでした。", CurrentLanguage),
-                                    Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                            else
-                            {
-                                CommonAvatars = Helper.LoadCommonAvatarData(filePath2);
-                            }
-
-                            var result2 = MessageBox.Show(Helper.Translate("Thumbnailフォルダ、AuthorImageフォルダもコピーしますか？", CurrentLanguage),
-                                Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                            if (result2 == DialogResult.Yes)
-                            {
-                                var thumbnailPath = fbd.SelectedPath + "/Thumbnail";
-                                var authorImagePath = fbd.SelectedPath + "/AuthorImage";
-
-                                if (Directory.Exists(thumbnailPath))
-                                {
-                                    Directory.CreateDirectory("./Datas/Thumbnail");
-                                    foreach (var file in Directory.GetFiles(thumbnailPath))
-                                    {
-                                        try
-                                        {
-                                            File.Copy(file, "./Datas/Thumbnail/" + Path.GetFileName(file), true);
-                                        }
-                                        catch
-                                        {
-                                        }
-                                    }
-                                }
-
-                                if (Directory.Exists(authorImagePath))
-                                {
-                                    Directory.CreateDirectory("./Datas/AuthorImage");
-                                    foreach (var file in Directory.GetFiles(authorImagePath))
-                                    {
-                                        try
-                                        {
-                                            File.Copy(file, "./Datas/AuthorImage/" + Path.GetFileName(file), true);
-                                        }
-                                        catch
-                                        {
-                                        }
-                                    }
-                                }
-
-                                MessageBox.Show(Helper.Translate("コピーが完了しました。", CurrentLanguage),
-                                    Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            }
-                        }
-                        catch
-                        {
-                            MessageBox.Show(Helper.Translate("データの読み込みに失敗しました。", CurrentLanguage),
-                                Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                }
-            }
+            Items = Helper.LoadItemsData();
+            CommonAvatars = Helper.LoadCommonAvatarData();
 
             // Fix Supported Avatar Path (Title => Path)
             Items = Helper.FixSupportedAvatarPath(Items);
@@ -1424,5 +1332,91 @@ namespace Avatar_Explorer.Forms
             GenerateCategoryListLeft();
             PathTextBox.Text = GeneratePath();
         }
+
+        // Load Data from previous version or backup
+        private void LoadDataFromFolder()
+        {
+            FolderBrowserDialog fbd = new()
+            {
+                UseDescriptionForTitle = true,
+                Description = Helper.Translate("以前のバージョンのDatasフォルダ、もしくは展開したバックアップフォルダを選択してください", CurrentLanguage),
+                ShowNewFolderButton = false
+            };
+            if (fbd.ShowDialog() != DialogResult.OK) return;
+
+            try
+            {
+                var filePath = fbd.SelectedPath + "/ItemsData.json";
+                if (!File.Exists(filePath))
+                {
+                    MessageBox.Show(Helper.Translate("アイテムファイルが見つかりませんでした。", CurrentLanguage),
+                        Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    Items = Helper.LoadItemsData(filePath);
+                }
+
+                var filePath2 = fbd.SelectedPath + "/CommonAvatar.json";
+                if (!File.Exists(filePath2))
+                {
+                    MessageBox.Show(Helper.Translate("共通素体ファイルが見つかりませんでした。", CurrentLanguage),
+                        Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    CommonAvatars = Helper.LoadCommonAvatarData(filePath2);
+                }
+
+                var result2 = MessageBox.Show(Helper.Translate("Thumbnailフォルダ、AuthorImageフォルダもコピーしますか？", CurrentLanguage),
+                    Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result2 != DialogResult.Yes) return;
+
+                var thumbnailPath = fbd.SelectedPath + "/Thumbnail";
+                var authorImagePath = fbd.SelectedPath + "/AuthorImage";
+
+                if (Directory.Exists(thumbnailPath))
+                {
+                    Directory.CreateDirectory("./Datas/Thumbnail");
+                    foreach (var file in Directory.GetFiles(thumbnailPath))
+                    {
+                        try
+                        {
+                            File.Copy(file, "./Datas/Thumbnail/" + Path.GetFileName(file), true);
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Failed to copy thumbnail image." + file);
+                        }
+                    }
+                }
+
+                if (Directory.Exists(authorImagePath))
+                {
+                    Directory.CreateDirectory("./Datas/AuthorImage");
+                    foreach (var file in Directory.GetFiles(authorImagePath))
+                    {
+                        try
+                        {
+                            File.Copy(file, "./Datas/AuthorImage/" + Path.GetFileName(file), true);
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Failed to copy author image." + file);
+                        }
+                    }
+                }
+
+                MessageBox.Show(Helper.Translate("コピーが完了しました。", CurrentLanguage),
+                    Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch
+            {
+                MessageBox.Show(Helper.Translate("データの読み込みに失敗しました。", CurrentLanguage),
+                    Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadData_Click(object sender, EventArgs e) => LoadDataFromFolder();
     }
 }
