@@ -19,7 +19,7 @@
             OpenIcon
         };
 
-        public static Image GetSharedImage(Images images)
+        public static Image GetImage(Images images)
         {
             Image sharedImage = images switch
             {

@@ -121,11 +121,11 @@ namespace Avatar_Explorer.Classes
 
             if (imagePath == null)
             {
-                button.Picture = SharedImages.GetSharedImage(SharedImages.Images.FolderIcon);
+                button.Picture = SharedImages.GetImage(SharedImages.Images.FolderIcon);
             }
             else
             {
-                button.Picture = File.Exists(imagePath) ? ResizeImage(imagePath, 100, 100) : SharedImages.GetSharedImage(SharedImages.Images.FileIcon);
+                button.Picture = File.Exists(imagePath) ? ResizeImage(imagePath, 100, 100) : SharedImages.GetImage(SharedImages.Images.FileIcon);
             }
 
             button.ImagePath = imagePath;
