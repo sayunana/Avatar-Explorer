@@ -1075,6 +1075,10 @@ namespace Avatar_Explorer.Forms
 
             AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, false, null, folderPath);
             addItem.ShowDialog();
+            RefleshWindow();
+            GenerateAvatarList();
+            GenerateAuthorList();
+            GenerateCategoryListLeft();
         }
 
         private void AvatarPage_DragDrop(object sender, DragEventArgs e)
@@ -1094,6 +1098,7 @@ namespace Avatar_Explorer.Forms
 
             AddItem addItem = new(this, ItemType.Avatar, false, null, folderPath);
             addItem.ShowDialog();
+            RefleshWindow();
             GenerateAvatarList();
             GenerateAuthorList();
             GenerateCategoryListLeft();
