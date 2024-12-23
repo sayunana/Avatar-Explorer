@@ -43,10 +43,10 @@ namespace Avatar_Explorer.Forms
             var index = 0;
             foreach (Item item in _mainForm.Items.Where(item => item.Type == ItemType.Avatar))
             {
-                if (item.Title == _addItem.Item.Title) continue;
+                if (item.ItemPath == _addItem.Item.ItemPath) continue;
                 Button button = CreateAvatarButton(item, _mainForm.CurrentLanguage);
                 button.Location = new Point(0, (70 * index) + 3);
-                button.BackColor = _addItem.SupportedAvatar.Contains(item.Title) ? Color.LightGreen : Color.FromKnownColor(KnownColor.Control);
+                button.BackColor = _addItem.SupportedAvatar.Contains(item.ItemPath) ? Color.LightGreen : Color.FromKnownColor(KnownColor.Control);
                 AvatarList.Controls.Add(button);
                 index++;
             }
