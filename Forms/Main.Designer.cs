@@ -47,6 +47,7 @@ namespace Avatar_Explorer.Forms
             MakeBackupButton = new Button();
             label2 = new Label();
             LanguageBox = new ComboBox();
+            ManageCommonAvatarButton = new Button();
             AvatarSearchFilterList.SuspendLayout();
             ExplorerList.SuspendLayout();
             AvatarItemExplorer.SuspendLayout();
@@ -67,7 +68,7 @@ namespace Avatar_Explorer.Forms
             PathTextBox.Font = new Font("Yu Gothic UI", 10F);
             PathTextBox.Location = new Point(148, 16);
             PathTextBox.Name = "PathTextBox";
-            PathTextBox.Size = new Size(733, 27);
+            PathTextBox.Size = new Size(733, 25);
             PathTextBox.TabIndex = 2;
             PathTextBox.Text = "ここには現在のパスが表示されます";
             // 
@@ -214,7 +215,7 @@ namespace Avatar_Explorer.Forms
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Yu Gothic UI", 13F);
-            label2.Location = new Point(406, 651);
+            label2.Location = new Point(600, 651);
             label2.Name = "label2";
             label2.Size = new Size(142, 25);
             label2.TabIndex = 12;
@@ -226,17 +227,28 @@ namespace Avatar_Explorer.Forms
             LanguageBox.Font = new Font("Yu Gothic UI", 12F);
             LanguageBox.FormattingEnabled = true;
             LanguageBox.Items.AddRange(new object[] { "日本語", "한국어", "English" });
-            LanguageBox.Location = new Point(554, 649);
+            LanguageBox.Location = new Point(748, 649);
             LanguageBox.Name = "LanguageBox";
             LanguageBox.Size = new Size(196, 29);
             LanguageBox.TabIndex = 13;
             LanguageBox.SelectedIndexChanged += LanguageBox_SelectedIndexChanged;
+            // 
+            // ManageCommonAvatarButton
+            // 
+            ManageCommonAvatarButton.Location = new Point(402, 641);
+            ManageCommonAvatarButton.Name = "ManageCommonAvatarButton";
+            ManageCommonAvatarButton.Size = new Size(161, 46);
+            ManageCommonAvatarButton.TabIndex = 14;
+            ManageCommonAvatarButton.Text = "共通素体の管理";
+            ManageCommonAvatarButton.UseVisualStyleBackColor = true;
+            ManageCommonAvatarButton.Click += ManageCommonAvatarButton_Click;
             // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1266, 699);
+            Controls.Add(ManageCommonAvatarButton);
             Controls.Add(LanguageBox);
             Controls.Add(label2);
             Controls.Add(MakeBackupButton);
@@ -282,5 +294,6 @@ namespace Avatar_Explorer.Forms
         private Button MakeBackupButton;
         private Label label2;
         private ComboBox LanguageBox;
+        private Button ManageCommonAvatarButton;
     }
 }

@@ -45,7 +45,7 @@ namespace Avatar_Explorer.Forms
             {
                 if (item.ItemPath == _addItem.Item.ItemPath) continue;
                 Button button = CreateAvatarButton(item, _mainForm.CurrentLanguage);
-                button.Location = new Point(0, (70 * index) + 3);
+                button.Location = new Point(0, (70 * index) + 2);
                 button.BackColor = _addItem.SupportedAvatar.Contains(item.ItemPath) ? Color.LightGreen : Color.FromKnownColor(KnownColor.Control);
                 AvatarList.Controls.Add(button);
                 index++;
@@ -54,12 +54,13 @@ namespace Avatar_Explorer.Forms
 
         private static Button CreateAvatarButton(Item item, string language)
         {
-            CustomItemButton button = new CustomItemButton(true, 1009);
+            CustomItemButton button = new CustomItemButton(1009);
             button.ImagePath = item.ImagePath;
             button.Picture = File.Exists(item.ImagePath) ? Image.FromFile(item.ImagePath) : FileImage;
             button.TitleText = item.Title;
             button.AuthorName = Helper.Translate("作者: ", language) + item.AuthorName;
             button.ToolTipText = item.Title;
+            button.Tag = item.ItemPath;
 
             button.Click += (_, _) =>
             {
@@ -71,8 +72,11 @@ namespace Avatar_Explorer.Forms
 
         private void ConfirmButton_Click(object sender, EventArgs e)
         {
-            var selectedItems = AvatarList.Controls.OfType<Button>().Where(button => button.BackColor == Color.LightGreen)
-                .Select(button => button.Controls.OfType<Label>().First().Text).ToArray();
+            var selectedItems = AvatarList.Controls.OfType<Button>()
+                .Where(button => button.BackColor == Color.LightGreen)
+                .Select(button => button.Tag as string)
+                .Where(tag => !string.IsNullOrWhiteSpace(tag))
+                .ToArray();
             _addItem.SupportedAvatar = selectedItems;
             Close();
         }

@@ -51,7 +51,7 @@ namespace Avatar_Explorer.Classes
                 ItemType.Clothing => Translate("衣装", lang),
                 ItemType.Texture => Translate("テクスチャ", lang),
                 ItemType.Gimmick => Translate("ギミック", lang),
-                ItemType.Accessary => Translate("アクセサリー", lang),
+                ItemType.Accessory => Translate("アクセサリー", lang),
                 ItemType.HairStyle => Translate("髪型", lang),
                 ItemType.Animation => Translate("アニメーション", lang),
                 ItemType.Tool => Translate("ツール", lang),
@@ -119,7 +119,7 @@ namespace Avatar_Explorer.Classes
             bool @short = false, string tooltip = "")
         {
             var buttonWidth = @short ? 303 : 874;
-            CustomItemButton button = new CustomItemButton(false, buttonWidth);
+            CustomItemButton button = new CustomItemButton(buttonWidth);
 
             if (imagePath == null)
             {
@@ -148,7 +148,7 @@ namespace Avatar_Explorer.Classes
                 { new[] { "アニメーション", "Animation" }, ItemType.Animation },
                 { new[] { "衣装", "Clothing" }, ItemType.Clothing },
                 { new[] { "ギミック", "Gimmick" }, ItemType.Gimmick },
-                { new[] { "アクセサリ", "Accessary" }, ItemType.Accessary },
+                { new[] { "アクセサリ", "Accessory" }, ItemType.Accessory },
                 { new[] { "髪", "Hair" }, ItemType.HairStyle },
                 { new[] { "テクスチャ", "Eye", "Texture" }, ItemType.Texture },
                 { new[] { "ツール", "システム", "Tool", "System" }, ItemType.Tool },
@@ -162,7 +162,7 @@ namespace Avatar_Explorer.Classes
                 "3Dモーション・アニメーション" => ItemType.Animation,
                 "3D衣装" => ItemType.Clothing,
                 "3D小道具" => ItemType.Gimmick,
-                "3D装飾品" => ItemType.Accessary,
+                "3D装飾品" => ItemType.Accessory,
                 "3Dテクスチャ" => ItemType.Texture,
                 "3Dツール・システム" => ItemType.Tool,
                 _ => ItemType.Unknown
@@ -181,18 +181,32 @@ namespace Avatar_Explorer.Classes
 
         public static string RemoveFormat(string str) => str.Replace(' ', '_').Replace('/', '-');
 
-        public static void SaveItemsData(Item[] items)
-        {
-            using var sw = new StreamWriter("./Datas/ItemsData.json");
-            sw.Write(JsonSerializer.Serialize(items, new JsonSerializerOptions { WriteIndented = true }));
-        }
-
         public static Item[] LoadItemsData()
         {
             if (!File.Exists("./Datas/ItemsData.json")) return Array.Empty<Item>();
             using var sr = new StreamReader("./Datas/ItemsData.json");
             var data = JsonSerializer.Deserialize<Item[]>(sr.ReadToEnd());
             return data ?? Array.Empty<Item>();
+        }
+
+        public static void SaveItemsData(Item[] items)
+        {
+            using var sw = new StreamWriter("./Datas/ItemsData.json");
+            sw.Write(JsonSerializer.Serialize(items, new JsonSerializerOptions { WriteIndented = true }));
+        }
+
+        public static CommonAvatar[] LoadCommonAvatarData()
+        {
+            if (!File.Exists("./Datas/CommonAvatar.json")) return Array.Empty<CommonAvatar>();
+            using var sr = new StreamReader("./Datas/CommonAvatar.json");
+            var data = JsonSerializer.Deserialize<CommonAvatar[]>(sr.ReadToEnd());
+            return data ?? Array.Empty<CommonAvatar>();
+        }
+
+        public static void SaveCommonAvatarData(CommonAvatar[] commonAvatars)
+        {
+            using var sw = new StreamWriter("./Datas/CommonAvatar.json");
+            sw.Write(JsonSerializer.Serialize(commonAvatars, new JsonSerializerOptions { WriteIndented = true }));
         }
 
         public static void DragEnter(object _, DragEventArgs e) => e.Effect = DragDropEffects.All;
@@ -249,6 +263,16 @@ namespace Avatar_Explorer.Classes
             items = items.Where(x => x.Type == ItemType.Avatar).ToArray();
             var item = items.FirstOrDefault(x => x.ItemPath == path);
             return item?.Title;
+        }
+
+        public static bool IsSupportedAvatarOrCommon(Item item, CommonAvatar[] commonAvatars, string? path)
+        {
+            if (string.IsNullOrEmpty(path)) return false;
+            if (item.SupportedAvatar.Contains(path)) return true;
+
+            if (item.Type != ItemType.Clothing) return false;
+            var commonAvatarsArray = commonAvatars.Where(x => x.Avatars.Contains(path)).ToArray();
+            return item.SupportedAvatar.Any(supportedAvatar => commonAvatarsArray.Any(x => x.Avatars.Contains(supportedAvatar)));
         }
     }
 }

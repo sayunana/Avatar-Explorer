@@ -14,6 +14,9 @@ namespace Avatar_Explorer.Forms
         // Items Data
         public Item[] Items;
 
+        // Common Avatars
+        public CommonAvatar[] CommonAvatars;
+
         // Current Path
         public CurrentPath CurrentPath = new();
 
@@ -45,6 +48,8 @@ namespace Avatar_Explorer.Forms
 
             //Fix Supported Avatar Path
             Items = Helper.FixSupportedAvatarPath(Items);
+
+            CommonAvatars = Helper.LoadCommonAvatarData();
 
             AddFontFile();
             InitializeComponent();
@@ -301,7 +306,6 @@ namespace Avatar_Explorer.Forms
 
                 var items = Items.Where(item => item.Type == itemType);
                 var itemCount = items.Count();
-                if (itemCount == 0) continue;
                 Button button = Helper.CreateButton(null,
                     Helper.GetCategoryName(itemType, CurrentLanguage),
                     itemCount + Helper.Translate("ŒÂ‚Ì€–Ú", CurrentLanguage), true);
@@ -335,12 +339,25 @@ namespace Avatar_Explorer.Forms
             {
                 if (itemType is ItemType.Unknown) continue;
 
-                var itemCount = _authorMode
-                    ? Items.Count(item =>
-                        item.Type == itemType && item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName)
-                    : Items.Count(item =>
-                        item.Type == itemType && (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatarPath) ||
-                                                  item.SupportedAvatar.Length == 0));
+                int itemCount = 0;
+                if (_authorMode)
+                {
+                    itemCount = Items.Count(item =>
+                        item.Type == itemType &&
+                        item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName
+                    );
+                }
+                else
+                {
+                    itemCount = Items.Count(item =>
+                        item.Type == itemType &&
+                        (
+                            Helper.IsSupportedAvatarOrCommon(item, CommonAvatars, CurrentPath.CurrentSelectedAvatarPath) ||
+                            item.SupportedAvatar.Length == 0
+                        )
+                    );
+                }
+
                 if (itemCount == 0) continue;
 
                 Button button = Helper.CreateButton(null,
@@ -370,19 +387,24 @@ namespace Avatar_Explorer.Forms
             {
                 filteredItems = Items.Where(item =>
                     item.Type == CurrentPath.CurrentSelectedCategory &&
-                    item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName);
+                    item.AuthorName == CurrentPath.CurrentSelectedAuthor?.AuthorName
+                );
             }
             else if (_categoryMode)
             {
                 filteredItems = Items.Where(item =>
-                    item.Type == CurrentPath.CurrentSelectedCategory);
+                    item.Type == CurrentPath.CurrentSelectedCategory
+                );
             }
             else
             {
                 filteredItems = Items.Where(item =>
                     item.Type == CurrentPath.CurrentSelectedCategory &&
-                    (item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatarPath) ||
-                     item.SupportedAvatar.Length == 0));
+                    (
+                        Helper.IsSupportedAvatarOrCommon(item, CommonAvatars, CurrentPath.CurrentSelectedAvatarPath) ||
+                        item.SupportedAvatar.Length == 0
+                    )
+                );
             }
 
             filteredItems = filteredItems.OrderBy(item => item.Title).ToList();
@@ -1000,7 +1022,11 @@ namespace Avatar_Explorer.Forms
         }
 
         // Save Config
-        private void Main_FormClosing(object sender, FormClosingEventArgs e) => Helper.SaveItemsData(Items);
+        private void Main_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Helper.SaveItemsData(Items);
+            Helper.SaveCommonAvatarData(CommonAvatars);
+        }
 
         // Search Box
         private void SearchBox_TextChanged(object sender, EventArgs e) => SearchItems();
@@ -1286,6 +1312,17 @@ namespace Avatar_Explorer.Forms
                 "en-US" => "en",
                 _ => "ja"
             };
+        }
+
+        private void ManageCommonAvatarButton_Click(object sender, EventArgs e)
+        {
+            ManageCommonAvatars manageCommonAvatar = new(this);
+            manageCommonAvatar.ShowDialog();
+            RefleshWindow();
+            GenerateAvatarList();
+            GenerateAuthorList();
+            GenerateCategoryListLeft();
+            PathTextBox.Text = GeneratePath();
         }
     }
 }

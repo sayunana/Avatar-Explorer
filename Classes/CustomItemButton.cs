@@ -43,14 +43,13 @@
             }
         }
 
-        public CustomItemButton(bool isAvatarSelectButton, int buttonWidth)
+        public CustomItemButton(int buttonWidth)
         {
             Size = new Size(buttonWidth, 64);
 
-            // アバター選択画面で画像の位置が異なるためLocationは1づつずらす
             _pictureBox = new PictureBox
             {
-                Location = isAvatarSelectButton ? new Point(3, 3) : new Point(4, 4),
+                Location = new Point(4, 4),
                 Size = new Size(56, 56),
                 SizeMode = PictureBoxSizeMode.StretchImage
             };

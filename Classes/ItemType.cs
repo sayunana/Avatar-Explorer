@@ -6,7 +6,7 @@
         Clothing,
         Texture,
         Gimmick,
-        Accessary,
+        Accessory,
         HairStyle,
         Animation,
         Tool,
