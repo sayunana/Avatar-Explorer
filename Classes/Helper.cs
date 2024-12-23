@@ -181,12 +181,13 @@ namespace Avatar_Explorer.Classes
 
         public static string RemoveFormat(string str) => str.Replace(' ', '_').Replace('/', '-');
 
-        public static Item[] LoadItemsData()
+        public static Item[] LoadItemsData(string path = "./Datas/ItemsData.json")
         {
-            if (!File.Exists("./Datas/ItemsData.json")) return Array.Empty<Item>();
-            using var sr = new StreamReader("./Datas/ItemsData.json");
+            if (!File.Exists(path)) throw new FileNotFoundException("ItemsData not found.");
+            using var sr = new StreamReader(path);
             var data = JsonSerializer.Deserialize<Item[]>(sr.ReadToEnd());
-            return data ?? Array.Empty<Item>();
+            if (data == null) throw new Exception("Failed to load ItemsData.");
+            return data;
         }
 
         public static void SaveItemsData(Item[] items)
@@ -195,12 +196,13 @@ namespace Avatar_Explorer.Classes
             sw.Write(JsonSerializer.Serialize(items, new JsonSerializerOptions { WriteIndented = true }));
         }
 
-        public static CommonAvatar[] LoadCommonAvatarData()
+        public static CommonAvatar[] LoadCommonAvatarData(string path = "./Datas/CommonAvatar.json")
         {
-            if (!File.Exists("./Datas/CommonAvatar.json")) return Array.Empty<CommonAvatar>();
-            using var sr = new StreamReader("./Datas/CommonAvatar.json");
+            if (!File.Exists(path)) throw new FileNotFoundException("CommonAvatarData not found.");
+            using var sr = new StreamReader(path);
             var data = JsonSerializer.Deserialize<CommonAvatar[]>(sr.ReadToEnd());
-            return data ?? Array.Empty<CommonAvatar>();
+            if (data == null) throw new Exception("Failed to load CommonAvatarData.");
+            return data;
         }
 
         public static void SaveCommonAvatarData(CommonAvatar[] commonAvatars)

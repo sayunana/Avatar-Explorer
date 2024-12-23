@@ -47,9 +47,5 @@ for (let i = 0; i < fontFilesLength; i++) {
     console.log("Copying: " + file);
 }
 
-if (!fs.existsSync("Datas/ItemsData.json")) {
-    fs.writeFileSync("Datas/ItemsData.json", "[]");
-}
-
 fs.rmSync("build.js");
 console.log("Build Completed!");
