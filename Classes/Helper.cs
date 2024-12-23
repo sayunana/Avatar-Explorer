@@ -8,8 +8,6 @@ namespace Avatar_Explorer.Classes
     {
         private static readonly HttpClient HttpClient = new();
         private static readonly Dictionary<string, Dictionary<string, string>> TranslateData = new();
-        private static readonly Image FileImage = Image.FromStream(new MemoryStream(Properties.Resources.FileIcon));
-        private static readonly Image FolderImage = Image.FromStream(new MemoryStream(Properties.Resources.FolderIcon));
 
         public static async Task<Item> GetBoothItemInfoAsync(string id)
         {
@@ -123,11 +121,11 @@ namespace Avatar_Explorer.Classes
 
             if (imagePath == null)
             {
-                button.Picture = FolderImage;
+                button.Picture = SharedImages.GetImage(SharedImages.Images.FolderIcon);
             }
             else
             {
-                button.Picture = File.Exists(imagePath) ? ResizeImage(imagePath, 100, 100) : FileImage;
+                button.Picture = File.Exists(imagePath) ? ResizeImage(imagePath, 100, 100) : SharedImages.GetImage(SharedImages.Images.FileIcon);
             }
 
             button.ImagePath = imagePath;
