@@ -13,8 +13,8 @@ if (!fs.existsSync("Datas/Thumbnail")) {
     fs.mkdirSync("Datas/Thumbnail");
 }
 
-if (!fs.existsSync("Datas/Translate")) {
-    fs.mkdirSync("Datas/Translate");
+if (!fs.existsSync("Translate")) {
+    fs.mkdirSync("Translate");
 }
 
 const TRANSLATE_FILES = "../../../Translate Files";
@@ -25,7 +25,7 @@ console.log("Translate Files: " + translateFilesLength);
 for (let i = 0; i < translateFilesLength; i++) {
     const file = translateFiles[i];
     const filePath = path.join(TRANSLATE_FILES, file);
-    const destPath = path.join("Datas/Translate", file);
+    const destPath = path.join("Translate", file);
     fs.copyFileSync(filePath, destPath);
     console.log("Copying: " + file);
 }
