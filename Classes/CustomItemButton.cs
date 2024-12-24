@@ -94,7 +94,7 @@
 
         private void PictureBox_MouseEnter(object? sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(ImagePath) || !File.Exists(ImagePath)) return;
+            if (string.IsNullOrEmpty(ImagePath) || Path.GetInvalidPathChars().Any(c => ImagePath.Contains(c)) || !File.Exists(ImagePath)) return;
 
             try
             {
@@ -115,17 +115,10 @@
                     SizeMode = PictureBoxSizeMode.StretchImage
                 };
 
-                try
+                if (_previewPictureBox.Image is { Width: > 0, Height: > 0 })
                 {
-                    if (_previewPictureBox != null)
-                    {
-                        var aspectRatio = (double)_previewPictureBox.Image.Width / _previewPictureBox.Image.Height;
-                        _previewForm.Width = (int)(_previewForm.Height * aspectRatio);
-                    }
-                }
-                catch
-                {
-                    Console.WriteLine("Failed to calculate aspect ratio");
+                    var aspectRatio = (double)_previewPictureBox.Image.Width / _previewPictureBox.Image.Height;
+                    _previewForm.Width = (int)(_previewForm.Height * aspectRatio);
                 }
 
                 _previewForm.Controls.Add(_previewPictureBox);
@@ -133,8 +126,8 @@
                 var cursorPosition = Cursor.Position;
                 var screenBounds = Screen.FromPoint(cursorPosition).WorkingArea;
 
-                int formX = Math.Min(cursorPosition.X + 10, screenBounds.Right - _previewForm.Width);
-                int formY = Math.Min(cursorPosition.Y + 10, screenBounds.Bottom - _previewForm.Height);
+                int formX = Math.Max(0, Math.Min(cursorPosition.X + 10, screenBounds.Right - _previewForm.Width));
+                int formY = Math.Max(0, Math.Min(cursorPosition.Y + 10, screenBounds.Bottom - _previewForm.Height));
 
                 _previewForm.Location = new Point(formX, formY);
                 _previewForm.Show();
@@ -148,21 +141,17 @@
         private void PictureBox_MouseLeave(object? sender, EventArgs e)
         {
             if (_previewForm == null) return;
+
             _previewForm.Close();
             _previewForm.Dispose();
             _previewForm = null;
 
             // 画像のメモリ開放
-            if (_previewPictureBox == null) return;
-            if (_previewPictureBox.Image != null)
             {
-                if (!SharedImages.IsSharedImage(_previewPictureBox.Image))
-                {
-                    _previewPictureBox.Image.Dispose();
-                }
-                _previewPictureBox.Image = null;
+                _previewPictureBox.Image.Dispose();
             }
-            _previewPictureBox.Dispose();
+
+            _previewPictureBox?.Dispose();
             _previewPictureBox = null;
         }
 
@@ -200,18 +189,16 @@
             // リソースの解放
             if (disposing)
             {
-                if (_pictureBox.Image != null)
+                if (_pictureBox.Image != null && !SharedImages.IsSharedImage(_pictureBox.Image))
                 {
-                    if (!SharedImages.IsSharedImage(_pictureBox.Image))
-                    {
-                        _pictureBox.Image.Dispose();
-                    }
-                    _pictureBox.Image = null;
+                    _pictureBox.Image.Dispose();
                 }
+                _pictureBox.Image = null;
+
                 _pictureBox.Dispose();
-                _title?.Dispose();
-                _authorName?.Dispose();
-                _toolTip?.Dispose();
+                _title.Dispose();
+                _authorName.Dispose();
+                _toolTip.Dispose();
                 _previewForm?.Dispose();
             }
 
