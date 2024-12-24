@@ -118,5 +118,7 @@
   "Thumbnailフォルダ、AuthorImageフォルダもコピーしますか？": "Copy Thumbnail and AuthorImage folders?",
   "コピーが完了しました。": "Copy completed.",
   "データの読み込みに失敗しました。": "Failed to load data.",
-  "更新": "Update"
+  "更新": "Update",
+  "この作者の他のアイテムを表示": "Show other items by this author",
+  "検索中 - ": "Searching - "
 }

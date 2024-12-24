@@ -277,9 +277,8 @@ namespace Avatar_Explorer.Forms
             Controls.Add(AvatarSearchFilterList);
             Controls.Add(PathTextBox);
             Controls.Add(UndoButton);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
-            MaximizeBox = false;
-            MinimizeBox = false;
+            FormBorderStyle = FormBorderStyle.Sizable;
+            SizeChanged += Main_Resize;
             Name = "Main";
             Text = "Avatar Explorer";
             FormClosing += Main_FormClosing;

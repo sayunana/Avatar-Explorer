@@ -307,5 +307,40 @@ namespace Avatar_Explorer.Classes
             public bool OnlyCommon => IsCommon && !IsSupported;
             public string CommonAvatarName { get; set; } = "";
         }
+
+        public static SearchFilter GetSearchFilter(string searchWord)
+        {
+            var searchFilter = new SearchFilter();
+            var regex = new Regex(@"(?<key>Author|Title|Booth)=(?:""(?<value>.*?)""|(?<value>[^\s]+))|(?<word>[^\s]+)");
+            var matches = regex.Matches(searchWord);
+
+            foreach (Match match in matches)
+            {
+                if (match.Groups["key"].Success)
+                {
+                    var key = match.Groups["key"].Value;
+                    var value = match.Groups["value"].Value;
+
+                    switch (key)
+                    {
+                        case "Author":
+                            searchFilter.Author = value;
+                            break;
+                        case "Title":
+                            searchFilter.Title = value;
+                            break;
+                        case "Booth":
+                            searchFilter.BoothId = value;
+                            break;
+                    }
+                }
+                else if (match.Groups["word"].Success)
+                {
+                    searchFilter.SearchWords = searchFilter.SearchWords.Append(match.Groups["word"].Value).ToArray();
+                }
+            }
+
+            return searchFilter;
+        }
     }
 }
