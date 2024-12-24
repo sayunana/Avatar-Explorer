@@ -1187,7 +1187,7 @@ namespace Avatar_Explorer.Forms
 
             pathTextArr = pathTextArr.Append(string.Join(",", searchFilter.SearchWords)).ToArray();
 
-            PathTextBox.Text = Helper.Translate("ŒŸõ’† - ", CurrentLanguage) + string.Join(" / ", pathTextArr);
+            PathTextBox.Text = Helper.Translate("ŒŸõ’†... - ", CurrentLanguage) + string.Join(" / ", pathTextArr);
         }
 
         // ResetAvatarList
