@@ -115,6 +115,19 @@
                     SizeMode = PictureBoxSizeMode.StretchImage
                 };
 
+                try
+                {
+                    if (_previewPictureBox != null)
+                    {
+                        var aspectRatio = (double)_previewPictureBox.Image.Width / _previewPictureBox.Image.Height;
+                        _previewForm.Width = (int)(_previewForm.Height * aspectRatio);
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Failed to calculate aspect ratio");
+                }
+
                 _previewForm.Controls.Add(_previewPictureBox);
 
                 var cursorPosition = Cursor.Position;
@@ -140,19 +153,17 @@
             _previewForm = null;
 
             // 画像のメモリ開放
-            if (_previewPictureBox != null)
+            if (_previewPictureBox == null) return;
+            if (_previewPictureBox.Image != null)
             {
-                if (_previewPictureBox.Image != null)
+                if (!SharedImages.IsSharedImage(_previewPictureBox.Image))
                 {
-                    if (!SharedImages.IsSharedImage(_previewPictureBox.Image))
-                    {
-                        _previewPictureBox.Image.Dispose();
-                    }
-                    _previewPictureBox.Image = null;
+                    _previewPictureBox.Image.Dispose();
                 }
-                _previewPictureBox.Dispose();
-                _previewPictureBox = null;
+                _previewPictureBox.Image = null;
             }
+            _previewPictureBox.Dispose();
+            _previewPictureBox = null;
         }
 
         protected override void OnClick(EventArgs e)
@@ -189,18 +200,15 @@
             // リソースの解放
             if (disposing)
             {
-                if (_pictureBox != null)
+                if (_pictureBox.Image != null)
                 {
-                    if(_pictureBox.Image != null)
+                    if (!SharedImages.IsSharedImage(_pictureBox.Image))
                     {
-                        if (!SharedImages.IsSharedImage(_pictureBox.Image))
-                        {
-                            _pictureBox.Image.Dispose();
-                        }
-                        _pictureBox.Image = null;
+                        _pictureBox.Image.Dispose();
                     }
-                    _pictureBox.Dispose();
+                    _pictureBox.Image = null;
                 }
+                _pictureBox.Dispose();
                 _title?.Dispose();
                 _authorName?.Dispose();
                 _toolTip?.Dispose();
