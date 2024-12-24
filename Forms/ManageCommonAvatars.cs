@@ -106,7 +106,10 @@ namespace Avatar_Explorer.Forms
             foreach (Button button in AvatarList.Controls)
             {
                 var commonAvatar = GetCommonAvatar(CommonAvatarsCombobox.Text);
-                NewLabel.Visible = (commonAvatar is null && !string.IsNullOrWhiteSpace(CommonAvatarsCombobox.Text));
+                NewLabel.Visible = commonAvatar is null && !string.IsNullOrWhiteSpace(CommonAvatarsCombobox.Text);
+                AddButton.Text = commonAvatar is null ? Helper.Translate("追加", _mainForm.CurrentLanguage) : Helper.Translate("更新", _mainForm.CurrentLanguage);
+                AddButton.Enabled = !string.IsNullOrWhiteSpace(CommonAvatarsCombobox.Text);
+                DeleteSelectedGroupButton.Enabled = !string.IsNullOrWhiteSpace(CommonAvatarsCombobox.Text) && commonAvatar != null;
                 button.BackColor = commonAvatar != null
                     ? commonAvatar.Avatars.Contains(button.Tag?.ToString())
                         ? Color.LightGreen
