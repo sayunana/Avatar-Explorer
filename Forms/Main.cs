@@ -12,10 +12,10 @@ namespace Avatar_Explorer.Forms
         private const string CurrentVersion = "v1.0.1";
 
         // Items Data
-        public Item[] Items = Array.Empty<Item>();
+        public Item[] Items;
 
         // Common Avatars
-        public CommonAvatar[] CommonAvatars = Array.Empty<CommonAvatar>();
+        public CommonAvatar[] CommonAvatars;
 
         // Current Path
         public CurrentPath CurrentPath = new();
