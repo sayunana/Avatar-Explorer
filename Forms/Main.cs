@@ -170,7 +170,11 @@ namespace Avatar_Explorer.Forms
 
                 ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("この作者の他のアイテムを表示", CurrentLanguage),
                     SharedImages.GetImage(SharedImages.Images.OpenIcon));
-                toolStripMenuItem2.Click += (_, _) => { SearchBox.Text = $"Author=\"{item.AuthorName}\""; };
+                toolStripMenuItem2.Click += (_, _) =>
+                {
+                    SearchBox.Text = $"Author=\"{item.AuthorName}\"";
+                    SearchItems();
+                };
 
                 ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("サムネイル変更", CurrentLanguage),
                     SharedImages.GetImage(SharedImages.Images.EditIcon));
@@ -542,7 +546,11 @@ namespace Avatar_Explorer.Forms
 
                 ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("この作者の他のアイテムを表示", CurrentLanguage),
                     SharedImages.GetImage(SharedImages.Images.OpenIcon));
-                toolStripMenuItem2.Click += (_, _) => { SearchBox.Text = $"Author=\"{item.AuthorName}\""; };
+                toolStripMenuItem2.Click += (_, _) =>
+                {
+                    SearchBox.Text = $"Author=\"{item.AuthorName}\"";
+                    SearchItems();
+                };
 
                 ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("サムネイル変更", CurrentLanguage),
                     SharedImages.GetImage(SharedImages.Images.EditIcon));
@@ -842,7 +850,11 @@ namespace Avatar_Explorer.Forms
 
                 ToolStripMenuItem toolStripMenuItem2 = new(Helper.Translate("この作者の他のアイテムを表示", CurrentLanguage),
                     SharedImages.GetImage(SharedImages.Images.OpenIcon));
-                toolStripMenuItem2.Click += (_, _) => { SearchBox.Text = $"Author=\"{item.AuthorName}\""; };
+                toolStripMenuItem2.Click += (_, _) =>
+                {
+                    SearchBox.Text = $"Author=\"{item.AuthorName}\"";
+                    SearchItems();
+                };
 
                 ToolStripMenuItem toolStripMenuItem3 = new(Helper.Translate("サムネイル変更", CurrentLanguage),
                     SharedImages.GetImage(SharedImages.Images.EditIcon));
@@ -1103,7 +1115,13 @@ namespace Avatar_Explorer.Forms
         }
 
         // Search Box
-        private void SearchBox_TextChanged(object sender, EventArgs e) => SearchItems();
+        private void SearchBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                SearchItems();
+            }
+        }
 
         private void SearchItems()
         {
