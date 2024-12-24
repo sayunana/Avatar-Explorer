@@ -147,6 +147,7 @@
             _previewForm = null;
 
             // 画像のメモリ開放
+            if (_previewPictureBox?.Image != null && !SharedImages.IsSharedImage(_previewPictureBox.Image))
             {
                 _previewPictureBox.Image.Dispose();
             }
