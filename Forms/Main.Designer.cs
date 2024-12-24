@@ -157,7 +157,7 @@ namespace Avatar_Explorer.Forms
             // 
             StartLabel.AutoSize = true;
             StartLabel.Font = new Font(GuiFont, 15F);
-            StartLabel.Location = new Point(165, 198);
+            StartLabel.Location = new Point(150, 252);
             StartLabel.Name = "StartLabel";
             StartLabel.Size = new Size(591, 58);
             StartLabel.TabIndex = 7;
@@ -278,7 +278,9 @@ namespace Avatar_Explorer.Forms
             Controls.Add(PathTextBox);
             Controls.Add(UndoButton);
             FormBorderStyle = FormBorderStyle.Sizable;
-            SizeChanged += Main_Resize;
+            MaximizeBox = false;
+            Resize += Main_Resize;
+            ResizeEnd += Main_ResizeEnd;
             Name = "Main";
             Text = "Avatar Explorer";
             FormClosing += Main_FormClosing;

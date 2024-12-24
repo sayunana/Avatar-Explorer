@@ -114,9 +114,11 @@ namespace Avatar_Explorer.Classes
         }
 
         public static Button CreateButton(string? imagePath, string labelTitle, string? description,
-            bool @short = false, string tooltip = "")
+            bool @short = false, string tooltip = "", int listWidthDiff = 0)
         {
             var buttonWidth = @short ? 303 : 874;
+            if (listWidthDiff != 0)
+                buttonWidth += listWidthDiff;
             CustomItemButton button = new CustomItemButton(buttonWidth);
 
             if (imagePath == null)

@@ -32,16 +32,18 @@ namespace Avatar_Explorer.Forms
         private bool _authorMode;
         private bool _categoryMode;
 
-
         private Window _openingWindow = Window.Nothing;
 
         private readonly Dictionary<string, string> _controlNames = new();
 
-
         private readonly Dictionary<string, SizeF> _defaultControlSize = new();
         private readonly Dictionary<string, PointF> _defaultControlLocation = new();
-        private readonly Dictionary<string, float> _defaultFontSize = new();
         private readonly Size _initialFormSize;
+        private readonly int _baseAvatarSearchFilterListWidth;
+        private readonly int _baseAvatarItemExplorerListWidth;
+
+        private int GetAvatarListWidth() => AvatarSearchFilterList.Width - _baseAvatarSearchFilterListWidth;
+        private int GetItemExplorerListWidth() => AvatarItemExplorer.Width - _baseAvatarItemExplorerListWidth;
 
         public Main()
         {
@@ -53,7 +55,12 @@ namespace Avatar_Explorer.Forms
 
             AddFontFile();
             InitializeComponent();
+
+            // Save the default Size
             _initialFormSize = ClientSize;
+            _baseAvatarSearchFilterListWidth = AvatarSearchFilterList.Width;
+            _baseAvatarItemExplorerListWidth = AvatarItemExplorer.Width;
+
             LanguageBox.SelectedIndex = 0;
             GenerateAvatarList();
             GenerateAuthorList();
@@ -101,7 +108,7 @@ namespace Avatar_Explorer.Forms
             {
                 Button button = Helper.CreateButton(item.ImagePath, item.Title,
                     Helper.Translate("作者: ", CurrentLanguage) + item.AuthorName, true,
-                    item.Title);
+                    item.Title, GetAvatarListWidth());
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
@@ -258,7 +265,7 @@ namespace Avatar_Explorer.Forms
             {
                 Button button = Helper.CreateButton(author.AuthorImagePath, author.AuthorName,
                     Items.Count(item => item.AuthorName == author.AuthorName) +
-                    Helper.Translate("個の項目", CurrentLanguage), true, author.AuthorName);
+                    Helper.Translate("個の項目", CurrentLanguage), true, author.AuthorName, GetAvatarListWidth());
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
@@ -320,7 +327,7 @@ namespace Avatar_Explorer.Forms
                 var itemCount = items.Count();
                 Button button = Helper.CreateButton(null,
                     Helper.GetCategoryName(itemType, CurrentLanguage),
-                    itemCount + Helper.Translate("個の項目", CurrentLanguage), true);
+                    itemCount + Helper.Translate("個の項目", CurrentLanguage), true, "", GetAvatarListWidth());
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
@@ -375,7 +382,7 @@ namespace Avatar_Explorer.Forms
 
                 Button button = Helper.CreateButton(null,
                     Helper.GetCategoryName(itemType, CurrentLanguage),
-                    itemCount + Helper.Translate("個の項目", CurrentLanguage));
+                    itemCount + Helper.Translate("個の項目", CurrentLanguage), false, "", GetItemExplorerListWidth());
                 button.Location = new Point(0, (70 * index) + 2);
 
                 button.Click += (_, _) =>
@@ -443,7 +450,7 @@ namespace Avatar_Explorer.Forms
                     }
                 }
 
-                Button button = Helper.CreateButton(item.ImagePath, item.Title, authorText, false, item.Title);
+                Button button = Helper.CreateButton(item.ImagePath, item.Title, authorText, false, item.Title, GetItemExplorerListWidth());
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
@@ -623,7 +630,7 @@ namespace Avatar_Explorer.Forms
                 if (itemCount == 0) continue;
 
                 Button button = Helper.CreateButton(null,
-                    Helper.Translate(itemType, CurrentLanguage), itemCount + Helper.Translate("個の項目", CurrentLanguage));
+                    Helper.Translate(itemType, CurrentLanguage), itemCount + Helper.Translate("個の項目", CurrentLanguage), false, "", GetItemExplorerListWidth());
                 button.Location = new Point(0, (70 * index) + 2);
 
                 button.Click += (_, _) =>
@@ -653,7 +660,7 @@ namespace Avatar_Explorer.Forms
                 var imagePath = file.FileExtension is ".png" or ".jpg" ? file.FilePath : "";
                 Button button = Helper.CreateButton(imagePath, file.FileName,
                     file.FileExtension.Replace(".", "") + Helper.Translate("ファイル", CurrentLanguage), false,
-                    Helper.Translate("開くファイルのパス: ", CurrentLanguage) + file.FilePath);
+                    Helper.Translate("開くファイルのパス: ", CurrentLanguage) + file.FilePath, GetItemExplorerListWidth());
                 button.Location = new Point(0, (70 * index) + 2);
 
                 ContextMenuStrip contextMenuStrip = new();
@@ -741,7 +748,7 @@ namespace Avatar_Explorer.Forms
             {
                 Button button = Helper.CreateButton(item.ImagePath, item.Title,
                     Helper.Translate("作者: ", CurrentLanguage) + item.AuthorName, false,
-                    item.Title);
+                    item.Title, GetItemExplorerListWidth());
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
@@ -932,7 +939,7 @@ namespace Avatar_Explorer.Forms
                 var imagePath = file.FileExtension is ".png" or ".jpg" ? file.FilePath : "";
                 Button button = Helper.CreateButton(imagePath, file.FileName,
                     file.FileExtension.Replace(".", "") + Helper.Translate("ファイル", CurrentLanguage), false,
-                    Helper.Translate("開くファイルのパス: ", CurrentLanguage) + file.FilePath);
+                    Helper.Translate("開くファイルのパス: ", CurrentLanguage) + file.FilePath, GetItemExplorerListWidth());
                 button.Location = new Point(0, (70 * index) + 2);
 
                 ContextMenuStrip contextMenuStrip = new();
@@ -1172,7 +1179,6 @@ namespace Avatar_Explorer.Forms
                 {
                     var control = AvatarItemExplorer.Controls[i];
                     AvatarItemExplorer.Controls.RemoveAt(i);
-                    // メモリの開放を行う
                     control.Dispose();
                 }
                 else
@@ -1515,10 +1521,13 @@ namespace Avatar_Explorer.Forms
 
         private void LoadData_Click(object sender, EventArgs e) => LoadDataFromFolder();
 
-        //Formのリサイズ、だいぶ無理がある。
-        private void Main_Resize(object sender, EventArgs e)
+        // フォームのリサイズ
+        private void Main_Resize(object sender, EventArgs e) => ResizeControl();
+
+        private void Main_ResizeEnd(object sender, EventArgs e) => ReRenderWindow();
+
+        private void ResizeControl()
         {
-            // クライアント領域のスケーリング比率を取得
             var widthRatio = (float)ClientSize.Width / _initialFormSize.Width;
             var heightRatio = (float)ClientSize.Height / _initialFormSize.Height;
 
@@ -1557,20 +1566,34 @@ namespace Avatar_Explorer.Forms
                 {
                     _defaultControlLocation.Add(control.Name, new PointF(control.Location.X, control.Location.Y));
                 }
-
-                // ラベルのフォントサイズをスケーリング
-                if (control is Label label)
-                {
-                    if (_defaultFontSize.TryGetValue(label.Name, out var value))
-                    {
-                        label.Font = new Font(GuiFont, value * heightRatio);
-                    }
-                    else
-                    {
-                        _defaultFontSize.Add(label.Name, label.Font.Size);
-                    }
-                }
             }
+
+            for (int i = AvatarItemExplorer.Controls.Count - 1; i >= 0; i--)
+            {
+                if (AvatarItemExplorer.Controls[i].Name != "StartLabel") continue;
+                var control = AvatarItemExplorer.Controls[i];
+                control.Location = control.Location with
+                {
+                    X = (AvatarItemExplorer.Width - control.Width) / 2,
+                    Y = (AvatarItemExplorer.Height - control.Height) / 2
+                };
+            }
+        }
+
+        private void ReRenderWindow()
+        {
+            if (SearchBox.Text != "")
+            {
+                SearchItems();
+            }
+            else
+            {
+                RefleshWindow();
+            }
+
+            GenerateAvatarList();
+            GenerateAuthorList();
+            GenerateCategoryListLeft();
         }
     }
 }
