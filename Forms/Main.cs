@@ -41,6 +41,7 @@ namespace Avatar_Explorer.Forms
         private readonly Size _initialFormSize;
         private readonly int _baseAvatarSearchFilterListWidth;
         private readonly int _baseAvatarItemExplorerListWidth;
+        private Size _previousFormSize;
 
         private int GetAvatarListWidth() => AvatarSearchFilterList.Width - _baseAvatarSearchFilterListWidth;
         private int GetItemExplorerListWidth() => AvatarItemExplorer.Width - _baseAvatarItemExplorerListWidth;
@@ -58,6 +59,7 @@ namespace Avatar_Explorer.Forms
 
             // Save the default Size
             _initialFormSize = ClientSize;
+            _previousFormSize = Size;
             _baseAvatarSearchFilterListWidth = AvatarSearchFilterList.Width;
             _baseAvatarItemExplorerListWidth = AvatarItemExplorer.Width;
 
@@ -1524,7 +1526,12 @@ namespace Avatar_Explorer.Forms
         // フォームのリサイズ
         private void Main_Resize(object sender, EventArgs e) => ResizeControl();
 
-        private void Main_ResizeEnd(object sender, EventArgs e) => ReRenderWindow();
+        private void Main_ResizeEnd(object sender, EventArgs e)
+        {
+            if (Size == _previousFormSize) return;
+            _previousFormSize = Size;
+            ReRenderWindow();
+        }
 
         private void ResizeControl()
         {
