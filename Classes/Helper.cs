@@ -277,22 +277,35 @@ namespace Avatar_Explorer.Classes
             return item?.Title;
         }
 
-        public static bool IsSupportedAvatarOrCommon(Item item, CommonAvatar[] commonAvatars, string? path)
+        public static SupportedOrCommonAvatar IsSupportedAvatarOrCommon(Item item, CommonAvatar[] commonAvatars, string? path)
         {
-            if (string.IsNullOrEmpty(path)) return false;
-            if (item.SupportedAvatar.Contains(path)) return true;
+            if (string.IsNullOrEmpty(path)) return new SupportedOrCommonAvatar();
+            if (item.SupportedAvatar.Contains(path)) return new SupportedOrCommonAvatar { IsSupported = true };
 
-            if (item.Type != ItemType.Clothing) return false;
+            if (item.Type != ItemType.Clothing) return new SupportedOrCommonAvatar();
             var commonAvatarsArray = commonAvatars.Where(x => x.Avatars.Contains(path)).ToArray();
-            return item.SupportedAvatar.Any(supportedAvatar => commonAvatarsArray.Any(x => x.Avatars.Contains(supportedAvatar)));
+            var commonAvatarBool = item.SupportedAvatar.Any(supportedAvatar => commonAvatarsArray.Any(x => x.Avatars.Contains(supportedAvatar)));
+
+            if (!commonAvatarBool) return new SupportedOrCommonAvatar();
+            {
+                var commonAvatar = item.SupportedAvatar.Select(supportedAvatar =>
+                        commonAvatarsArray.FirstOrDefault(x => x.Avatars.Contains(supportedAvatar)))
+                    .FirstOrDefault(x => x != null);
+                return new SupportedOrCommonAvatar
+                {
+                    IsCommon = true,
+                    CommonAvatarName = commonAvatar?.Name ?? ""
+                };
+            }
         }
 
-        public static string GetCommonAvatarName(Item item, CommonAvatar[] commonAvatars, string? path)
+        public class SupportedOrCommonAvatar
         {
-            if (string.IsNullOrEmpty(path)) return "";
-            var commonAvatarsArray = commonAvatars.Where(x => x.Avatars.Contains(path)).ToArray();
-            return item.SupportedAvatar.Select(supportedAvatar => commonAvatarsArray.FirstOrDefault(x => x.Avatars.Contains(supportedAvatar)))
-                .FirstOrDefault(commonAvatar => commonAvatar != null)?.Name ?? "";
+            public bool IsSupported { get; set; }
+            public bool IsCommon { get; set; }
+            public bool IsSupportedOrCommon => IsSupported || IsCommon;
+            public bool OnlyCommon => IsCommon && !IsSupported;
+            public string CommonAvatarName { get; set; } = "";
         }
     }
 }

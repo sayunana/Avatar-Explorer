@@ -346,7 +346,7 @@ namespace Avatar_Explorer.Forms
                     itemCount = Items.Count(item =>
                         item.Type == itemType &&
                         (
-                            Helper.IsSupportedAvatarOrCommon(item, CommonAvatars, CurrentPath.CurrentSelectedAvatarPath) ||
+                            Helper.IsSupportedAvatarOrCommon(item, CommonAvatars, CurrentPath.CurrentSelectedAvatarPath).IsSupportedOrCommon ||
                             item.SupportedAvatar.Length == 0
                         )
                     );
@@ -377,6 +377,7 @@ namespace Avatar_Explorer.Forms
             ResetAvatarList();
 
             var filteredItems = Items.AsEnumerable();
+
             if (_authorMode)
             {
                 filteredItems = Items.Where(item =>
@@ -395,7 +396,7 @@ namespace Avatar_Explorer.Forms
                 filteredItems = Items.Where(item =>
                     item.Type == CurrentPath.CurrentSelectedCategory &&
                     (
-                        Helper.IsSupportedAvatarOrCommon(item, CommonAvatars, CurrentPath.CurrentSelectedAvatarPath) ||
+                        Helper.IsSupportedAvatarOrCommon(item, CommonAvatars, CurrentPath.CurrentSelectedAvatarPath).IsSupportedOrCommon ||
                         item.SupportedAvatar.Length == 0
                     )
                 );
@@ -409,11 +410,13 @@ namespace Avatar_Explorer.Forms
             {
                 var authorText = Helper.Translate("çÏé“: ", CurrentLanguage) + item.AuthorName;
 
-                if (Helper.IsSupportedAvatarOrCommon(item, CommonAvatars, CurrentPath.CurrentSelectedAvatarPath) &&
-                    item.SupportedAvatar.Length != 0 &&
+                var isSupportedOrCommon =
+                    Helper.IsSupportedAvatarOrCommon(item, CommonAvatars, CurrentPath.CurrentSelectedAvatarPath);
+
+                if (isSupportedOrCommon.OnlyCommon && item.SupportedAvatar.Length != 0 &&
                     !item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatarPath))
                 {
-                    var commonAvatarName = Helper.GetCommonAvatarName(item, CommonAvatars, CurrentPath.CurrentSelectedAvatarPath);
+                    var commonAvatarName = isSupportedOrCommon.CommonAvatarName;
                     if (commonAvatarName != "")
                     {
                         authorText += "\n" + Helper.Translate("ã§í ëfëÃ: ", CurrentLanguage) + commonAvatarName;

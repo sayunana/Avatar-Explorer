@@ -6,7 +6,7 @@ namespace Avatar_Explorer.Forms
     {
         private readonly Main _mainForm;
         private readonly AddItem _addItem;
-        private static readonly Image FileImage = Image.FromStream(new MemoryStream(Properties.Resources.FileIcon));
+        private static readonly Image FileImage = SharedImages.GetImage(SharedImages.Images.FileIcon);
 
         public SelectSupportedAvatar(Main mainForm, AddItem addItem)
         {

@@ -36,14 +36,12 @@
 
         public static bool IsSharedImage(Image image)
         {
-            if(image == FileImage
-                || image == FolderImage 
-                || image == CopyImage 
-                || image == TrashImage 
-                || image == EditImage 
-                || image == OpenImage)
-                return true;
-            return false;
+            return image == FileImage
+                   || image == FolderImage
+                   || image == CopyImage
+                   || image == TrashImage
+                   || image == EditImage
+                   || image == OpenImage;
         }
     }
 }
