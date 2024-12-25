@@ -60,7 +60,6 @@ namespace Avatar_Explorer.Forms
             _initialFormSize = ClientSize;
             _baseAvatarSearchFilterListWidth = AvatarSearchFilterList.Width;
             _baseAvatarItemExplorerListWidth = AvatarItemExplorer.Width;
-            
 
             LanguageBox.SelectedIndex = 0;
             GenerateAvatarList();
@@ -207,6 +206,7 @@ namespace Avatar_Explorer.Forms
                     GenerateAvatarList();
                     GenerateAuthorList();
                     GenerateCategoryListLeft();
+                    Helper.SaveItemsData(Items);
                 };
 
                 ToolStripMenuItem toolStripMenuItem5 = new(Helper.Translate("削除", CurrentLanguage),
@@ -472,6 +472,7 @@ namespace Avatar_Explorer.Forms
                         GenerateAvatarList();
                         GenerateAuthorList();
                         GenerateCategoryListLeft();
+                        Helper.SaveItemsData(Items);
                     }
 
                     CurrentPath.CurrentSelectedItem = item;
@@ -583,6 +584,7 @@ namespace Avatar_Explorer.Forms
                     GenerateAvatarList();
                     GenerateAuthorList();
                     GenerateCategoryListLeft();
+                    Helper.SaveItemsData(Items);
                 };
 
                 ToolStripMenuItem toolStripMenuItem5 = new(Helper.Translate("削除", CurrentLanguage),
@@ -774,6 +776,7 @@ namespace Avatar_Explorer.Forms
                         GenerateAvatarList();
                         GenerateAuthorList();
                         GenerateCategoryListLeft();
+                        Helper.SaveItemsData(Items);
                     }
 
                     _authorMode = false;
@@ -887,6 +890,7 @@ namespace Avatar_Explorer.Forms
                     GenerateAvatarList();
                     GenerateAuthorList();
                     GenerateCategoryListLeft();
+                    Helper.SaveItemsData(Items);
                 };
 
                 ToolStripMenuItem toolStripMenuItem5 = new(Helper.Translate("削除", CurrentLanguage),
@@ -1001,6 +1005,7 @@ namespace Avatar_Explorer.Forms
             GenerateAvatarList();
             GenerateAuthorList();
             GenerateCategoryListLeft();
+            Helper.SaveItemsData(Items);
         }
 
         // Generate Path
@@ -1104,13 +1109,6 @@ namespace Avatar_Explorer.Forms
                 ResetAvatarList(true);
                 PathTextBox.Text = GeneratePath();
             }
-        }
-
-        // Save Config
-        private void Main_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            Helper.SaveItemsData(Items);
-            Helper.SaveCommonAvatarData(CommonAvatars);
         }
 
         // Search Box
@@ -1229,6 +1227,7 @@ namespace Avatar_Explorer.Forms
             GenerateAvatarList();
             GenerateAuthorList();
             GenerateCategoryListLeft();
+            Helper.SaveItemsData(Items);
         }
 
         private void AvatarPage_DragDrop(object sender, DragEventArgs e)
@@ -1252,6 +1251,7 @@ namespace Avatar_Explorer.Forms
             GenerateAvatarList();
             GenerateAuthorList();
             GenerateCategoryListLeft();
+            Helper.SaveItemsData(Items);
         }
 
         // Export to CSV
@@ -1438,6 +1438,7 @@ namespace Avatar_Explorer.Forms
             GenerateAuthorList();
             GenerateCategoryListLeft();
             PathTextBox.Text = GeneratePath();
+            Helper.SaveCommonAvatarData(CommonAvatars);
         }
 
         // 前のバージョン、もしくはバックアップからデータを読み込む
