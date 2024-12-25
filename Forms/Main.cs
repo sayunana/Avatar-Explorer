@@ -1480,12 +1480,15 @@ namespace Avatar_Explorer.Forms
                     return;
                 }
 
+                //最初のフォルダ
+                var firstFolder = Directory.GetDirectories(backupPath).MaxBy(d => new DirectoryInfo(d).CreationTime) ?? backupPath;
+
                 FolderBrowserDialog fbd = new()
                 {
                     UseDescriptionForTitle = true,
                     Description = Helper.Translate("バックアップする時間のフォルダを選択してください", CurrentLanguage),
                     ShowNewFolderButton = false,
-                    SelectedPath = backupPath
+                    SelectedPath = firstFolder
                 };
 
                 if (fbd.ShowDialog() != DialogResult.OK) return;
