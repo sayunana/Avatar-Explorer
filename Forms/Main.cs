@@ -1734,12 +1734,14 @@ namespace Avatar_Explorer.Forms
             const int avatarItemExplorerBaseWidth = 874;
             const int avatarItemListBaseWidth = 303;
 
+            var avatarItemExplorerWidth = avatarItemExplorerBaseWidth + GetItemExplorerListWidth();
+            var avatarItemListWidth = avatarItemListBaseWidth + GetAvatarListWidth();
+
             foreach (Control control in AvatarItemExplorer.Controls)
             {
-                var width = avatarItemExplorerBaseWidth + GetItemExplorerListWidth();
                 if (control is Button button)
                 {
-                    button.Size = button.Size with { Width = width };
+                    button.Size = button.Size with { Width = avatarItemExplorerWidth };
                 }
             }
 
@@ -1756,7 +1758,7 @@ namespace Avatar_Explorer.Forms
                 {
                     if (control1 is Button button)
                     {
-                        button.Size = button.Size with { Width = avatarItemListBaseWidth + GetAvatarListWidth() };
+                        button.Size = button.Size with { Width = avatarItemListWidth };
                     }
                 }
             }
