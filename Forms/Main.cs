@@ -38,7 +38,7 @@ namespace Avatar_Explorer.Forms
 
         private readonly Dictionary<string, SizeF> _defaultControlSize = new();
         private readonly Dictionary<string, PointF> _defaultControlLocation = new();
-        private readonly Dictionary<string, float> _defaultFontSize = new(); // フォントサイズを保存する辞書
+        private readonly Dictionary<string, float> _defaultFontSize = new();
         private readonly Size _initialFormSize;
         private readonly int _baseAvatarSearchFilterListWidth;
         private readonly int _baseAvatarItemExplorerListWidth;
