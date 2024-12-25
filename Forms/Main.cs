@@ -38,12 +38,15 @@ namespace Avatar_Explorer.Forms
 
         private readonly Dictionary<string, SizeF> _defaultControlSize = new();
         private readonly Dictionary<string, PointF> _defaultControlLocation = new();
+        private readonly Dictionary<string, float> _defaultFontSize = new(); // フォントサイズを保存する辞書
         private readonly Size _initialFormSize;
         private readonly int _baseAvatarSearchFilterListWidth;
         private readonly int _baseAvatarItemExplorerListWidth;
 
         private int GetAvatarListWidth() => AvatarSearchFilterList.Width - _baseAvatarSearchFilterListWidth;
         private int GetItemExplorerListWidth() => AvatarItemExplorer.Width - _baseAvatarItemExplorerListWidth;
+
+        private const float MinFontSize = 8f;
 
         public Main()
         {
@@ -67,6 +70,8 @@ namespace Avatar_Explorer.Forms
             GenerateCategoryListLeft();
 
             Text = $"VRChat Avatar Explorer {CurrentVersion} by ぷこるふ";
+
+            Helper.AutoBackup();
         }
 
         private void AddFontFile()
@@ -1582,6 +1587,57 @@ namespace Avatar_Explorer.Forms
                 newY = Math.Max(0, Math.Min(newY, ClientSize.Height - control.Height));
 
                 control.Location = new Point(newX, newY);
+
+                switch (control)
+                {
+                    // ラベル、テキストボックスのフォントサイズのスケーリング
+                    case Label { Name: "SearchResultLabel" } label:
+                        {
+                            if (!_defaultFontSize.TryGetValue(label.Name, out var defaultFontSize))
+                            {
+                                defaultFontSize = label.Font.Size;
+                                _defaultFontSize.Add(label.Name, defaultFontSize);
+                            }
+
+                            var scaleRatio = Math.Min(widthRatio, heightRatio);
+                            var newFontSize = defaultFontSize * scaleRatio;
+
+                            // 小さくなる場合のみフォントサイズを変更
+                            if (!(newFontSize < defaultFontSize)) continue;
+                            newFontSize = Math.Max(newFontSize, MinFontSize);
+                            label.Font = new Font(label.Font.FontFamily, newFontSize, label.Font.Style);
+                            break;
+                        }
+                    // SearchResultLabel以外
+                    case Label label:
+                        {
+                            if (!_defaultFontSize.TryGetValue(label.Name, out var defaultFontSize))
+                            {
+                                defaultFontSize = label.Font.Size;
+                                _defaultFontSize.Add(label.Name, defaultFontSize);
+                            }
+
+                            var scaleRatio = Math.Min(widthRatio, heightRatio);
+                            var newFontSize = defaultFontSize * scaleRatio;
+                            newFontSize = Math.Max(newFontSize, MinFontSize);
+                            label.Font = new Font(label.Font.FontFamily, newFontSize, label.Font.Style);
+                            break;
+                        }
+                    case TextBox:
+                        {
+                            if (!_defaultFontSize.TryGetValue(control.Name, out var defaultFontSize))
+                            {
+                                defaultFontSize = control.Font.Size;
+                                _defaultFontSize.Add(control.Name, defaultFontSize);
+                            }
+
+                            var scaleRatio = Math.Min(widthRatio, heightRatio);
+                            var newFontSize = defaultFontSize * scaleRatio;
+                            newFontSize = Math.Max(newFontSize, MinFontSize);
+                            control.Font = new Font(control.Font.FontFamily, newFontSize, control.Font.Style);
+                            break;
+                        }
+                }
             }
 
             for (int i = AvatarItemExplorer.Controls.Count - 1; i >= 0; i--)

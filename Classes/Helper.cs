@@ -344,5 +344,33 @@ namespace Avatar_Explorer.Classes
 
             return searchFilter;
         }
+
+        //Auto Backup(AppData)
+        public static void AutoBackup()
+        {
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await Task.Delay(300000);
+                    Backup("./Datas/ItemsData.json");
+                    Backup("./Datas/CommonAvatar.json");
+                }
+            });
+        }
+
+        public static void Backup(string path)
+        {
+            if (!File.Exists(path)) return;
+            var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var backupPath = Path.Combine(appDataPath, "Avatar Explorer", "Backup");
+            if (!Directory.Exists(backupPath))
+            {
+                Directory.CreateDirectory(backupPath);
+            }
+
+            var backupFilePath = Path.Combine(backupPath, $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.json");
+            File.Copy(path, backupFilePath, true);
+        }
     }
 }
