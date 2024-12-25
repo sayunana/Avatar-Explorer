@@ -41,7 +41,6 @@ namespace Avatar_Explorer.Forms
         private readonly Size _initialFormSize;
         private readonly int _baseAvatarSearchFilterListWidth;
         private readonly int _baseAvatarItemExplorerListWidth;
-        private Size _previousFormSize;
 
         private int GetAvatarListWidth() => AvatarSearchFilterList.Width - _baseAvatarSearchFilterListWidth;
         private int GetItemExplorerListWidth() => AvatarItemExplorer.Width - _baseAvatarItemExplorerListWidth;
@@ -59,9 +58,9 @@ namespace Avatar_Explorer.Forms
 
             // Save the default Size
             _initialFormSize = ClientSize;
-            _previousFormSize = Size;
             _baseAvatarSearchFilterListWidth = AvatarSearchFilterList.Width;
             _baseAvatarItemExplorerListWidth = AvatarItemExplorer.Width;
+            
 
             LanguageBox.SelectedIndex = 0;
             GenerateAvatarList();
@@ -1544,13 +1543,6 @@ namespace Avatar_Explorer.Forms
         // フォームのリサイズ
         private void Main_Resize(object sender, EventArgs e) => ResizeControl();
 
-        private void Main_ResizeEnd(object sender, EventArgs e)
-        {
-            if (Size == _previousFormSize) return;
-            _previousFormSize = Size;
-            ReRenderWindow();
-        }
-
         private void ResizeControl()
         {
             var widthRatio = (float)ClientSize.Width / _initialFormSize.Width;
@@ -1559,38 +1551,36 @@ namespace Avatar_Explorer.Forms
             foreach (Control control in Controls)
             {
                 // サイズのスケーリング
-                if (_defaultControlSize.TryGetValue(control.Name, out var defaultSize))
+                if (!_defaultControlSize.TryGetValue(control.Name, out var defaultSize))
                 {
-                    var newWidth = (int)(defaultSize.Width * widthRatio);
-                    var newHeight = (int)(defaultSize.Height * heightRatio);
-
-                    // サイズがクライアント領域を超えないように制約
-                    newWidth = Math.Min(newWidth, ClientSize.Width);
-                    newHeight = Math.Min(newHeight, ClientSize.Height);
-
-                    control.Size = new Size(newWidth, newHeight);
+                    defaultSize = new SizeF(control.Size.Width, control.Size.Height);
+                    _defaultControlSize.Add(control.Name, defaultSize);
                 }
-                else
-                {
-                    _defaultControlSize.Add(control.Name, new SizeF(control.Size.Width, control.Size.Height));
-                }
+
+                var newWidth = (int)(defaultSize.Width * widthRatio);
+                var newHeight = (int)(defaultSize.Height * heightRatio);
+
+                // サイズがクライアント領域を超えないように制約
+                newWidth = Math.Min(newWidth, ClientSize.Width);
+                newHeight = Math.Min(newHeight, ClientSize.Height);
+
+                control.Size = new Size(newWidth, newHeight);
 
                 // 位置のスケーリング
-                if (_defaultControlLocation.TryGetValue(control.Name, out var defaultLocation))
+                if (!_defaultControlLocation.TryGetValue(control.Name, out var defaultLocation))
                 {
-                    var newX = (int)(defaultLocation.X * widthRatio);
-                    var newY = (int)(defaultLocation.Y * heightRatio);
-
-                    // 位置がクライアント領域を超えないように制約
-                    newX = Math.Max(0, Math.Min(newX, ClientSize.Width - control.Width));
-                    newY = Math.Max(0, Math.Min(newY, ClientSize.Height - control.Height));
-
-                    control.Location = new Point(newX, newY);
+                    defaultLocation = new PointF(control.Location.X, control.Location.Y);
+                    _defaultControlLocation.Add(control.Name, defaultLocation);
                 }
-                else
-                {
-                    _defaultControlLocation.Add(control.Name, new PointF(control.Location.X, control.Location.Y));
-                }
+
+                var newX = (int)(defaultLocation.X * widthRatio);
+                var newY = (int)(defaultLocation.Y * heightRatio);
+
+                // 位置がクライアント領域を超えないように制約
+                newX = Math.Max(0, Math.Min(newX, ClientSize.Width - control.Width));
+                newY = Math.Max(0, Math.Min(newY, ClientSize.Height - control.Height));
+
+                control.Location = new Point(newX, newY);
             }
 
             for (int i = AvatarItemExplorer.Controls.Count - 1; i >= 0; i--)
@@ -1603,22 +1593,41 @@ namespace Avatar_Explorer.Forms
                     Y = (AvatarItemExplorer.Height - control.Height) / 2
                 };
             }
+
+            ScaleItemButtons();
         }
 
-        private void ReRenderWindow()
+        private void ScaleItemButtons()
         {
-            if (SearchBox.Text != "")
+            const int avatarItemExplorerBaseWidth = 874;
+            const int avatarItemListBaseWidth = 303;
+
+            foreach (Control control in AvatarItemExplorer.Controls)
             {
-                SearchItems();
-            }
-            else
-            {
-                RefleshWindow();
+                var width = avatarItemExplorerBaseWidth + GetItemExplorerListWidth();
+                if (control is Button button)
+                {
+                    button.Size = button.Size with { Width = width };
+                }
             }
 
-            GenerateAvatarList();
-            GenerateAuthorList();
-            GenerateCategoryListLeft();
+            var controls = new Control[]
+            {
+                AvatarPage,
+                AvatarAuthorPage,
+                CategoryPage
+            };
+
+            foreach (var control in controls)
+            {
+                foreach (Control control1 in control.Controls)
+                {
+                    if (control1 is Button button)
+                    {
+                        button.Size = button.Size with { Width = avatarItemListBaseWidth + GetAvatarListWidth() };
+                    }
+                }
+            }
         }
     }
 }
