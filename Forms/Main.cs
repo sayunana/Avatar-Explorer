@@ -1774,6 +1774,7 @@ namespace Avatar_Explorer.Forms
             };
 
             timer.Tick += (_, _) => BackupFile();
+            timer.Start();
         }
 
         private void BackupFile()
