@@ -151,7 +151,7 @@ namespace Avatar_Explorer.Forms
                     {
                         try
                         {
-                            Clipboard.SetText($"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId);
+                            Clipboard.SetText($"https://booth.pm/{Helper.GetCurrentLanguageCode(CurrentLanguage)}/items/" + item.BoothId);
                         }
                         catch
                         {
@@ -168,7 +168,7 @@ namespace Avatar_Explorer.Forms
                     {
                         try
                         {
-                            Process.Start($"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId);
+                            Process.Start($"https://booth.pm/{Helper.GetCurrentLanguageCode(CurrentLanguage)}/items/" + item.BoothId);
                         }
                         catch
                         {
@@ -525,7 +525,7 @@ namespace Avatar_Explorer.Forms
                     {
                         try
                         {
-                            Clipboard.SetText($"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId);
+                            Clipboard.SetText($"https://booth.pm/{Helper.GetCurrentLanguageCode(CurrentLanguage)}/items/" + item.BoothId);
                         }
                         catch
                         {
@@ -544,7 +544,7 @@ namespace Avatar_Explorer.Forms
                         {
                             Process.Start(new ProcessStartInfo
                             {
-                                FileName = $"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId,
+                                FileName = $"https://booth.pm/{Helper.GetCurrentLanguageCode(CurrentLanguage)}/items/" + item.BoothId,
                                 UseShellExecute = true
                             });
                         }
@@ -831,7 +831,7 @@ namespace Avatar_Explorer.Forms
                     {
                         try
                         {
-                            Clipboard.SetText($"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId);
+                            Clipboard.SetText($"https://booth.pm/{Helper.GetCurrentLanguageCode(CurrentLanguage)}/items/" + item.BoothId);
                         }
                         catch
                         {
@@ -850,7 +850,7 @@ namespace Avatar_Explorer.Forms
                         {
                             Process.Start(new ProcessStartInfo
                             {
-                                FileName = $"https://booth.pm/{GetCurrentLanguageCode()}/items/" + item.BoothId,
+                                FileName = $"https://booth.pm/{Helper.GetCurrentLanguageCode(CurrentLanguage)}/items/" + item.BoothId,
                                 UseShellExecute = true
                             });
                         }
@@ -1436,17 +1436,6 @@ namespace Avatar_Explorer.Forms
             }
         }
 
-        private string GetCurrentLanguageCode()
-        {
-            return CurrentLanguage switch
-            {
-                "ja-JP" => "ja",
-                "ko-KR" => "ko",
-                "en-US" => "en",
-                _ => "ja"
-            };
-        }
-
         private void ManageCommonAvatarButton_Click(object sender, EventArgs e)
         {
             ManageCommonAvatars manageCommonAvatar = new(this);
@@ -1459,7 +1448,10 @@ namespace Avatar_Explorer.Forms
             Helper.SaveCommonAvatarData(CommonAvatars);
         }
 
-        // 前のバージョン、もしくはバックアップからデータを読み込む
+        // Load Data Button
+        private void LoadData_Click(object sender, EventArgs e) => LoadDataFromFolder();
+
+        // Load Data From Folder
         private void LoadDataFromFolder()
         {
             //自動バックアップフォルダから復元するか聞く
@@ -1629,9 +1621,7 @@ namespace Avatar_Explorer.Forms
             GenerateCategoryListLeft();
         }
 
-        private void LoadData_Click(object sender, EventArgs e) => LoadDataFromFolder();
-
-        // フォームのリサイズ
+        // Resize Form
         private void Main_Resize(object sender, EventArgs e) => ResizeControl();
 
         private void ResizeControl()
@@ -1772,6 +1762,7 @@ namespace Avatar_Explorer.Forms
             }
         }
 
+        // Backup
         private void AutoBackup()
         {
             BackupFile();

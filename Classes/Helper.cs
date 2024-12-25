@@ -368,5 +368,16 @@ namespace Avatar_Explorer.Classes
                 File.WriteAllText(Path.Combine(backupFolderPath, Path.GetFileName(p)), File.ReadAllText(p));
             }
         }
+
+        public static string GetCurrentLanguageCode(string language = "")
+        {
+            return language switch
+            {
+                "ja-JP" => "ja",
+                "ko-KR" => "ko",
+                "en-US" => "en",
+                _ => "ja"
+            };
+        }
     }
 }
