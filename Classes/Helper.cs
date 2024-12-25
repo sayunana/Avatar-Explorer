@@ -345,34 +345,6 @@ namespace Avatar_Explorer.Classes
             return searchFilter;
         }
 
-        //Auto Backup(AppData)
-        public static bool AutoBackup()
-        {
-            try
-            {
-                Task.Run(async () =>
-                {
-                    while (true)
-                    {
-                        await Task.Delay(300000);
-
-                        var backupFilesArray = new[]
-                        {
-                            "./Datas/ItemsData.json",
-                            "./Datas/CommonAvatar.json"
-                        };
-
-                        Backup(backupFilesArray);
-                    }
-                });
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
         public static void Backup(string[] path)
         {
             var folderPath = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
@@ -393,7 +365,7 @@ namespace Avatar_Explorer.Classes
                     Directory.CreateDirectory(backupFolderPath);
                 }
 
-                File.Copy(p, backupFolderPath, true);
+                File.WriteAllText(Path.Combine(backupFolderPath, Path.GetFileName(p)), File.ReadAllText(p));
             }
         }
     }
