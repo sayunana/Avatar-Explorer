@@ -34,18 +34,22 @@ namespace Avatar_Explorer.Forms
 
         private Window _openingWindow = Window.Nothing;
 
+        // Dictionary For Resize Controls
         private readonly Dictionary<string, string> _controlNames = new();
-
         private readonly Dictionary<string, SizeF> _defaultControlSize = new();
         private readonly Dictionary<string, PointF> _defaultControlLocation = new();
         private readonly Dictionary<string, float> _defaultFontSize = new();
+
+        // Initial Form, AvatarSearchFilterList, AvatarItemExplorer Size
         private readonly Size _initialFormSize;
         private readonly int _baseAvatarSearchFilterListWidth;
         private readonly int _baseAvatarItemExplorerListWidth;
 
+        // For Resize Button
         private int GetAvatarListWidth() => AvatarSearchFilterList.Width - _baseAvatarSearchFilterListWidth;
         private int GetItemExplorerListWidth() => AvatarItemExplorer.Width - _baseAvatarItemExplorerListWidth;
 
+        // Min Resize Font Size
         private const float MinFontSize = 8f;
 
         public Main()
@@ -71,7 +75,12 @@ namespace Avatar_Explorer.Forms
 
             Text = $"VRChat Avatar Explorer {CurrentVersion} by ぷこるふ";
 
-            Helper.AutoBackup();
+            var result = Helper.AutoBackup();
+            if (!result)
+            {
+                MessageBox.Show(Helper.Translate("自動バックアップの起動に失敗しました。", CurrentLanguage),
+                    Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void AddFontFile()
@@ -722,11 +731,11 @@ namespace Avatar_Explorer.Forms
 
             var filteredItems = Items.Where(item =>
             {
-                if (!string.IsNullOrWhiteSpace(searchFilter.Author) && item.AuthorName != searchFilter.Author)
+                if (searchFilter.Author.Length != 0 && !searchFilter.Author.Contains(item.AuthorName))
                     return false;
-                if (!string.IsNullOrWhiteSpace(searchFilter.Title) && !item.Title.Contains(searchFilter.Title))
+                if (searchFilter.Title.Length != 0 && !searchFilter.Title.Contains(item.Title))
                     return false;
-                if (!string.IsNullOrWhiteSpace(searchFilter.BoothId) && item.BoothId.ToString() != searchFilter.BoothId)
+                if (searchFilter.BoothId.Length != 0 && !searchFilter.BoothId.Contains(item.BoothId.ToString()))
                     return false;
 
                 return true;
@@ -1170,24 +1179,24 @@ namespace Avatar_Explorer.Forms
             }
 
             string[] pathTextArr = Array.Empty<string>();
-            if (searchFilter.Author != "")
+            if (searchFilter.Author.Length != 0)
             {
-                pathTextArr = pathTextArr.Append(Helper.Translate("作者", CurrentLanguage) + ": " + searchFilter.Author)
+                pathTextArr = pathTextArr.Append(Helper.Translate("作者", CurrentLanguage) + ": " + string.Join(", ", searchFilter.Author))
                     .ToArray();
             }
 
-            if (searchFilter.Title != "")
+            if (searchFilter.Title.Length != 0)
             {
-                pathTextArr = pathTextArr.Append(Helper.Translate("タイトル", CurrentLanguage) + ": " + searchFilter.Title)
+                pathTextArr = pathTextArr.Append(Helper.Translate("タイトル", CurrentLanguage) + ": " + string.Join(", ", searchFilter.Title))
                     .ToArray();
             }
 
-            if (searchFilter.BoothId != "")
+            if (searchFilter.BoothId.Length != 0)
             {
-                pathTextArr = pathTextArr.Append("BoothID: " + searchFilter.BoothId).ToArray();
+                pathTextArr = pathTextArr.Append("BoothID: " + string.Join(", ", searchFilter.BoothId)).ToArray();
             }
 
-            pathTextArr = pathTextArr.Append(string.Join(",", searchFilter.SearchWords)).ToArray();
+            pathTextArr = pathTextArr.Append(string.Join(", ", searchFilter.SearchWords)).ToArray();
 
             PathTextBox.Text = Helper.Translate("検索中... - ", CurrentLanguage) + string.Join(" / ", pathTextArr);
         }

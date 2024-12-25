@@ -326,13 +326,13 @@ namespace Avatar_Explorer.Classes
                     switch (key)
                     {
                         case "Author":
-                            searchFilter.Author = value;
+                            searchFilter.Author = searchFilter.Author.Append(value).ToArray();
                             break;
                         case "Title":
-                            searchFilter.Title = value;
+                            searchFilter.Title = searchFilter.Title.Append(value).ToArray();
                             break;
                         case "Booth":
-                            searchFilter.BoothId = value;
+                            searchFilter.BoothId = searchFilter.BoothId.Append(value).ToArray();
                             break;
                     }
                 }
@@ -346,31 +346,55 @@ namespace Avatar_Explorer.Classes
         }
 
         //Auto Backup(AppData)
-        public static void AutoBackup()
+        public static bool AutoBackup()
         {
-            Task.Run(async () =>
+            try
             {
-                while (true)
+                Task.Run(async () =>
                 {
-                    await Task.Delay(300000);
-                    Backup("./Datas/ItemsData.json");
-                    Backup("./Datas/CommonAvatar.json");
-                }
-            });
+                    while (true)
+                    {
+                        await Task.Delay(300000);
+
+                        var backupFilesArray = new[]
+                        {
+                            "./Datas/ItemsData.json",
+                            "./Datas/CommonAvatar.json"
+                        };
+
+                        Backup(backupFilesArray);
+                    }
+                });
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public static void Backup(string path)
+        public static void Backup(string[] path)
         {
-            if (!File.Exists(path)) return;
-            var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var backupPath = Path.Combine(appDataPath, "Avatar Explorer", "Backup");
-            if (!Directory.Exists(backupPath))
-            {
-                Directory.CreateDirectory(backupPath);
-            }
+            var folderPath = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
 
-            var backupFilePath = Path.Combine(backupPath, $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.json");
-            File.Copy(path, backupFilePath, true);
+            foreach (var p in path)
+            {
+                if (!File.Exists(p)) continue;
+                var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                var backupPath = Path.Combine(appDataPath, "Avatar Explorer", "Backup");
+                if (!Directory.Exists(backupPath))
+                {
+                    Directory.CreateDirectory(backupPath);
+                }
+
+                var backupFolderPath = Path.Combine(backupPath, folderPath);
+                if (!Directory.Exists(backupFolderPath))
+                {
+                    Directory.CreateDirectory(backupFolderPath);
+                }
+
+                File.Copy(p, backupFolderPath, true);
+            }
         }
     }
 }
