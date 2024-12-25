@@ -1130,7 +1130,7 @@ namespace Avatar_Explorer.Forms
         // Search Box
         private void SearchBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            if (e.KeyCode is Keys.Enter or Keys.Space)
             {
                 SearchItems();
             }
