@@ -1345,7 +1345,7 @@ namespace Avatar_Explorer.Forms
 
                 MessageBox.Show(
                     Helper.Translate(
-                        "Backupフォルダにバックアップが完了しました！\n\n復元したい場合はBackupフォルダの中身を解凍し、全てをDatasフォルダの中身と置き換えれば大丈夫です！\n※ソフトはその間起動しないようにしてください！\n\nファイル名: ",
+                        "Backupフォルダにバックアップが完了しました！\n\n復元したい場合は、\"データを読み込む\"ボタンで現在作成されたファイルを展開したものを選択してください。\n\nファイル名: ",
                         CurrentLanguage) + fileName, Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 MakeBackupButton.Enabled = true;

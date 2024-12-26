@@ -24,7 +24,7 @@
   "フォルダを選択してください": "Please select a folder.",
   "Outputフォルダにエクスポートが完了しました！\nファイル名: ": "Export to Output folder completed!\nFile name: ",
   "バックアップに失敗しました": "Backup failed.",
-  "Backupフォルダにバックアップが完了しました！\n\n復元したい場合はBackupフォルダの中身を解凍し、全てをDatasフォルダの中身と置き換えれば大丈夫です！\n※ソフトはその間起動しないようにしてください！\n\nファイル名: ": "Backup completed in the Backup folder!\n\nTo restore, extract the contents of the Backup folder and replace everything in the Datas folder.\n※ Please do not run the software during this process!\n\nFile name: ",
+  "Backupフォルダにバックアップが完了しました！\n\n復元したい場合は、\"データを読み込む\"ボタンで現在作成されたファイルを展開したものを選択してください。\n\nファイル名: ": "Backup to Backup folder completed!\n\nIf you want to restore, select the extracted file created by the \"Load Data\" button.\n\nFile name: ",
   "戻る": "Back",
   "ここには現在のパスが表示されます": "The current path will be displayed here.",
   "アバター": "Avatar",
