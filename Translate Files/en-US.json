@@ -127,5 +127,6 @@
   "バックアップする時間のフォルダを選択してください": "Please select the folder to backup.",
   "自動バックアップに失敗しました。": "Auto backup failed.",
   "復元が完了しました。": "Restore completed.",
-  "このアバターを対応アバターとしているアイテムの対応アバターからこのアバターを削除しますか？": "Remove this avatar from the supported avatars of items that support this avatar?"
+  "このアバターを対応アバターとしているアイテムの対応アバターからこのアバターを削除しますか？": "Remove this avatar from the supported avatars of items that support this avatar?",
+  "このアバターを共通素体グループから削除しますか？": "Remove this avatar from the common avatar group?"
 }

@@ -264,6 +264,23 @@ namespace Avatar_Explorer.Forms
                                 item2.SupportedAvatar = item2.SupportedAvatar.Where(avatar => avatar != item.ItemPath).ToArray();
                             }
                         }
+
+                        if (CommonAvatars.Any(commonAvatar => commonAvatar.Avatars.Contains(item.ItemPath)))
+                        {
+                            var result3 = MessageBox.Show(Helper.Translate("このアバターを共通素体グループから削除しますか？", CurrentLanguage),
+                                Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                            if (result3 == DialogResult.Yes)
+                            {
+                                foreach (var commonAvatar in CommonAvatars)
+                                {
+                                    commonAvatar.Avatars = commonAvatar.Avatars.Where(avatar => avatar != item.ItemPath).ToArray();
+                                }
+
+                                Helper.SaveCommonAvatarData(CommonAvatars);
+                            }
+                        }
+
                     }
 
                     MessageBox.Show(Helper.Translate("削除が完了しました。", CurrentLanguage),
@@ -658,6 +675,21 @@ namespace Avatar_Explorer.Forms
                                 item2.SupportedAvatar = item2.SupportedAvatar.Where(avatar => avatar != item.ItemPath).ToArray();
                             }
                         }
+
+                        if (CommonAvatars.Any(commonAvatar => commonAvatar.Avatars.Contains(item.ItemPath)))
+                        {
+                            var result3 = MessageBox.Show(Helper.Translate("このアバターを共通素体グループから削除しますか？", CurrentLanguage),
+                                Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                            if (result3 == DialogResult.Yes)
+                            {
+                                foreach (var commonAvatar in CommonAvatars)
+                                {
+                                    commonAvatar.Avatars = commonAvatar.Avatars.Where(avatar => avatar != item.ItemPath).ToArray();
+                                }
+                                Helper.SaveCommonAvatarData(CommonAvatars);
+                            }
+                        }
                     }
 
                     Items = Items.Where(i => i.ItemPath != item.ItemPath).ToArray();
@@ -980,6 +1012,21 @@ namespace Avatar_Explorer.Forms
                             foreach (var item2 in Items)
                             {
                                 item2.SupportedAvatar = item2.SupportedAvatar.Where(avatar => avatar != item.ItemPath).ToArray();
+                            }
+                        }
+
+                        if (CommonAvatars.Any(commonAvatar => commonAvatar.Avatars.Contains(item.ItemPath)))
+                        {
+                            var result3 = MessageBox.Show(Helper.Translate("このアバターを共通素体グループから削除しますか？", CurrentLanguage),
+                                Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                            if (result3 == DialogResult.Yes)
+                            {
+                                foreach (var commonAvatar in CommonAvatars)
+                                {
+                                    commonAvatar.Avatars = commonAvatar.Avatars.Where(avatar => avatar != item.ItemPath).ToArray();
+                                }
+                                Helper.SaveCommonAvatarData(CommonAvatars);
                             }
                         }
                     }
