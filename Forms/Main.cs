@@ -234,7 +234,7 @@ namespace Avatar_Explorer.Forms
                     if (result != DialogResult.Yes) return;
 
                     var undo = false;
-                    if (CurrentPath.CurrentSelectedItem?.Title == item.Title)
+                    if (CurrentPath.CurrentSelectedItem?.ItemPath == item.ItemPath)
                     {
                         CurrentPath.CurrentSelectedItemCategory = null;
                         CurrentPath.CurrentSelectedItem = null;
@@ -242,14 +242,39 @@ namespace Avatar_Explorer.Forms
                         PathTextBox.Text = GeneratePath();
                     }
 
+                    var undo2 = false;
+                    if (CurrentPath.CurrentSelectedAvatarPath == item.ItemPath && !_authorMode && !_categoryMode)
+                    {
+                        CurrentPath = new CurrentPath();
+                        undo2 = true;
+                        PathTextBox.Text = GeneratePath();
+                    }
+
                     Items = Items.Where(i => i.ItemPath != item.ItemPath).ToArray();
+
+                    if (item.Type == ItemType.Avatar)
+                    {
+                        var result2 = MessageBox.Show(Helper.Translate("このアバターを対応アバターとしているアイテムの対応アバターからこのアバターを削除しますか？", CurrentLanguage),
+                            Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                        if (result2 == DialogResult.Yes)
+                        {
+                            foreach (var item2 in Items)
+                            {
+                                item2.SupportedAvatar = item2.SupportedAvatar.Where(avatar => avatar != item.ItemPath).ToArray();
+                            }
+                        }
+                    }
+
                     MessageBox.Show(Helper.Translate("削除が完了しました。", CurrentLanguage),
                         Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     if (_openingWindow == Window.ItemList || undo) GenerateItems();
+                    if (undo2) ResetAvatarList(true);
                     GenerateAvatarList();
                     GenerateAuthorList();
                     GenerateCategoryListLeft();
+                    Helper.SaveItemsData(Items);
                 };
 
                 contextMenuStrip.Items.Add(toolStripMenuItem2);
@@ -611,14 +636,40 @@ namespace Avatar_Explorer.Forms
                         Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result != DialogResult.Yes) return;
 
+                    var undo = false;
+                    if (CurrentPath.CurrentSelectedAvatarPath == item.ItemPath && !_authorMode && !_categoryMode)
+                    {
+                        CurrentPath = new CurrentPath();
+                        undo = true;
+                        PathTextBox.Text = GeneratePath();
+                    }
+
+                    Items = Items.Where(i => i.ItemPath != item.ItemPath).ToArray();
+
+                    if (item.Type == ItemType.Avatar)
+                    {
+                        var result2 = MessageBox.Show(Helper.Translate("このアバターを対応アバターとしているアイテムの対応アバターからこのアバターを削除しますか？", CurrentLanguage),
+                            Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                        if (result2 == DialogResult.Yes)
+                        {
+                            foreach (var item2 in Items)
+                            {
+                                item2.SupportedAvatar = item2.SupportedAvatar.Where(avatar => avatar != item.ItemPath).ToArray();
+                            }
+                        }
+                    }
+
                     Items = Items.Where(i => i.ItemPath != item.ItemPath).ToArray();
                     MessageBox.Show(Helper.Translate("削除が完了しました。", CurrentLanguage),
                         Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+                    if (undo) ResetAvatarList(true);
                     GenerateItems();
                     GenerateAvatarList();
                     GenerateAuthorList();
                     GenerateCategoryListLeft();
+                    Helper.SaveItemsData(Items);
                 };
 
                 contextMenuStrip.Items.Add(toolStripMenuItem2);
@@ -918,6 +969,22 @@ namespace Avatar_Explorer.Forms
                     if (result != DialogResult.Yes) return;
 
                     Items = Items.Where(i => i.ItemPath != item.ItemPath).ToArray();
+
+                    if (item.Type == ItemType.Avatar)
+                    {
+                        var result2 = MessageBox.Show(Helper.Translate("このアバターを対応アバターとしているアイテムの対応アバターからこのアバターを削除しますか？", CurrentLanguage),
+                            Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                        if (result2 == DialogResult.Yes)
+                        {
+                            foreach (var item2 in Items)
+                            {
+                                item2.SupportedAvatar = item2.SupportedAvatar.Where(avatar => avatar != item.ItemPath).ToArray();
+                            }
+                        }
+                    }
+
+                    Items = Items.Where(i => i.ItemPath != item.ItemPath).ToArray();
                     MessageBox.Show(Helper.Translate("削除が完了しました。", CurrentLanguage),
                         Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -925,6 +992,7 @@ namespace Avatar_Explorer.Forms
                     GenerateAvatarList();
                     GenerateAuthorList();
                     GenerateCategoryListLeft();
+                    Helper.SaveItemsData(Items);
                 };
 
                 contextMenuStrip.Items.Add(toolStripMenuItem2);
