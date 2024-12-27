@@ -233,6 +233,7 @@ namespace Avatar_Explorer.Forms
                     if (_openingWindow == Window.ItemList) GenerateItems();
                     if (CurrentPath.CurrentSelectedAvatarPath == item.ItemPath) CurrentPath.CurrentSelectedAvatar = item.Title;
                     if (!_isSearching) PathTextBox.Text = GeneratePath();
+                    RefleshWindow();
                     Helper.SaveItemsData(Items);
                 };
 
@@ -538,10 +539,7 @@ namespace Avatar_Explorer.Forms
                         if (result != DialogResult.Yes) return;
                         AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item, null);
                         addItem.ShowDialog();
-                        GenerateItems();
-                        GenerateAvatarList();
-                        GenerateAuthorList();
-                        GenerateCategoryListLeft();
+                        RefleshWindow();
                         Helper.SaveItemsData(Items);
                     }
 
@@ -661,9 +659,9 @@ namespace Avatar_Explorer.Forms
                 {
                     AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item, null);
                     addItem.ShowDialog();
-                    RefleshWindow();
                     if (CurrentPath.CurrentSelectedAvatarPath == item.ItemPath) CurrentPath.CurrentSelectedAvatar = item.Title;
                     if (!_isSearching) PathTextBox.Text = GeneratePath();
+                    RefleshWindow();
                     Helper.SaveItemsData(Items);
                 };
 
@@ -719,10 +717,7 @@ namespace Avatar_Explorer.Forms
                         Helper.Translate("Š®—¹", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     if (undo) ResetAvatarList(true);
-                    GenerateItems();
-                    GenerateAvatarList();
-                    GenerateAuthorList();
-                    GenerateCategoryListLeft();
+                    RefleshWindow();
                     Helper.SaveItemsData(Items);
                 };
 
