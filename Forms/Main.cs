@@ -16,6 +16,12 @@ namespace Avatar_Explorer.Forms
         // Current Version Form Text
         private const string CurrentVersionFormText = $"VRChat Avatar Explorer {CurrentVersion} by ‚Õ‚±‚é‚Ó";
 
+        // Min Resize Font Size
+        private const float MinFontSize = 8f;
+
+        // Backup Interval
+        private const int BackupInterval = 300000; // 5 Minutes
+
         // Items Data
         public Item[] Items;
 
@@ -53,9 +59,6 @@ namespace Avatar_Explorer.Forms
         // For Resize Button
         private int GetAvatarListWidth() => AvatarSearchFilterList.Width - _baseAvatarSearchFilterListWidth;
         private int GetItemExplorerListWidth() => AvatarItemExplorer.Width - _baseAvatarItemExplorerListWidth;
-
-        // Min Resize Font Size
-        private const float MinFontSize = 8f;
 
         // Last Backup Time
         private DateTime _lastBackupTime;
@@ -1908,7 +1911,7 @@ namespace Avatar_Explorer.Forms
             BackupFile();
             Timer timer = new()
             {
-                Interval = 1000 * 60 * 5
+                Interval = BackupInterval
             };
 
             timer.Tick += (_, _) => BackupFile();

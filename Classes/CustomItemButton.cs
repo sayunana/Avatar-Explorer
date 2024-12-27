@@ -47,7 +47,7 @@
         public CustomItemButton(int buttonWidth)
         {
             Size = new Size(buttonWidth, 64);
-            SizeChanged += (_, e) =>
+            SizeChanged += (_, _) =>
             {
                 if (_title == null || _authorName == null) return;
                 _title.Size = new Size(Size.Width - 60 - 5, 24);
