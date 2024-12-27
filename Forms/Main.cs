@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Drawing.Text;
 using System.IO.Compression;
+using System.Runtime.InteropServices;
 using System.Text;
 using Avatar_Explorer.Classes;
 using Timer = System.Windows.Forms.Timer;
@@ -58,6 +59,9 @@ namespace Avatar_Explorer.Forms
 
         // Last Backup Time
         private DateTime _lastBackupTime;
+
+        // Searching Bool
+        private bool _isSearching;
 
         public Main()
         {
@@ -153,8 +157,9 @@ namespace Avatar_Explorer.Forms
                         {
                             Clipboard.SetText($"https://booth.pm/{Helper.GetCurrentLanguageCode(CurrentLanguage)}/items/" + item.BoothId);
                         }
-                        catch
+                        catch (Exception ex)
                         {
+                            if (ex is ExternalException) return;
                             MessageBox.Show(Helper.Translate("クリップボードにコピーできませんでした", CurrentLanguage),
                                 Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
@@ -210,6 +215,7 @@ namespace Avatar_Explorer.Forms
                     item.ImagePath = ofd.FileName;
                     if (_openingWindow == Window.ItemList) GenerateItems();
                     GenerateAvatarList();
+                    Helper.SaveItemsData(Items);
                 };
 
                 ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("編集", CurrentLanguage),
@@ -219,9 +225,8 @@ namespace Avatar_Explorer.Forms
                     AddItem addItem = new(this, item.Type, true, item, null);
                     addItem.ShowDialog();
                     if (_openingWindow == Window.ItemList) GenerateItems();
-                    GenerateAvatarList();
-                    GenerateAuthorList();
-                    GenerateCategoryListLeft();
+                    if (CurrentPath.CurrentSelectedAvatarPath == item.ItemPath) CurrentPath.CurrentSelectedAvatar = item.Title;
+                    if (!_isSearching) PathTextBox.Text = GeneratePath();
                     Helper.SaveItemsData(Items);
                 };
 
@@ -369,6 +374,7 @@ namespace Avatar_Explorer.Forms
                     }
 
                     GenerateAuthorList();
+                    Helper.SaveItemsData(Items);
                 };
 
                 contextMenuStrip.Items.Add(toolStripMenuItem);
@@ -553,7 +559,16 @@ namespace Avatar_Explorer.Forms
                             return;
                         }
 
-                        Process.Start("explorer.exe", item.ItemPath);
+                        try
+                        {
+                            Process.Start("explorer.exe", item.ItemPath);
+                        }
+                        catch
+                        {
+                            MessageBox.Show(Helper.Translate("フォルダを開けませんでした。", CurrentLanguage),
+                                Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
                     };
                     contextMenuStrip.Items.Add(toolStripMenuItem);
                 }
@@ -569,8 +584,9 @@ namespace Avatar_Explorer.Forms
                         {
                             Clipboard.SetText($"https://booth.pm/{Helper.GetCurrentLanguageCode(CurrentLanguage)}/items/" + item.BoothId);
                         }
-                        catch
+                        catch (Exception ex)
                         {
+                            if (ex is ExternalException) return;
                             MessageBox.Show(Helper.Translate("クリップボードにコピーできませんでした", CurrentLanguage),
                                 Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
@@ -630,6 +646,7 @@ namespace Avatar_Explorer.Forms
                     item.ImagePath = ofd.FileName;
                     GenerateItems();
                     GenerateAvatarList();
+                    Helper.SaveItemsData(Items);
                 };
 
                 ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("編集", CurrentLanguage),
@@ -638,10 +655,9 @@ namespace Avatar_Explorer.Forms
                 {
                     AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, true, item, null);
                     addItem.ShowDialog();
-                    GenerateItems();
-                    GenerateAvatarList();
-                    GenerateAuthorList();
-                    GenerateCategoryListLeft();
+                    RefleshWindow();
+                    if (CurrentPath.CurrentSelectedAvatarPath == item.ItemPath) CurrentPath.CurrentSelectedAvatar = item.Title;
+                    if (!_isSearching) PathTextBox.Text = GeneratePath();
                     Helper.SaveItemsData(Items);
                 };
 
@@ -881,6 +897,7 @@ namespace Avatar_Explorer.Forms
                     _authorMode = false;
                     GeneratePathFromItem(item);
                     SearchBox.Text = "";
+                    _isSearching = false;
                     GenerateItemCategoryList();
                     PathTextBox.Text = GeneratePath();
                 };
@@ -900,7 +917,16 @@ namespace Avatar_Explorer.Forms
                             return;
                         }
 
-                        Process.Start("explorer.exe", item.ItemPath);
+                        try
+                        {
+                            Process.Start("explorer.exe", item.ItemPath);
+                        }
+                        catch
+                        {
+                            MessageBox.Show(Helper.Translate("フォルダを開けませんでした。", CurrentLanguage),
+                                Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
                     };
                     contextMenuStrip.Items.Add(toolStripMenuItem);
                 }
@@ -916,10 +942,11 @@ namespace Avatar_Explorer.Forms
                         {
                             Clipboard.SetText($"https://booth.pm/{Helper.GetCurrentLanguageCode(CurrentLanguage)}/items/" + item.BoothId);
                         }
-                        catch
+                        catch (Exception ex)
                         {
-                            MessageBox.Show(Helper.Translate("クリップボードにコピーできませんでした", CurrentLanguage), "エラー",
-                                MessageBoxButtons.OK,
+                            if (ex is ExternalException) return;
+                            MessageBox.Show(Helper.Translate("クリップボードにコピーできませんでした", CurrentLanguage),
+                                Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
                         }
                     };
@@ -977,6 +1004,7 @@ namespace Avatar_Explorer.Forms
                     item.ImagePath = ofd.FileName;
                     GenerateFilteredItem(searchFilter);
                     GenerateAvatarList();
+                    Helper.SaveItemsData(Items);
                 };
 
                 ToolStripMenuItem toolStripMenuItem4 = new(Helper.Translate("編集", CurrentLanguage),
@@ -1133,9 +1161,6 @@ namespace Avatar_Explorer.Forms
             AddItem addItem = new AddItem(this, CurrentPath.CurrentSelectedCategory, false, null, null);
             addItem.ShowDialog();
             RefleshWindow();
-            GenerateAvatarList();
-            GenerateAuthorList();
-            GenerateCategoryListLeft();
             Helper.SaveItemsData(Items);
         }
 
@@ -1207,6 +1232,7 @@ namespace Avatar_Explorer.Forms
         private void UndoButton_Click(object sender, EventArgs e)
         {
             SearchBox.Text = "";
+            _isSearching = false;
 
             if (CurrentPath.CurrentSelectedItemCategory != null)
             {
@@ -1284,6 +1310,7 @@ namespace Avatar_Explorer.Forms
                 return;
             }
 
+            _isSearching = true;
             SearchFilter searchFilter = Helper.GetSearchFilter(SearchBox.Text);
 
             if (_openingWindow is Window.ItemFolderCategoryList or Window.ItemFolderItemsList)
@@ -1355,9 +1382,6 @@ namespace Avatar_Explorer.Forms
             AddItem addItem = new(this, CurrentPath.CurrentSelectedCategory, false, null, folderPath);
             addItem.ShowDialog();
             RefleshWindow();
-            GenerateAvatarList();
-            GenerateAuthorList();
-            GenerateCategoryListLeft();
             Helper.SaveItemsData(Items);
         }
 
@@ -1379,9 +1403,6 @@ namespace Avatar_Explorer.Forms
             AddItem addItem = new(this, ItemType.Avatar, false, null, folderPath);
             addItem.ShowDialog();
             RefleshWindow();
-            GenerateAvatarList();
-            GenerateAuthorList();
-            GenerateCategoryListLeft();
             Helper.SaveItemsData(Items);
         }
 
@@ -1516,22 +1537,21 @@ namespace Avatar_Explorer.Forms
                 control.Text = Helper.Translate(_controlNames[control.Name], CurrentLanguage);
             }
 
-            GenerateAvatarList();
-            GenerateAuthorList();
-            GenerateCategoryListLeft();
             PathTextBox.Text = GeneratePath();
-            if (SearchBox.Text != "")
-            {
-                SearchItems();
-            }
-            else
-            {
-                RefleshWindow();
-            }
+            RefleshWindow();
         }
 
         private void RefleshWindow()
         {
+            if (_isSearching)
+            {
+                SearchItems();
+                GenerateAvatarList();
+                GenerateAuthorList();
+                GenerateCategoryListLeft();
+                return;
+            }
+
             switch (_openingWindow)
             {
                 case Window.ItemList:
@@ -1548,7 +1568,13 @@ namespace Avatar_Explorer.Forms
                     break;
                 case Window.Nothing:
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
+
+            GenerateAvatarList();
+            GenerateAuthorList();
+            GenerateCategoryListLeft();
         }
 
         private void ManageCommonAvatarButton_Click(object sender, EventArgs e)
@@ -1556,9 +1582,6 @@ namespace Avatar_Explorer.Forms
             ManageCommonAvatars manageCommonAvatar = new(this);
             manageCommonAvatar.ShowDialog();
             RefleshWindow();
-            GenerateAvatarList();
-            GenerateAuthorList();
-            GenerateCategoryListLeft();
             PathTextBox.Text = GeneratePath();
             Helper.SaveCommonAvatarData(CommonAvatars);
         }
@@ -1678,10 +1701,10 @@ namespace Avatar_Explorer.Forms
                         Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result2 != DialogResult.Yes)
                     {
+                        CurrentPath = new CurrentPath();
                         RefleshWindow();
-                        GenerateAvatarList();
-                        GenerateAuthorList();
-                        GenerateCategoryListLeft();
+                        ResetAvatarList(true);
+                        PathTextBox.Text = GeneratePath();
                         return;
                     }
 
@@ -1730,10 +1753,10 @@ namespace Avatar_Explorer.Forms
                 }
             }
 
+            CurrentPath = new CurrentPath();
             RefleshWindow();
-            GenerateAvatarList();
-            GenerateAuthorList();
-            GenerateCategoryListLeft();
+            ResetAvatarList(true);
+            PathTextBox.Text = GeneratePath();
         }
 
         // Resize Form
