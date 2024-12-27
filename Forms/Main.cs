@@ -97,9 +97,11 @@ namespace Avatar_Explorer.Forms
 
         private void AddFontFile()
         {
-            _fontCollection.AddFontFile("./Datas/Fonts/NotoSansJP-Regular.ttf");
-            _fontCollection.AddFontFile("./Datas/Fonts/NotoSans-Regular.ttf");
-            _fontCollection.AddFontFile("./Datas/Fonts/NotoSansKR-Regular.ttf");
+            string[] fontFiles = Directory.GetFiles("./Datas/Fonts", "*.ttf");
+            foreach (var fontFile in fontFiles)
+            {
+                _fontCollection.AddFontFile(fontFile);
+            }
 
             foreach (var fontFamily in _fontCollection.Families)
             {
@@ -1495,6 +1497,7 @@ namespace Avatar_Explorer.Forms
             }
         }
 
+        // Change Language
         private void LanguageBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             CurrentLanguage = LanguageBox.SelectedIndex switch
@@ -1507,7 +1510,8 @@ namespace Avatar_Explorer.Forms
 
             Text = CurrentVersionFormText + $" - {Helper.Translate("最終自動バックアップ: ", CurrentLanguage) + _lastBackupTime.ToString("HH:mm:ss")}";
 
-            GuiFont = _fontFamilies[CurrentLanguage];
+            var newFont = _fontFamilies.TryGetValue(CurrentLanguage, out var family) ? family : _fontFamilies["ja-JP"];
+            GuiFont = newFont;
 
             foreach (Control control in Controls)
             {
