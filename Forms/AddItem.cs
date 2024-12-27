@@ -267,15 +267,16 @@ namespace Avatar_Explorer.Forms
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
             string[]? dragFilePathArr = (string[]?)e.Data.GetData(DataFormats.FileDrop, false);
             if (dragFilePathArr == null) return;
+            var folderPath = dragFilePathArr[0];
 
-            if (File.Exists(dragFilePathArr[0]))
+            if (File.Exists(folderPath) || !Directory.Exists(folderPath))
             {
                 MessageBox.Show(Helper.Translate("フォルダを選択してください", _mainForm.CurrentLanguage),
                     Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            FolderTextBox.Text = dragFilePathArr[0];
+            FolderTextBox.Text = folderPath;
         }
 
         private void MaterialTextBox_DragDrop(object sender, DragEventArgs e)
@@ -284,16 +285,16 @@ namespace Avatar_Explorer.Forms
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
             string[]? dragFilePathArr = (string[]?)e.Data.GetData(DataFormats.FileDrop, false);
             if (dragFilePathArr == null) return;
+            var folderPath = dragFilePathArr[0];
 
-            if (Directory.Exists(dragFilePathArr[0]))
-            {
-                MaterialTextBox.Text = dragFilePathArr[0];
-            }
-            else
+            if (File.Exists(folderPath) || !Directory.Exists(folderPath))
             {
                 MessageBox.Show(Helper.Translate("フォルダを選択してください", _mainForm.CurrentLanguage),
                     Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
+
+            MaterialTextBox.Text = folderPath;
         }
 
         // Error Label

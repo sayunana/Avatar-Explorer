@@ -1373,7 +1373,7 @@ namespace Avatar_Explorer.Forms
             if (dragFilePathArr == null) return;
             var folderPath = dragFilePathArr[0];
 
-            if (File.Exists(folderPath))
+            if (File.Exists(folderPath) || !Directory.Exists(folderPath))
             {
                 MessageBox.Show(Helper.Translate("フォルダを選択してください", CurrentLanguage),
                     Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1394,7 +1394,7 @@ namespace Avatar_Explorer.Forms
             if (dragFilePathArr == null) return;
             var folderPath = dragFilePathArr[0];
 
-            if (File.Exists(folderPath))
+            if (File.Exists(folderPath) || !Directory.Exists(folderPath))
             {
                 MessageBox.Show(Helper.Translate("フォルダを選択してください", CurrentLanguage),
                     Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1947,10 +1947,20 @@ namespace Avatar_Explorer.Forms
                 Helper.Backup(backupFilesArray);
                 _lastBackupTime = DateTime.Now;
             }
-            catch
+            catch (Exception e)
             {
                 MessageBox.Show(Helper.Translate("自動バックアップに失敗しました。", CurrentLanguage),
                     Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                try
+                {
+                    File.AppendAllText("./Datas/ErrorLog.txt",
+                        DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + " - " +
+                        Helper.Translate("自動バックアップに失敗しました。", CurrentLanguage) + "\n" + e.Message + "\n\n");
+                }
+                catch
+                {
+                    Console.WriteLine("Failed to write error log.");
+                }
             }
         }
     }
