@@ -20,7 +20,7 @@ namespace Avatar_Explorer.Forms
             {
                 foreach (Control control in Controls)
                 {
-                    if (control.Text != "")
+                    if (!string.IsNullOrEmpty(control.Text))
                     {
                         control.Text = Helper.Translate(control.Text, _mainForm.CurrentLanguage);
                     }

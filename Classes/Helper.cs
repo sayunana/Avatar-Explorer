@@ -379,5 +379,19 @@ namespace Avatar_Explorer.Classes
                 _ => "ja"
             };
         }
+
+        public static void ErrorLogger(string message, Exception exception)
+        {
+            try
+            {
+                var currentTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+                File.AppendAllText("./ErrorLog.txt",
+                    currentTime + " - " + message + "\n" + exception + "\n\n");
+            }
+            catch
+            {
+                Console.WriteLine("Failed to write error log.");
+            }
+        }
     }
 }

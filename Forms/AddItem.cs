@@ -24,7 +24,7 @@ namespace Avatar_Explorer.Forms
             {
                 foreach (Control control in Controls)
                 {
-                    if (control.Text != "")
+                    if (!string.IsNullOrEmpty(control.Text))
                     {
                         control.Text = Helper.Translate(control.Text, _mainForm.CurrentLanguage);
                     }
@@ -139,25 +139,22 @@ namespace Avatar_Explorer.Forms
 
         private async void AddButton_Click(object sender, EventArgs e)
         {
+            AddButton.Enabled = false;
             Item.Title = TitleTextBox.Text;
             Item.AuthorName = AuthorTextBox.Text;
             Item.Type = (ItemType)TypeComboBox.SelectedIndex;
             Item.ItemPath = FolderTextBox.Text;
             if (Item.Type != ItemType.Avatar) Item.SupportedAvatar = SupportedAvatar;
+            Item.MaterialPath = MaterialTextBox.Text;
 
-            if (MaterialTextBox.Text != "")
-            {
-                Item.MaterialPath = MaterialTextBox.Text;
-            }
-
-            if (Item.Title == "" || Item.AuthorName == "" || Item.ItemPath == "")
+            if (string.IsNullOrEmpty(Item.Title) || string.IsNullOrEmpty(Item.AuthorName) || string.IsNullOrEmpty(Item.ItemPath))
             {
                 MessageBox.Show(Helper.Translate("タイトル、作者、フォルダパスのどれかが入力されていません", _mainForm.CurrentLanguage),
                     Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                AddButton.Enabled = true;
                 return;
             }
 
-            AddButton.Enabled = false;
 
             if (Item.BoothId != -1)
             {
@@ -175,9 +172,10 @@ namespace Avatar_Explorer.Forms
                         catch (Exception ex)
                         {
                             MessageBox.Show(
-                                Helper.Translate("サムネイルのダウンロードに失敗しました: ", _mainForm.CurrentLanguage) + ex.Message,
+                                Helper.Translate("サムネイルのダウンロードに失敗しました。詳細はErrorLog.txtをご覧ください。", _mainForm.CurrentLanguage),
                                 Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
+                            Helper.ErrorLogger("サムネイルのダウンロードに失敗しました。", ex);
                         }
                     }
                 }
@@ -203,9 +201,10 @@ namespace Avatar_Explorer.Forms
                         catch (Exception ex)
                         {
                             MessageBox.Show(
-                                Helper.Translate("作者の画像のダウンロードに失敗しました: ", _mainForm.CurrentLanguage) + ex.Message,
+                                Helper.Translate("作者の画像のダウンロードに失敗しました。詳細はErrorLog.txtをご覧ください。", _mainForm.CurrentLanguage),
                                 Helper.Translate("エラー", _mainForm.CurrentLanguage), MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
+                            Helper.ErrorLogger("作者の画像のダウンロードに失敗しました。", ex);
                         }
                     }
                 }
@@ -339,13 +338,13 @@ namespace Avatar_Explorer.Forms
                 return;
             }
 
-            if (MaterialTextBox.Text != "" && !Directory.Exists(MaterialTextBox.Text))
+            if (!string.IsNullOrEmpty(MaterialTextBox.Text) && !Directory.Exists(MaterialTextBox.Text))
             {
                 SetErrorState(Helper.Translate("エラー: マテリアルフォルダパスが存在しません", _mainForm.CurrentLanguage));
                 return;
             }
 
-            if (MaterialTextBox.Text != "" && File.Exists(MaterialTextBox.Text))
+            if (!string.IsNullOrEmpty(MaterialTextBox.Text) && File.Exists(MaterialTextBox.Text))
             {
                 SetErrorState(Helper.Translate("エラー: マテリアルフォルダパスがファイルです", _mainForm.CurrentLanguage));
                 return;

@@ -9,5 +9,15 @@
         public Item? CurrentSelectedItem;
         public string? CurrentSelectedItemCategory;
         public ItemFolderInfo CurrentSelectedItemFolderInfo = new();
+
+        public bool IsEmpty()
+        {
+            return CurrentSelectedAvatar == null &&
+                   CurrentSelectedAvatarPath == null &&
+                   CurrentSelectedAuthor == null &&
+                   CurrentSelectedCategory == ItemType.Unknown && 
+                   CurrentSelectedItem == null &&
+                   CurrentSelectedItemCategory == null;
+        }
     }
 }

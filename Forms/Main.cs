@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Drawing.Text;
 using System.IO.Compression;
+using System.Media;
 using System.Runtime.InteropServices;
 using System.Text;
 using Avatar_Explorer.Classes;
@@ -62,6 +63,9 @@ namespace Avatar_Explorer.Forms
 
         // Last Backup Time
         private DateTime _lastBackupTime;
+
+        // Last Backup Error
+        private bool _lastBackupError;
 
         // Searching Bool
         private bool _isSearching;
@@ -140,14 +144,16 @@ namespace Avatar_Explorer.Forms
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
-                    CurrentPath.CurrentSelectedAvatar = item.Title;
-                    CurrentPath.CurrentSelectedAvatarPath = item.ItemPath;
-                    CurrentPath.CurrentSelectedAuthor = null;
-                    CurrentPath.CurrentSelectedCategory = ItemType.Unknown;
-                    CurrentPath.CurrentSelectedItemCategory = null;
-                    CurrentPath.CurrentSelectedItem = null;
+                    CurrentPath = new CurrentPath
+                    {
+                        CurrentSelectedAvatar = item.Title,
+                        CurrentSelectedAvatarPath = item.ItemPath
+                    };
                     _authorMode = false;
                     _categoryMode = false;
+                    SearchBox.Text = "";
+                    SearchResultLabel.Text = "";
+                    _isSearching = false;
                     GenerateCategoryList();
                     PathTextBox.Text = GeneratePath();
                 };
@@ -221,7 +227,13 @@ namespace Avatar_Explorer.Forms
                         Helper.Translate("変更後: ", CurrentLanguage) + ofd.FileName,
                         Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     item.ImagePath = ofd.FileName;
-                    if (_openingWindow == Window.ItemList) GenerateItems();
+
+                    // もしアバターの欄を右で開いていたら、そのサムネイルも更新しないといけないため。
+                    if (_openingWindow == Window.ItemList && !_isSearching) GenerateItems();
+
+                    //検索中だと、検索画面を再読込してあげる
+                    if (_isSearching) SearchItems();
+
                     GenerateAvatarList();
                     Helper.SaveItemsData(Items);
                 };
@@ -232,9 +244,19 @@ namespace Avatar_Explorer.Forms
                 {
                     AddItem addItem = new(this, item.Type, true, item, null);
                     addItem.ShowDialog();
-                    if (_openingWindow == Window.ItemList) GenerateItems();
+
+                    // もしアバターの欄を右で開いていたら、そのアイテムの情報も更新しないといけないため
+                    if (_openingWindow == Window.ItemList && !_isSearching) GenerateItems();
+
+                    //検索中だと、検索画面を再読込してあげる
+                    if (_isSearching) SearchItems();
+
+                    // もしアイテムで編集されたアイテムを開いていたら、パスなどに使用される文字列も更新しないといけないため
                     if (CurrentPath.CurrentSelectedAvatarPath == item.ItemPath) CurrentPath.CurrentSelectedAvatar = item.Title;
+
+                    // 検索時の文字列を消さないようにするために_isSearchingでチェックしている
                     if (!_isSearching) PathTextBox.Text = GeneratePath();
+
                     RefleshWindow();
                     Helper.SaveItemsData(Items);
                 };
@@ -248,24 +270,27 @@ namespace Avatar_Explorer.Forms
                     if (result != DialogResult.Yes) return;
 
                     var undo = false;
+
+                    // もし削除されるアイテムが開かれていたら、画面を戻さないといけないため。
                     if (CurrentPath.CurrentSelectedItem?.ItemPath == item.ItemPath)
                     {
                         CurrentPath.CurrentSelectedItemCategory = null;
                         CurrentPath.CurrentSelectedItem = null;
                         undo = true;
-                        PathTextBox.Text = GeneratePath();
                     }
 
                     var undo2 = false;
+
+                    // アバターモードでもし削除されるアバターからメニューが開かれていたら、画面を戻さないといけないため。
                     if (CurrentPath.CurrentSelectedAvatarPath == item.ItemPath && !_authorMode && !_categoryMode)
                     {
                         CurrentPath = new CurrentPath();
                         undo2 = true;
-                        PathTextBox.Text = GeneratePath();
                     }
 
                     Items = Items.Where(i => i.ItemPath != item.ItemPath).ToArray();
 
+                    // アバターのときは対応アバター削除、共通素体グループから削除用の処理を実行する
                     if (item.Type == ItemType.Avatar)
                     {
                         var result2 = MessageBox.Show(Helper.Translate("このアバターを対応アバターとしているアイテムの対応アバターからこのアバターを削除しますか？", CurrentLanguage),
@@ -300,8 +325,25 @@ namespace Avatar_Explorer.Forms
                     MessageBox.Show(Helper.Translate("削除が完了しました。", CurrentLanguage),
                         Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    if (_openingWindow == Window.ItemList || undo) GenerateItems();
+                    // 削除されるアイテムが開かれていただけなら、アイテム選択画面まで戻す。
+                    if (_openingWindow == Window.ItemList || undo)
+                    {
+                        if (_isSearching)
+                        {
+                            SearchItems();
+                        }
+                        else
+                        {
+                            GenerateItems();
+                        }
+                    }
+
+                    // アバターから削除されるアイテムが開かれていたら、初期画面まで戻す。
                     if (undo2) ResetAvatarList(true);
+
+                    // 検索時の文字列を消さないようにするために_isSearchingでチェックしている
+                    if (!_isSearching) PathTextBox.Text = GeneratePath();
+
                     GenerateAvatarList();
                     GenerateAuthorList();
                     GenerateCategoryListLeft();
@@ -346,14 +388,16 @@ namespace Avatar_Explorer.Forms
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
-                    CurrentPath.CurrentSelectedAuthor = author;
-                    CurrentPath.CurrentSelectedAvatar = null;
-                    CurrentPath.CurrentSelectedAvatarPath = null;
-                    CurrentPath.CurrentSelectedCategory = ItemType.Unknown;
-                    CurrentPath.CurrentSelectedItemCategory = null;
-                    CurrentPath.CurrentSelectedItem = null;
+                    CurrentPath = new CurrentPath
+                    {
+                        CurrentSelectedAuthor = author
+                    };
+
                     _authorMode = true;
                     _categoryMode = false;
+                    SearchBox.Text = "";
+                    SearchResultLabel.Text = "";
+                    _isSearching = false;
                     GenerateCategoryList();
                     PathTextBox.Text = GeneratePath();
                 };
@@ -409,14 +453,16 @@ namespace Avatar_Explorer.Forms
                 button.Location = new Point(0, (70 * index) + 2);
                 button.Click += (_, _) =>
                 {
-                    CurrentPath.CurrentSelectedAuthor = null;
-                    CurrentPath.CurrentSelectedAvatar = null;
-                    CurrentPath.CurrentSelectedAvatarPath = null;
-                    CurrentPath.CurrentSelectedCategory = itemType;
-                    CurrentPath.CurrentSelectedItemCategory = null;
-                    CurrentPath.CurrentSelectedItem = null;
+                    CurrentPath = new CurrentPath
+                    {
+                        CurrentSelectedCategory = itemType
+                    };
+
                     _authorMode = false;
                     _categoryMode = true;
+                    SearchBox.Text = "";
+                    SearchResultLabel.Text = "";
+                    _isSearching = false;
                     GenerateItems();
                     PathTextBox.Text = GeneratePath();
                 };
@@ -451,7 +497,7 @@ namespace Avatar_Explorer.Forms
                         (
                             Helper.IsSupportedAvatarOrCommon(item, CommonAvatars, CurrentPath.CurrentSelectedAvatarPath)
                                 .IsSupportedOrCommon ||
-                            item.SupportedAvatar.Length == 0
+                            item.SupportedAvatar.Length == 0 || CurrentPath.CurrentSelectedAvatar == "*"
                         )
                     );
                 }
@@ -502,7 +548,7 @@ namespace Avatar_Explorer.Forms
                     (
                         Helper.IsSupportedAvatarOrCommon(item, CommonAvatars, CurrentPath.CurrentSelectedAvatarPath)
                             .IsSupportedOrCommon ||
-                        item.SupportedAvatar.Length == 0
+                        item.SupportedAvatar.Length == 0 || CurrentPath.CurrentSelectedAvatar == "*"
                     )
                 );
             }
@@ -522,7 +568,7 @@ namespace Avatar_Explorer.Forms
                     !item.SupportedAvatar.Contains(CurrentPath.CurrentSelectedAvatarPath))
                 {
                     var commonAvatarName = isSupportedOrCommon.CommonAvatarName;
-                    if (commonAvatarName != "")
+                    if (!string.IsNullOrEmpty(commonAvatarName))
                     {
                         authorText += "\n" + Helper.Translate("共通素体: ", CurrentLanguage) + commonAvatarName;
                     }
@@ -650,7 +696,15 @@ namespace Avatar_Explorer.Forms
                         Helper.Translate("変更後: ", CurrentLanguage) + ofd.FileName,
                         Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     item.ImagePath = ofd.FileName;
-                    GenerateItems();
+
+                    if (_isSearching)
+                    {
+                        SearchItems();
+                    }
+                    else
+                    {
+                        GenerateItems();
+                    }
                     GenerateAvatarList();
                     Helper.SaveItemsData(Items);
                 };
@@ -781,6 +835,7 @@ namespace Avatar_Explorer.Forms
 
             var files = CurrentPath.CurrentSelectedItemFolderInfo.GetItems(CurrentPath.CurrentSelectedItemCategory);
             if (files.Length == 0) return;
+
             files = files.OrderBy(file => file.FileName).ToArray();
 
             var index = 0;
@@ -898,8 +953,10 @@ namespace Avatar_Explorer.Forms
                     }
 
                     _authorMode = false;
+                    _categoryMode = false;
                     GeneratePathFromItem(item);
                     SearchBox.Text = "";
+                    SearchResultLabel.Text = "";
                     _isSearching = false;
                     GenerateItemCategoryList();
                     PathTextBox.Text = GeneratePath();
@@ -1224,9 +1281,10 @@ namespace Avatar_Explorer.Forms
 
         private void GeneratePathFromItem(Item item)
         {
-            var avatarName = Helper.GetAvatarName(Items, item.SupportedAvatar.FirstOrDefault());
+            var avatarPath = item.SupportedAvatar.FirstOrDefault();
+            var avatarName = Helper.GetAvatarName(Items, avatarPath);
             CurrentPath.CurrentSelectedAvatar = avatarName ?? "*";
-            CurrentPath.CurrentSelectedAvatarPath = item.SupportedAvatar.FirstOrDefault();
+            CurrentPath.CurrentSelectedAvatarPath = avatarPath;
             CurrentPath.CurrentSelectedCategory = item.Type;
             CurrentPath.CurrentSelectedItem = item;
         }
@@ -1234,8 +1292,55 @@ namespace Avatar_Explorer.Forms
         // Undo Button
         private void UndoButton_Click(object sender, EventArgs e)
         {
+            //検索中だった場合は前の画面までとりあえず戻してあげる
+            if (_isSearching)
+            {
+                SearchBox.Text = "";
+                SearchResultLabel.Text = "";
+                _isSearching = false;
+                if (CurrentPath.CurrentSelectedItemCategory != null)
+                {
+                    GenerateItemFiles();
+                    PathTextBox.Text = GeneratePath();
+                    return;
+                }
+
+                if (CurrentPath.CurrentSelectedItem != null)
+                {
+                    GenerateItemCategoryList();
+                    PathTextBox.Text = GeneratePath();
+                    return;
+                }
+
+                if (CurrentPath.CurrentSelectedCategory != ItemType.Unknown)
+                {
+                    GenerateItems();
+                    PathTextBox.Text = GeneratePath();
+                    return;
+                }
+
+                if (CurrentPath.CurrentSelectedAvatar != null || CurrentPath.CurrentSelectedAuthor != null)
+                {
+                    GenerateCategoryList();
+                    PathTextBox.Text = GeneratePath();
+                    return;
+                }
+
+                ResetAvatarList(true);
+                PathTextBox.Text = GeneratePath();
+                return;
+            }
+
             SearchBox.Text = "";
+            SearchResultLabel.Text = "";
             _isSearching = false;
+
+            if (CurrentPath.IsEmpty())
+            {
+                //エラー音を再生
+                SystemSounds.Hand.Play();
+                return;
+            }
 
             if (CurrentPath.CurrentSelectedItemCategory != null)
             {
@@ -1253,22 +1358,38 @@ namespace Avatar_Explorer.Forms
                 return;
             }
 
-            if (_categoryMode) return;
-
-            if (CurrentPath.CurrentSelectedCategory != ItemType.Unknown)
+            if (_authorMode)
             {
-                CurrentPath.CurrentSelectedCategory = ItemType.Unknown;
-                GenerateCategoryList();
-                PathTextBox.Text = GeneratePath();
+                if (CurrentPath.CurrentSelectedCategory != ItemType.Unknown)
+                {
+                    CurrentPath.CurrentSelectedCategory = ItemType.Unknown;
+                    GenerateCategoryList();
+                    PathTextBox.Text = GeneratePath();
+                    return;
+                }
+            }
+            else if (!_categoryMode)
+            {
+                if (CurrentPath.CurrentSelectedCategory != ItemType.Unknown)
+                {
+                    CurrentPath.CurrentSelectedCategory = ItemType.Unknown;
+                    GenerateCategoryList();
+                    PathTextBox.Text = GeneratePath();
+                    return;
+                }
+
+                if (CurrentPath.CurrentSelectedAvatar == "*")
+                {
+                    CurrentPath.CurrentSelectedAvatar = null;
+                    CurrentPath.CurrentSelectedAvatarPath = null;
+                    ResetAvatarList(true);
+                    PathTextBox.Text = GeneratePath();
+                    return;
+                }
             }
 
-            if (CurrentPath.CurrentSelectedAvatar == "*")
-            {
-                CurrentPath.CurrentSelectedAvatar = null;
-                CurrentPath.CurrentSelectedAvatarPath = null;
-                ResetAvatarList(true);
-                PathTextBox.Text = GeneratePath();
-            }
+            ResetAvatarList(true);
+            PathTextBox.Text = GeneratePath();
         }
 
         // Search Box
@@ -1282,7 +1403,7 @@ namespace Avatar_Explorer.Forms
 
         private void SearchItems()
         {
-            if (SearchBox.Text == "")
+            if (string.IsNullOrEmpty(SearchBox.Text))
             {
                 SearchResultLabel.Text = "";
                 if (CurrentPath.CurrentSelectedItemCategory != null)
@@ -1351,6 +1472,7 @@ namespace Avatar_Explorer.Forms
         // ResetAvatarList
         private void ResetAvatarList(bool startLabelVisible = false)
         {
+            if (startLabelVisible) CurrentPath = new CurrentPath();
             for (int i = AvatarItemExplorer.Controls.Count - 1; i >= 0; i--)
             {
                 if (AvatarItemExplorer.Controls[i].Name != "StartLabel")
@@ -1508,45 +1630,43 @@ namespace Avatar_Explorer.Forms
                 _ => CurrentLanguage
             };
 
-            Text = CurrentVersionFormText + $" - {Helper.Translate("最終自動バックアップ: ", CurrentLanguage) + _lastBackupTime.ToString("HH:mm:ss")}";
-
             var newFont = _fontFamilies.TryGetValue(CurrentLanguage, out var family) ? family : _fontFamilies["ja-JP"];
             GuiFont = newFont;
 
             foreach (Control control in Controls)
             {
                 if (control.Name == "LanguageBox") continue;
-                if (control.Text == "") continue;
+                if (string.IsNullOrEmpty(control.Text)) continue;
                 _controlNames.TryAdd(control.Name, control.Text);
                 control.Text = Helper.Translate(_controlNames[control.Name], CurrentLanguage);
             }
 
             foreach (Control control in AvatarSearchFilterList.Controls)
             {
-                if (control.Text == "") continue;
+                if (string.IsNullOrEmpty(control.Text)) continue;
                 _controlNames.TryAdd(control.Name, control.Text);
                 control.Text = Helper.Translate(_controlNames[control.Name], CurrentLanguage);
             }
 
             foreach (Control control in ExplorerList.Controls)
             {
-                if (control.Text == "") continue;
+                if (string.IsNullOrEmpty(control.Text)) continue;
                 _controlNames.TryAdd(control.Name, control.Text);
                 control.Text = Helper.Translate(_controlNames[control.Name], CurrentLanguage);
             }
 
             foreach (Control control in AvatarItemExplorer.Controls)
             {
-                if (control.Text == "") continue;
+                if (string.IsNullOrEmpty(control.Text)) continue;
                 _controlNames.TryAdd(control.Name, control.Text);
                 control.Text = Helper.Translate(_controlNames[control.Name], CurrentLanguage);
             }
 
-            PathTextBox.Text = GeneratePath();
             RefleshWindow();
+            PathTextBox.Text = GeneratePath();
         }
 
-        private void RefleshWindow()
+        private void RefleshWindow(bool reloadLeft = true)
         {
             if (_isSearching)
             {
@@ -1577,6 +1697,7 @@ namespace Avatar_Explorer.Forms
                     throw new ArgumentOutOfRangeException();
             }
 
+            if (!reloadLeft) return;
             GenerateAvatarList();
             GenerateAuthorList();
             GenerateCategoryListLeft();
@@ -1658,9 +1779,10 @@ namespace Avatar_Explorer.Forms
                     MessageBox.Show(Helper.Translate("復元が完了しました。", CurrentLanguage),
                         Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    MessageBox.Show(Helper.Translate("データの読み込みに失敗しました。", CurrentLanguage) + "\n\n" + e.Message,
+                    Helper.ErrorLogger("データの読み込みに失敗しました。", ex);
+                    MessageBox.Show(Helper.Translate("データの読み込みに失敗しました。詳細はErrorLog.txtをご覧ください。", CurrentLanguage),
                         Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -1706,10 +1828,16 @@ namespace Avatar_Explorer.Forms
                         Helper.Translate("確認", CurrentLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result2 != DialogResult.Yes)
                     {
-                        CurrentPath = new CurrentPath();
-                        RefleshWindow();
+                        SearchBox.Text = "";
+                        SearchResultLabel.Text = "";
+                        _isSearching = false;
+                        GenerateAvatarList();
+                        GenerateAuthorList();
+                        GenerateCategoryListLeft();
                         ResetAvatarList(true);
                         PathTextBox.Text = GeneratePath();
+                        MessageBox.Show(Helper.Translate("コピーが完了しました。", CurrentLanguage),
+                            Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
 
@@ -1725,9 +1853,9 @@ namespace Avatar_Explorer.Forms
                             {
                                 File.Copy(file, "./Datas/Thumbnail/" + Path.GetFileName(file), true);
                             }
-                            catch
+                            catch (Exception ex)
                             {
-                                Console.WriteLine("Failed to copy thumbnail image." + file);
+                                Helper.ErrorLogger("サムネイルのコピーに失敗しました。", ex);
                             }
                         }
                     }
@@ -1741,9 +1869,9 @@ namespace Avatar_Explorer.Forms
                             {
                                 File.Copy(file, "./Datas/AuthorImage/" + Path.GetFileName(file), true);
                             }
-                            catch
+                            catch (Exception ex)
                             {
-                                Console.WriteLine("Failed to copy author image." + file);
+                                Helper.ErrorLogger("作者画像のコピーに失敗しました。", ex);
                             }
                         }
                     }
@@ -1751,15 +1879,20 @@ namespace Avatar_Explorer.Forms
                     MessageBox.Show(Helper.Translate("コピーが完了しました。", CurrentLanguage),
                         Helper.Translate("完了", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    MessageBox.Show(Helper.Translate("データの読み込みに失敗しました。", CurrentLanguage) + "\n\n" + e.Message,
+                    Helper.ErrorLogger("データの読み込みに失敗しました。", ex);
+                    MessageBox.Show(Helper.Translate("データの読み込みに失敗しました。詳細はErrorLog.txtをご覧ください。", CurrentLanguage),
                         Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
 
-            CurrentPath = new CurrentPath();
-            RefleshWindow();
+            SearchBox.Text = "";
+            SearchResultLabel.Text = "";
+            _isSearching = false;
+            GenerateAvatarList();
+            GenerateAuthorList();
+            GenerateCategoryListLeft();
             ResetAvatarList(true);
             PathTextBox.Text = GeneratePath();
         }
@@ -1929,11 +2062,17 @@ namespace Avatar_Explorer.Forms
 
             timer.Tick += (_, _) =>
             {
-                if (_lastBackupTime == DateTime.MinValue) return;
+                if (_lastBackupTime == DateTime.MinValue)
+                {
+                    if (_lastBackupError) Text = CurrentVersionFormText + " - " + Helper.Translate("バックアップエラー", CurrentLanguage);
+                    return;
+                }
                 var timeSpan = DateTime.Now - _lastBackupTime;
                 var minutes = timeSpan.Minutes;
                 Text = CurrentVersionFormText +
                        $" - {Helper.Translate("最終自動バックアップ: ", CurrentLanguage) + minutes + Helper.Translate("分前", CurrentLanguage)}";
+
+                if (_lastBackupError) Text += " - " + Helper.Translate("バックアップエラー", CurrentLanguage);
             };
             timer.Start();
         }
@@ -1949,22 +2088,13 @@ namespace Avatar_Explorer.Forms
                 };
 
                 Helper.Backup(backupFilesArray);
+                _lastBackupError = false;
                 _lastBackupTime = DateTime.Now;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                MessageBox.Show(Helper.Translate("自動バックアップに失敗しました。", CurrentLanguage),
-                    Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                try
-                {
-                    File.AppendAllText("./Datas/ErrorLog.txt",
-                        DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + " - " +
-                        Helper.Translate("自動バックアップに失敗しました。", CurrentLanguage) + "\n" + e.Message + "\n\n");
-                }
-                catch
-                {
-                    Console.WriteLine("Failed to write error log.");
-                }
+                _lastBackupError = true;
+                Helper.ErrorLogger("自動バックアップに失敗しました。", ex);
             }
         }
     }
