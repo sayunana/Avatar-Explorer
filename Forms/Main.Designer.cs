@@ -81,7 +81,7 @@ namespace Avatar_Explorer.Forms
             AvatarSearchFilterList.Location = new Point(16, 45);
             AvatarSearchFilterList.Name = "AvatarSearchFilterList";
             AvatarSearchFilterList.SelectedIndex = 0;
-            AvatarSearchFilterList.Size = new Size(333, 586);
+            AvatarSearchFilterList.Size = new Size(333, 590);
             AvatarSearchFilterList.TabIndex = 3;
             // 
             // AvatarPage
@@ -91,7 +91,7 @@ namespace Avatar_Explorer.Forms
             AvatarPage.Location = new Point(4, 24);
             AvatarPage.Name = "AvatarPage";
             AvatarPage.Padding = new Padding(3);
-            AvatarPage.Size = new Size(325, 558);
+            AvatarPage.Size = new Size(325, 562);
             AvatarPage.TabIndex = 0;
             AvatarPage.Text = "アバター";
             AvatarPage.UseVisualStyleBackColor = true;
@@ -104,7 +104,7 @@ namespace Avatar_Explorer.Forms
             AvatarAuthorPage.Location = new Point(4, 24);
             AvatarAuthorPage.Name = "AvatarAuthorPage";
             AvatarAuthorPage.Padding = new Padding(3);
-            AvatarAuthorPage.Size = new Size(325, 558);
+            AvatarAuthorPage.Size = new Size(325, 562);
             AvatarAuthorPage.TabIndex = 1;
             AvatarAuthorPage.Text = "作者";
             AvatarAuthorPage.UseVisualStyleBackColor = true;
@@ -114,7 +114,7 @@ namespace Avatar_Explorer.Forms
             CategoryPage.AutoScroll = true;
             CategoryPage.Location = new Point(4, 24);
             CategoryPage.Name = "CategoryPage";
-            CategoryPage.Size = new Size(325, 558);
+            CategoryPage.Size = new Size(325, 562);
             CategoryPage.TabIndex = 2;
             CategoryPage.Text = "カテゴリ別";
             CategoryPage.UseVisualStyleBackColor = true;
