@@ -81,15 +81,18 @@ namespace Avatar_Explorer.Forms
             _initialFormSize = ClientSize;
             _baseAvatarSearchFilterListWidth = AvatarSearchFilterList.Width;
             _baseAvatarItemExplorerListWidth = AvatarItemExplorer.Width;
-
             LanguageBox.SelectedIndex = 0;
-            GenerateAvatarList();
-            GenerateAuthorList();
-            GenerateCategoryListLeft();
+
+            // Render Window
+            RefleshWindow();
+
+            // Start AutoBackup
+            AutoBackup();
+
+            // Set Backup Title Loop
+            BackupTimeTitle();
 
             Text = $"VRChat Avatar Explorer {CurrentVersion} by ぷこるふ";
-
-            AutoBackup();
         }
 
         private void AddFontFile()
@@ -1918,6 +1921,24 @@ namespace Avatar_Explorer.Forms
             timer.Start();
         }
 
+        private void BackupTimeTitle()
+        {
+            Timer timer = new()
+            {
+                Interval = 1000
+            };
+
+            timer.Tick += (_, _) =>
+            {
+                if (_lastBackupTime == DateTime.MinValue) return;
+                var timeSpan = DateTime.Now - _lastBackupTime;
+                var minutes = timeSpan.Minutes;
+                Text = CurrentVersionFormText +
+                       $" - {Helper.Translate("最終自動バックアップ: ", CurrentLanguage) + minutes + Helper.Translate("分前", CurrentLanguage)}";
+            };
+            timer.Start();
+        }
+
         private void BackupFile()
         {
             try
@@ -1930,7 +1951,6 @@ namespace Avatar_Explorer.Forms
 
                 Helper.Backup(backupFilesArray);
                 _lastBackupTime = DateTime.Now;
-                Text = CurrentVersionFormText + $" - {Helper.Translate("最終自動バックアップ: ", CurrentLanguage) + _lastBackupTime.ToString("HH:mm:ss")}";
             }
             catch
             {
