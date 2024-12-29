@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Drawing.Text;
+using System.Formats.Tar;
 using System.IO.Compression;
 using System.Media;
 using System.Runtime.InteropServices;
@@ -858,11 +859,19 @@ namespace Avatar_Explorer.Forms
                 {
                     try
                     {
-                        Process.Start(new ProcessStartInfo
+
+                        if (file.FileExtension is ".unitypackage")
                         {
-                            FileName = file.FilePath,
-                            UseShellExecute = true
-                        });
+                            _ = ChangeUnityPackageFilePathAsync(file);
+                        }
+                        else
+                        {
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = file.FilePath,
+                                UseShellExecute = true
+                            });
+                        }
                     }
                     catch
                     {
@@ -2096,6 +2105,113 @@ namespace Avatar_Explorer.Forms
                 _lastBackupError = true;
                 Helper.ErrorLogger("自動バックアップに失敗しました。", ex);
             }
+        }
+
+
+        /// <summary>
+        /// UnityPackageの展開先ディレクトリを変更する
+        /// </summary>
+        private async Task ChangeUnityPackageFilePathAsync(FileData file)
+        {
+            // Temp Unity Packageの保存先ディレクトリを作成
+            string authorName = CurrentPath.CurrentSelectedItem.AuthorName;
+            string itemTitle = CurrentPath.CurrentSelectedItem.Title;
+
+            // nullチェック
+            if (String.IsNullOrEmpty(authorName)) { authorName = "Unknown"; }
+            if (String.IsNullOrEmpty(itemTitle)) { itemTitle = "Unknown"; }
+
+            authorName = CheckFilePath(authorName);
+            itemTitle = CheckFilePath(itemTitle);
+
+            string saveFolder = @$".\\Datas\\Temp\\{authorName}\\{itemTitle}\\";
+            string saveFilePath = @$"{saveFolder}\\{Path.GetFileNameWithoutExtension(file.FileName)}_export.unitypackage";
+
+            if (Directory.Exists(saveFolder) is false)
+            {
+                Directory.CreateDirectory(saveFolder);
+            }
+
+            // 展開
+            List<StreamReader> disposeStreamReaderList = new();
+            // UnityPackageの読み込み
+            using var f = File.OpenRead(file.FilePath);
+            using var fgz = new GZipStream(f, CompressionMode.Decompress);
+            using var tr = new TarReader(fgz);
+
+            // 新しいUnityPacakageの作成
+            using var f2 = File.Create(saveFilePath);
+
+            try
+            {
+                // ファイルの書き込み
+                using (TarWriter tarWriter = new TarWriter(f2))
+                {
+                    TarEntry entry;
+
+                    while ((entry = await tr.GetNextEntryAsync()) is not null)
+                    {
+                        // アセットパスを編集
+                        if (Path.GetFileName(entry.Name) is "pathname")
+                        {
+                            using StreamReader reader = new StreamReader(entry.DataStream);
+
+                            string assetPath = reader.ReadToEnd();
+
+                            // ファイルパスを編集
+                            assetPath = assetPath.Insert(7, $"{GetCategoryPath(CurrentPath.CurrentSelectedCategory)}/");
+
+                            entry.DataStream = new MemoryStream(Encoding.UTF8.GetBytes(assetPath));
+
+                        }
+                        //Debug.WriteLine(entry.Name);
+                        await tarWriter.WriteEntryAsync(entry);
+                    }
+                }
+                f2.Dispose();
+                tr.Dispose();
+                fgz.Dispose();
+                f.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Helper.ErrorLogger("UnityPackageの展開に失敗しました。", ex);
+                MessageBox.Show(Helper.Translate("UnityPackageの展開に失敗しました。詳細はErrorLog.txtをご覧ください。", CurrentLanguage),
+                    Helper.Translate("エラー", CurrentLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = saveFilePath,
+                UseShellExecute = true
+            });
+        }
+
+
+        private string CheckFilePath(string s)
+        {
+            var invalidChars = Path.GetInvalidFileNameChars();
+            return string.Concat(s.Where(c => !invalidChars.Contains(c)));
+        }
+
+        private string GetCategoryPath(ItemType category)
+        {
+            return category switch
+            {
+                ItemType.Avatar => "Avatar",
+                ItemType.Clothing => "Clothing",
+                ItemType.Texture => "Texture",
+                ItemType.Gimmick => "Gimmick",
+                ItemType.Accessory => "Accessory",
+                ItemType.HairStyle => "HairStyle",
+                ItemType.Animation => "Animation",
+                ItemType.Tool => "Tool",
+                ItemType.Shader => "Shader",
+                ItemType.Unknown => "Unknown",
+                _ => "Unknown"
+            };
         }
     }
 }
